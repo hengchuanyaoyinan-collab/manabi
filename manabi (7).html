@@ -369,7 +369,7 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-outline" onclick="goPayStep(1)">← 戻る</button>
-      <button class="btn btn-dark" style="flex:1;padding:14px;font-size:14px;" onclick="goPayStep(3)">¥2,100 を支払う 🔒</button>
+      <button class="btn btn-dark" id="btn-pay" style="flex:1;padding:14px;font-size:14px;" onclick="goPayStep(3)">¥2,100 を支払う 🔒</button>
     </div>
   </div>
   <div class="pay-panel" id="pp3">
@@ -436,10 +436,22 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
 
 <script>
 // ── SUPABASE ──
+// 新しい publishable key 形式 (sb_publishable_...) を使用。
+// このキーはクライアントに公開して問題ありません。
 const SB_URL = 'https://dajngnlvrwesosvgoilh.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRham5nbmx2cndlc29zdmdvaWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3ODc4NDksImV4cCI6MjA5MTM2Mzg0OX0.AuNr5eoUAPaRwgIHvICq3aKqlvlsjPjks5vGrmeVZN0';
+const SB_KEY = 'sb_publishable_TRB_lManD97eMnC74p175g_tm34NK07';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 let currentUser = null;
+
+// 現在カートに入っている決済対象 (予約モーダルで設定される)
+// teacher_id / skill_id は Supabase 上の uuid。デモデータの数値ID は null にする。
+let payCart = {
+  teacher_name: '中村 拓海',
+  teacher_id: null,
+  skill_id: null,
+  amount: 2000,
+  fee: 100,
+};
 
 // AUTH STATE
 sb.auth.onAuthStateChange(async (event, session) => {
@@ -791,7 +803,46 @@ function sendMsg() {
   }, 900);
 }
 
-const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_00w8wI7vZ0Y1fQq8ZGaVa00';
+// Stripe Checkout を Supabase Edge Function 経由で起動する。
+// Edge Function 側で booking / payment を作成し、Stripe Checkout Session の URL を返す。
+async function startStripeCheckout() {
+  if (!currentUser) {
+    alert('ログインしてください');
+    return;
+  }
+  const btn = document.getElementById('btn-pay');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>決済画面を準備中...';
+  }
+  try {
+    const { data, error } = await sb.functions.invoke('create-checkout-session', {
+      body: {
+        teacher_name: payCart.teacher_name,
+        teacher_id: payCart.teacher_id,
+        skill_id: payCart.skill_id,
+        amount: payCart.amount,
+        fee: payCart.fee,
+      },
+    });
+    if (error) throw error;
+    if (!data?.url) throw new Error('決済URLの取得に失敗しました');
+    document.getElementById('tx-id').textContent = '#' + (data.booking_id || Date.now());
+    addNotif({
+      text: `¥${(payCart.amount + payCart.fee).toLocaleString()} の支払いが開始されました 💴`,
+      time: 'たった今', unread: true, color: 'var(--gold)',
+    });
+    // Stripe Checkout に遷移 (success_url で戻ってくる)
+    window.location.href = data.url;
+  } catch (e) {
+    console.error('checkout error', e);
+    alert('決済の開始に失敗しました: ' + (e.message || e));
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '¥' + (payCart.amount + payCart.fee).toLocaleString() + ' を支払う 🔒';
+    }
+  }
+}
 
 function goPayStep(n) {
   for (let i=1; i<=3; i++) {
@@ -800,11 +851,30 @@ function goPayStep(n) {
   }
   if (n===2) renderPayMethods();
   if (n===3) {
-    // Stripeの決済画面に飛ぶ
-    window.open(STRIPE_PAYMENT_LINK, '_blank');
-    document.getElementById('tx-id').textContent = '#MNB-' + Date.now();
-    addNotif({text:'¥2,000 の支払いが開始されました 💴', time:'たった今', unread:true, color:'var(--gold)'});
+    // Stripe Checkout に遷移
+    startStripeCheckout();
   }
+}
+
+// success_url でリダイレクトされて戻ってきたとき、
+// 自動で支払いページの「完了」ステップを表示する。
+function handlePaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('pay');
+  if (!status) return;
+  showPage('payment');
+  if (status === 'success') {
+    for (let i=1; i<=3; i++) {
+      document.getElementById('ps'+i).className = 'pay-step'+(i===3?' active':' done');
+      document.getElementById('pp'+i).className = 'pay-panel'+(i===3?' active':'');
+    }
+    document.getElementById('tx-id').textContent = '#' + (params.get('session_id') || Date.now());
+    addNotif({text:'支払いが完了しました ✅', time:'たった今', unread:true, color:'var(--green)'});
+  } else if (status === 'cancel') {
+    addNotif({text:'支払いがキャンセルされました', time:'たった今', unread:true, color:'var(--red)'});
+  }
+  // クエリを消してURLをきれいに
+  history.replaceState({}, '', window.location.pathname);
 }
 function renderPayMethods() {
   const ms = [['card','💳','クレジットカード'],['paypay','📱','PayPay'],['bank','🏦','銀行振込'],['apple','🍎','Apple Pay']];
@@ -821,6 +891,29 @@ function openModal(id) {
   document.getElementById('modal').classList.add('open');
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+// 予約モーダルから支払いに進むときに、選択中の先生の情報で payCart を更新する。
+function proceedToPayment() {
+  if (selTeacher) {
+    const price = selTeacher.price || 2000;
+    const fee = Math.round(price * 0.05);
+    payCart = {
+      teacher_name: selTeacher.name,
+      // デモデータ (id < 1000) は profiles に存在しないので null を渡す
+      teacher_id: null,
+      skill_id: null,
+      amount: price,
+      fee: fee,
+    };
+    // 支払いページの表示も更新
+    const total = price + fee;
+    const btn = document.getElementById('btn-pay');
+    if (btn) btn.innerHTML = `¥${total.toLocaleString()} を支払う 🔒`;
+  }
+  closeModal();
+  showPage('payment');
+  goPayStep(1);
+}
 function renderModal() {
   const t = selTeacher; if (!t) return;
   let html = '';
@@ -848,7 +941,7 @@ function renderModal() {
       <div style="font-size:52px;margin-bottom:14px;">🎉</div>
       <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px;">予約が完了しました！</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.8;">${t.name}先生との授業が予約されました。</p>
-      <button class="btn btn-dark" onclick="closeModal();showPage('payment');" style="width:100%;padding:14px;">支払いへ進む</button>
+      <button class="btn btn-dark" onclick="proceedToPayment();" style="width:100%;padding:14px;">支払いへ進む</button>
     </div>`;
     addNotif({text:`${t.name}先生との予約が完了しました！`, time:'たった今', unread:true, color:'var(--green)'});
   }
@@ -887,6 +980,7 @@ renderFilters();
 renderExplore();
 renderAiChips();
 renderNotifs();
+handlePaymentReturn();
 
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session) {
