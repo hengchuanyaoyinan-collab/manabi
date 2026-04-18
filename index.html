@@ -29,6 +29,7 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
 .nav-btn{background:none;border:none;cursor:pointer;padding:6px 11px;border-radius:20px;font-size:12px;font-family:inherit;color:#555;transition:all .15s;}
 .nav-btn:hover{background:var(--lighter);}
 .nav-btn.active{background:var(--dark);color:white;}
+.hamburger{display:none;background:none;border:none;font-size:22px;cursor:pointer;padding:4px 8px;color:var(--dark);}
 /* PAGES */
 .page{display:none;padding:24px;max-width:960px;margin:0 auto;}
 .page.active{display:block;}
@@ -100,8 +101,14 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
 @media(max-width:640px){
   .chat-layout{grid-template-columns:1fr;height:auto;}
   .chat-list{height:160px;border-right:none;border-bottom:1px solid var(--light);}
-  .nav-links button{font-size:10px;padding:4px 7px;}
   .page{padding:16px 12px;}
+  .hamburger{display:block;}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:white;flex-direction:column;padding:8px 16px 14px;border-bottom:1px solid var(--light);box-shadow:0 8px 24px rgba(0,0,0,.1);gap:2px;}
+  .nav-links.open{display:flex;}
+  .nav-links .nav-btn{text-align:left;padding:10px 14px;font-size:13px;border-radius:10px;}
+  nav{flex-wrap:wrap;gap:8px;}
+  nav>div:last-child{order:2;}
+  .cards-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -144,6 +151,7 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
 <!-- NAV -->
 <nav>
   <div class="logo" onclick="showPage('home')"><div class="logo-icon">✦</div>Manabi</div>
+  <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
   <div class="nav-links">
     <button class="nav-btn active" onclick="showPage('home')">ホーム</button>
     <button class="nav-btn" onclick="showPage('explore')">探す</button>
@@ -640,6 +648,7 @@ function showPage(id) {
   if (id === 'chat') renderChat(curChat);
   if (id === 'map') renderMap();
   if (id === 'profile' || id === 'dashboard') loadProfile();
+  document.querySelector('.nav-links')?.classList.remove('open');
 }
 
 function makeCard(t) {
