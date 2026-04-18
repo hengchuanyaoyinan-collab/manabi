@@ -821,7 +821,7 @@ async function loadDashboardHistory() {
     const s = statusMap[p.status] || p.status;
     const sc = statusColors[p.status] || 'var(--muted)';
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--light);">
-      <div><p style="font-weight:600;font-size:13px;">${subject}</p><p style="font-size:11px;color:var(--muted);">${other} · ${dateStr}</p></div>
+      <div><p style="font-weight:600;font-size:13px;">${escapeHtml(subject)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(other)} · ${dateStr}</p></div>
       <div style="text-align:right;"><p style="font-weight:700;font-size:13px;">¥${(p.amount||0).toLocaleString()}</p><span style="font-size:11px;color:${sc};font-weight:500;">${s}</span></div>
     </div>`;
   }).join('');
@@ -885,8 +885,10 @@ function showPage(id) {
     const btns = document.querySelectorAll('.nav-btn');
     if (btns[i]) btns[i].classList.add('active');
   }
+  const btmMap = { home:'home', explore:'explore', map:'explore', register:'register', matching:'chat', chat:'chat', payment:'chat', dashboard:'profile', profile:'profile' };
+  const btmActive = btmMap[id] || id;
   document.querySelectorAll('.btm-tab').forEach(b => {
-    b.classList.toggle('active', b.dataset.page === id);
+    b.classList.toggle('active', b.dataset.page === btmActive);
   });
   if (id === 'chat') loadChatThreads();
   if (id === 'matching') renderMatching();
@@ -1166,6 +1168,8 @@ document.addEventListener('click', e => {
 
 async function loadChatThreads() {
   if (!currentUser) return;
+  const listEl = document.getElementById('chat-list-items');
+  if (listEl && !chatThreads.length) listEl.innerHTML = '<div style="padding:20px;text-align:center;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:20px;height:20px;"></span></div>';
   const { data: bookings } = await sb.from('bookings')
     .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(id,name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(id,name,avatar_url)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
@@ -1196,7 +1200,9 @@ async function loadMsgsFor(otherId) {
 function renderChatList() {
   const el = document.getElementById('chat-list-items');
   if (!chatThreads.length) {
-    el.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted);font-size:12px;">予約するとチャットが始まります</div>';
+    el.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted);font-size:12px;"><div style="display:flex;justify-content:center;margin-bottom:8px;"><i data-lucide="message-circle" style="width:24px;height:24px;"></i></div>先生を予約するとチャットが始まります<br><a href="#" onclick="showPage(\'explore\')" style="color:var(--accent);font-weight:500;">先生を探す →</a></div>';
+    document.getElementById('chat-msgs').innerHTML = '<div style="margin:auto;text-align:center;color:var(--muted);font-size:12px;"><i data-lucide="message-circle" style="width:24px;height:24px;display:block;margin:0 auto 8px;"></i>チャット相手を選択してください</div>';
+    refreshIcons();
     return;
   }
   el.innerHTML = chatThreads.map((t,i) => {
@@ -1295,6 +1301,7 @@ function subscribeRealtimeMessages() {
 async function renderMatching() {
   const el = document.getElementById('matching-list');
   if (!currentUser) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div style="text-align:center;padding:40px 0;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:24px;height:24px;"></span></div>';
   const { data } = await sb.from('bookings')
     .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(name,avatar_url)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
@@ -1317,7 +1324,7 @@ async function renderMatching() {
     const dtStr = dt ? `${dt.getMonth()+1}/${dt.getDate()} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}〜` : '日時未定';
     return `<div style="background:white;border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-        <div><p style="font-weight:700;font-size:15px;">${b.skills?.subject || 'セッション'}</p><p style="font-size:12px;color:var(--muted);margin-top:2px;">${amStudent?'先生':'生徒'}: ${other?.name || '名前未設定'}</p></div>
+        <div><p style="font-weight:700;font-size:15px;">${escapeHtml(b.skills?.subject || 'セッション')}</p><p style="font-size:12px;color:var(--muted);margin-top:2px;">${amStudent?'先生':'生徒'}: ${escapeHtml(other?.name || '名前未設定')}</p></div>
         <span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;color:${s.color};background:${s.bg};">${s.label}</span>
       </div>
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:#555;">
@@ -1462,21 +1469,22 @@ function renderPaySummary() {
   const total = payCart.amount + payCart.fee;
   const subject = selTeacher ? selTeacher.subject : '';
   el.innerHTML = `
-    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>サービス</span><span>${subject || 'セッション'}</span></div>
-    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>先生</span><span>${payCart.teacher_name}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>サービス</span><span>${escapeHtml(subject || 'セッション')}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>先生</span><span>${escapeHtml(payCart.teacher_name)}</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>セッション料金</span><span>¥${payCart.amount.toLocaleString()}</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>手数料 (5%)</span><span>¥${payCart.fee.toLocaleString()}</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;font-weight:700;"><span>合計</span><span style="color:var(--accent);">¥${total.toLocaleString()}</span></div>`;
   const btn = document.getElementById('btn-pay');
   if (btn) { btn.innerHTML = `¥${total.toLocaleString()} を支払う`; refreshIcons(); }
   const doneMsg = document.getElementById('pay-done-msg');
-  if (doneMsg) doneMsg.innerHTML = `${payCart.teacher_name}先生へ ¥${payCart.amount.toLocaleString()} が預託されました。<br>セッション後に自動で送金されます。`;
+  if (doneMsg) doneMsg.innerHTML = `${escapeHtml(payCart.teacher_name)}先生へ ¥${payCart.amount.toLocaleString()} が預託されました。<br>セッション後に自動で送金されます。`;
 }
 
 function proceedToPayment() {
   if (selTeacher) {
     const price = selTeacher.price || 2000;
     const fee = Math.round(price * 0.05);
+    const existingBookingId = payCart.booking_id || null;
     payCart = {
       teacher_name: selTeacher.name,
       teacher_id: selTeacher.db_user_id || null,
@@ -1484,6 +1492,7 @@ function proceedToPayment() {
       scheduled_at: selSlot,
       amount: price,
       fee: fee,
+      booking_id: existingBookingId,
     };
   }
   closeModal();
