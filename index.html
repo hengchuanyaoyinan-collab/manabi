@@ -925,9 +925,10 @@ function showPage(id) {
 }
 
 function makeCard(t) {
-  const avInner = t.avatar_url
-    ? `<img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-    : t.avatar;
+  const safeAv = safeImgUrl(t.avatar_url);
+  const avInner = safeAv
+    ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    : escapeHtml(t.avatar);
   const sampleBadge = !t.db_skill_id ? '<span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:white;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">サンプル</span>' : '';
   return `<div class="card" onclick="openModal(${t.id})" style="position:relative;">
     ${sampleBadge}
@@ -1095,9 +1096,10 @@ function renderMap() {
     const lng = t._mapLng;
     if (!subjectColors[t.subject]) subjectColors[t.subject] = colorPalette[ci++ % colorPalette.length];
     const color = subjectColors[t.subject];
-    const initials = t.avatar_url ? '' : (t.avatar || t.name.substring(0,2));
-    const iconHtml = t.avatar_url
-      ? `<div style="width:36px;height:36px;border-radius:50%;border:3px solid ${color};box-shadow:0 2px 8px rgba(0,0,0,.2);overflow:hidden;background:white;"><img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;"></div>`
+    const safeMarkerAv = safeImgUrl(t.avatar_url);
+    const initials = safeMarkerAv ? '' : escapeHtml(t.avatar || t.name.substring(0,2));
+    const iconHtml = safeMarkerAv
+      ? `<div style="width:36px;height:36px;border-radius:50%;border:3px solid ${color};box-shadow:0 2px 8px rgba(0,0,0,.2);overflow:hidden;background:white;"><img src="${escapeHtml(safeMarkerAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;"></div>`
       : `<div style="width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.2);background:${color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;">${initials}</div>`;
     const icon = L.divIcon({ html: iconHtml, className: '', iconSize: [36,36], iconAnchor: [18,18] });
     const marker = L.marker([lat, lng], { icon }).addTo(leafletMap);
@@ -1238,7 +1240,8 @@ function renderChatList() {
     const o = t.other;
     const last = (chatMsgs[o.id] || []).slice(-1)[0];
     const preview = last ? last.content : 'メッセージはまだありません';
-    const av = o.avatar_url ? `<img src="${escapeHtml(o.avatar_url)}" alt="${escapeHtml(o.name||'')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : escapeHtml((o.name || '?').substring(0,2).toUpperCase());
+    const safeChatAv = safeImgUrl(o.avatar_url);
+    const av = safeChatAv ? `<img src="${escapeHtml(safeChatAv)}" alt="${escapeHtml(o.name||'')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : escapeHtml((o.name || '?').substring(0,2).toUpperCase());
     return `<div class="chat-item${i===curChat?' active':''}" onclick="renderChat(${i})">
       <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${av}</div>
       <div style="flex:1;min-width:0;">
@@ -1260,7 +1263,8 @@ function renderChat(idx) {
   }
   const o = t.other;
   const av = document.getElementById('chat-av');
-  if (o.avatar_url) av.innerHTML = `<img src="${escapeHtml(o.avatar_url)}" alt="${escapeHtml(o.name||'')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  const safeChatHeaderAv = safeImgUrl(o.avatar_url);
+  if (safeChatHeaderAv) av.innerHTML = `<img src="${escapeHtml(safeChatHeaderAv)}" alt="${escapeHtml(o.name||'')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
   else { av.textContent = (o.name || '?').substring(0,2).toUpperCase(); av.style.background = 'linear-gradient(135deg,var(--accent),#9575CD)'; av.style.color = 'white'; }
   document.getElementById('chat-name').textContent = o.name || '名前未設定';
   document.getElementById('chat-status').textContent = (t.bookings[0]?.status === 'confirmed') ? '予約確定済み' : '予約あり';
@@ -1591,7 +1595,7 @@ function renderModal() {
     const verified = t.db_skill_id ? '<span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--green);background:var(--green-light);padding:2px 8px;border-radius:6px;margin-top:4px;"><i data-lucide="badge-check" style="width:12px;height:12px;"></i>認証済み</span>' : '';
     const tagsHtml = t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>` : '';
     html = `<div style="display:flex;gap:16px;margin-bottom:18px;">
-      <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;">${t.avatar_url ? `<img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : t.avatar}</div>
+      <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;">${safeImgUrl(t.avatar_url) ? `<img src="${escapeHtml(safeImgUrl(t.avatar_url))}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;">` : escapeHtml(t.avatar)}</div>
       <div><h2 style="font-size:20px;margin-bottom:2px;">${escapeHtml(t.name)}</h2><p style="font-size:13px;color:var(--muted);">${escapeHtml(t.subject)}</p><div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><span style="color:var(--gold);">★</span><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div>${verified}</div>
     </div>
     <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px;">${escapeHtml(t.bio)}</p>
