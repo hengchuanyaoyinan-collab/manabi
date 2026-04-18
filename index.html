@@ -106,8 +106,12 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
   .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:white;flex-direction:column;padding:8px 16px 14px;border-bottom:1px solid var(--light);box-shadow:0 8px 24px rgba(0,0,0,.1);gap:2px;}
   .nav-links.open{display:flex;}
   .nav-links .nav-btn{text-align:left;padding:10px 14px;font-size:13px;border-radius:10px;}
-  nav{flex-wrap:wrap;gap:8px;}
-  nav>div:last-child{order:2;}
+  nav{padding:10px 14px;gap:6px;}
+  .logo{font-size:16px;gap:6px;}
+  .logo-icon{width:26px;height:26px;font-size:13px;}
+  .hamburger{padding:4px 6px;font-size:20px;margin-left:auto;}
+  nav>div:last-child{gap:5px !important;}
+  nav>div:last-child button[onclick="doLogout()"]{display:none;}
   .cards-grid{grid-template-columns:1fr;}
 }
 </style>
