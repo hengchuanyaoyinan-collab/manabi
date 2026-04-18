@@ -2,8 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>manabi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="manabi — 誰でも先生になれる、誰でも生徒になれる。スキルを教え合うマーケットプレイス。">
+<meta name="theme-color" content="#2D2D2D">
+<meta property="og:title" content="manabi — 学びをシェアする">
+<meta property="og:description" content="身近な人から学べる、教えられる。スキルのマーケットプレイス。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232D2D2D'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+<title>manabi — スキルのマーケットプレイス</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
@@ -208,7 +214,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 <div class="page active" id="home">
   <section style="background:linear-gradient(135deg,#2D2D2D,#4A4A4A);padding:48px 24px;text-align:center;margin:-24px -24px 36px;border-radius:0 0 20px 20px;">
     <p style="color:#C8C4BC;font-size:12px;letter-spacing:.1em;margin-bottom:10px;">あなたにぴったりの先生を見つけよう</p>
-    <h1 style="font-family:'Playfair Display',serif;color:white;font-size:32px;line-height:1.2;margin-bottom:20px;">学びを、もっと<br>パーソナルに。</h1>
+    <h1 style="color:white;font-size:32px;line-height:1.2;margin-bottom:20px;">学びを、もっと<br>パーソナルに。</h1>
     <div style="display:flex;max-width:460px;margin:0 auto;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.2);">
       <input type="text" placeholder="科目・キーワードで検索..." style="flex:1;padding:13px 16px;border:none;font-size:13px;font-family:inherit;outline:none;" oninput="document.getElementById('explore-search').value=this.value">
       <button class="btn btn-dark" style="border-radius:0;padding:13px 18px;" onclick="showPage('explore')">🔍</button>
@@ -318,6 +324,17 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
       </div>
       <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">活動エリア</label><input class="form-input" id="reg-area" placeholder="例：東京・オンライン可"></div>
     </div>
+    <div style="margin-bottom:14px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">対応曜日</label>
+      <div id="reg-days" style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button type="button" class="pill-sm" onclick="this.classList.toggle('active')">月</button>
+        <button type="button" class="pill-sm" onclick="this.classList.toggle('active')">火</button>
+        <button type="button" class="pill-sm" onclick="this.classList.toggle('active')">水</button>
+        <button type="button" class="pill-sm" onclick="this.classList.toggle('active')">木</button>
+        <button type="button" class="pill-sm" onclick="this.classList.toggle('active')">金</button>
+        <button type="button" class="pill-sm" onclick="this.classList.toggle('active')">土</button>
+        <button type="button" class="pill-sm" onclick="this.classList.toggle('active')">日</button>
+      </div>
+    </div>
     <div style="margin-bottom:20px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">タグ（カンマ区切り）</label><input class="form-input" id="reg-tags" placeholder="例：初心者歓迎, オンライン可, 週末対応"></div>
     <button class="btn btn-dark" id="reg-btn" style="width:100%;padding:14px;font-size:14px;" onclick="submitSkill()">登録する</button>
     <div id="reg-ok" class="msg-box msg-success" style="margin-top:12px;margin-bottom:0;">✅ 登録が完了しました！スキルが公開されました。</div>
@@ -407,7 +424,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
   <div class="pay-panel" id="pp3">
     <div style="background:white;border-radius:20px;padding:40px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--light);">
       <div style="font-size:52px;margin-bottom:14px;">🎉</div>
-      <h3 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px;">支払い完了！</h3>
+      <h3 style="font-size:22px;margin-bottom:8px;">支払い完了！</h3>
       <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.8;" id="pay-done-msg">先生へ料金が預託されました。<br>セッション後に自動で送金されます。</p>
       <div style="background:var(--bg);border-radius:12px;padding:16px;border:1px solid var(--light);text-align:left;margin-bottom:24px;">
         <p style="font-size:11px;color:var(--muted);margin-bottom:3px;">取引ID</p>
@@ -430,7 +447,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
       <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="uploadAvatar(this)">
     </div>
     <div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;" id="prof-name">読み込み中...</h2>
+      <h2 style="font-size:22px;margin-bottom:4px;" id="prof-name">読み込み中...</h2>
       <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="prof-email"></p>
       <div style="display:inline-flex;align-items:center;gap:7px;background:var(--green-light);padding:6px 13px;border-radius:12px;border:1px solid #A5D6A7;">
         <span style="font-size:20px;font-weight:900;color:var(--green);" id="prof-score">0</span>
@@ -448,15 +465,16 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <button class="btn btn-dark" id="btn-save-prof" style="width:100%;padding:13px;" onclick="saveProfile()">保存する</button>
     <div id="prof-saved" class="msg-box msg-success" style="margin-top:12px;margin-bottom:0;">✅ 保存しました！</div>
   </div>
+  <button onclick="doLogout()" style="width:100%;margin-top:16px;padding:14px;background:transparent;border:1.5px solid var(--border);border-radius:12px;color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">ログアウト</button>
 </div>
 
 <!-- DASHBOARD -->
 <div class="page" id="dashboard">
   <h2 class="section-title">ダッシュボード</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:28px;">
-    <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="font-size:24px;margin-bottom:6px;">💴</div><div style="font-size:22px;font-weight:900;margin-bottom:3px;">¥0</div><div style="font-size:11px;color:var(--muted);">今月の収益</div></div>
+    <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="font-size:24px;margin-bottom:6px;">💴</div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-earned">¥0</div><div style="font-size:11px;color:var(--muted);">今月の収益</div></div>
     <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="font-size:24px;margin-bottom:6px;">🎓</div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-taught">0</div><div style="font-size:11px;color:var(--muted);">教えた回数</div></div>
-    <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="font-size:24px;margin-bottom:6px;">📖</div><div style="font-size:22px;font-weight:900;margin-bottom:3px;">0</div><div style="font-size:11px;color:var(--muted);">学んだ回数</div></div>
+    <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="font-size:24px;margin-bottom:6px;">📖</div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-learned">0</div><div style="font-size:11px;color:var(--muted);">学んだ回数</div></div>
     <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="font-size:24px;margin-bottom:6px;">🔥</div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-score">0</div><div style="font-size:11px;color:var(--muted);">信用スコア</div></div>
   </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;">登録済みスキル</h3>
@@ -529,6 +547,25 @@ async function loadProfile() {
     await sb.from('profiles').insert({ id: currentUser.id, name: '', score: 0 });
   }
   loadMySkills();
+  loadDashboardStats();
+}
+
+async function loadDashboardStats() {
+  if (!currentUser) return;
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const [taughtRes, learnedRes, paidRes] = await Promise.all([
+    sb.from('bookings').select('id', { count: 'exact', head: true }).eq('teacher_id', currentUser.id).eq('status', 'confirmed'),
+    sb.from('bookings').select('id', { count: 'exact', head: true }).eq('student_id', currentUser.id).eq('status', 'confirmed'),
+    sb.from('payments').select('amount, booking_id, bookings!inner(teacher_id)').eq('status', 'paid').eq('bookings.teacher_id', currentUser.id).gte('created_at', monthStart),
+  ]);
+  const earned = (paidRes.data || []).reduce((s, p) => s + (p.amount || 0), 0);
+  const taught = document.getElementById('dash-taught');
+  const learned = document.getElementById('dash-learned');
+  const earnedEl = document.getElementById('dash-earned');
+  if (taught) taught.textContent = taughtRes.count || 0;
+  if (learned) learned.textContent = learnedRes.count || 0;
+  if (earnedEl) earnedEl.textContent = '¥' + earned.toLocaleString();
 }
 
 // AUTH
@@ -649,11 +686,13 @@ async function submitSkill() {
   if (!skill || !cat) { alert('スキルとカテゴリを入力してください'); return; }
   const btn = document.getElementById('reg-btn');
   btn.innerHTML = '<span class="spinner"></span>登録中...'; btn.disabled = true;
+  const selDays = Array.from(document.querySelectorAll('#reg-days .pill-sm.active')).map(b => b.textContent);
   const { error } = await sb.from('skills').insert({
     user_id: currentUser.id, subject: cat, description: skill,
     price_min: parseInt(document.getElementById('reg-min').value) || 0,
     price_max: parseInt(document.getElementById('reg-max').value) || 0,
     area: document.getElementById('reg-area').value,
+    available_days: selDays.length ? selDays : null,
     tags: document.getElementById('reg-tags').value.split(',').map(t => t.trim()).filter(Boolean),
   });
   btn.innerHTML = '登録する'; btn.disabled = false;
@@ -746,7 +785,9 @@ function makeCard(t) {
   const avInner = t.avatar_url
     ? `<img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
     : t.avatar;
-  return `<div class="card" onclick="openModal(${t.id})">
+  const sampleBadge = !t.db_skill_id ? '<span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:white;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">サンプル</span>' : '';
+  return `<div class="card" onclick="openModal(${t.id})" style="position:relative;">
+    ${sampleBadge}
     <div style="height:70px;background:${t.color};display:flex;align-items:center;justify-content:center;">
       <div style="width:50px;height:50px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;">${avInner}</div>
     </div>
@@ -763,14 +804,25 @@ function makeCard(t) {
   </div>`;
 }
 
-function renderHome() { document.getElementById('home-cards').innerHTML = teachers.slice(0,4).map(makeCard).join(''); }
+function visibleTeachers() {
+  const real = teachers.filter(t => t.db_skill_id);
+  return real.length ? real : teachers;
+}
+
+function renderHome() {
+  const list = visibleTeachers().slice(0, 4);
+  document.getElementById('home-cards').innerHTML = list.length
+    ? list.map(makeCard).join('')
+    : '<div style="text-align:center;padding:40px 0;color:var(--muted);grid-column:1/-1;"><p style="font-size:32px;margin-bottom:10px;">🎓</p><p style="font-size:13px;">まだ先生がいません。<br>一番乗りでスキルを出品しませんか？</p></div>';
+}
 
 function renderExplore() {
-  const q = document.getElementById('explore-search')?.value || '';
-  const list = teachers.filter(t =>
+  const q = (document.getElementById('explore-search')?.value || '').toLowerCase();
+  const base = visibleTeachers();
+  const list = base.filter(t =>
     (curSubj === 'すべて' || t.subject === curSubj) &&
     (!curDay || t.available.includes(curDay)) &&
-    (!q || t.name.includes(q) || t.subject.includes(q) || t.tags.some(g => g.includes(q)))
+    (!q || t.name.toLowerCase().includes(q) || t.subject.toLowerCase().includes(q) || t.bio.toLowerCase().includes(q) || t.tags.some(g => g.toLowerCase().includes(q)))
   );
   document.getElementById('explore-cards').innerHTML = list.length
     ? list.map(makeCard).join('')
@@ -825,7 +877,7 @@ function renderMap() {
       <div class="pin-circle" style="background:${p.color};">${p.avatar}</div>
       <div class="pin-label">${p.name}</div>
     </div>`).join('');
-  document.getElementById('map-cards').innerHTML = teachers.slice(0,6).map(makeCard).join('');
+  document.getElementById('map-cards').innerHTML = visibleTeachers().slice(0,6).map(makeCard).join('');
 }
 function showMapPopup(i) {
   const p = mapPins[i];
@@ -915,6 +967,7 @@ async function startStripeCheckout() {
         teacher_name: payCart.teacher_name,
         teacher_id: payCart.teacher_id,
         skill_id: payCart.skill_id,
+        scheduled_at: payCart.scheduled_at,
         amount: payCart.amount,
         fee: payCart.fee,
       },
@@ -974,7 +1027,30 @@ function renderPayMethods() {
     </div>`).join('');
 }
 
-let selTeacher = null, bookStep = 0;
+let selTeacher = null, bookStep = 0, selSlot = null;
+
+function generateSlots(availableDays) {
+  const dayMap = {'日':0,'月':1,'火':2,'水':3,'木':4,'金':5,'土':6};
+  const dayLabels = ['日','月','火','水','木','金','土'];
+  const hours = [10, 14, 19];
+  const out = [];
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  for (let i = 1; i <= 21 && out.length < 12; i++) {
+    const d = new Date(now); d.setDate(d.getDate() + i);
+    const dow = d.getDay();
+    if (!availableDays.includes(dayLabels[dow])) continue;
+    for (const h of hours) {
+      const slot = new Date(d); slot.setHours(h, 0, 0, 0);
+      out.push({
+        iso: slot.toISOString(),
+        label: `${slot.getMonth()+1}/${slot.getDate()} (${dayLabels[dow]}) ${String(h).padStart(2,'0')}:00`,
+      });
+      if (out.length >= 12) break;
+    }
+  }
+  return out;
+}
 function openModal(id) {
   selTeacher = teachers.find(t => t.id === id);
   bookStep = 0; renderModal();
@@ -1007,6 +1083,7 @@ function proceedToPayment() {
       teacher_name: selTeacher.name,
       teacher_id: selTeacher.db_user_id || null,
       skill_id: selTeacher.db_skill_id || null,
+      scheduled_at: selSlot,
       amount: price,
       fee: fee,
     };
@@ -1022,7 +1099,7 @@ function renderModal() {
   if (bookStep === 0) {
     html = `<div style="display:flex;gap:16px;margin-bottom:18px;">
       <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;">${t.avatar_url ? `<img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : t.avatar}</div>
-      <div><h2 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:2px;">${t.name}</h2><p style="font-size:13px;color:var(--muted);">${t.subject}</p><div style="display:flex;align-items:center;gap:3px;margin-top:4px;"><span style="color:var(--gold);">★</span><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div></div>
+      <div><h2 style="font-size:20px;margin-bottom:2px;">${t.name}</h2><p style="font-size:13px;color:var(--muted);">${t.subject}</p><div style="display:flex;align-items:center;gap:3px;margin-top:4px;"><span style="color:var(--gold);">★</span><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div></div>
     </div>
     <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px;">${t.bio}</p>
     <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:20px;">
@@ -1031,17 +1108,18 @@ function renderModal() {
     </div>
     <div style="display:flex;gap:10px;"><button class="btn btn-outline" onclick="closeModal()" style="flex:1;">閉じる</button><button class="btn btn-dark" onclick="bookStep=1;renderModal();" style="flex:2;">予約する</button></div>`;
   } else if (bookStep === 1) {
-    html = `<h2 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:6px;">日程を選択</h2>
+    const slots = generateSlots(t.available);
+    html = `<h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">日程を選択</h2>
     <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">${t.name}先生の空き時間</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-      ${['4/12 (土) 10:00','4/12 (土) 14:00','4/13 (日) 11:00','4/15 (火) 19:00'].map(s =>
-        `<button onclick="bookStep=2;renderModal();" style="padding:12px;border:1.5px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;">${s}</button>`).join('')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;max-height:320px;overflow-y:auto;">
+      ${slots.map(s =>
+        `<button onclick="selSlot='${s.iso}';bookStep=2;renderModal();" style="padding:12px;border:1.5px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${s.label}</button>`).join('')}
     </div>
     <button class="btn btn-outline" onclick="bookStep=0;renderModal();" style="width:100%;">戻る</button>`;
   } else {
     html = `<div style="text-align:center;padding:20px 0;">
       <div style="font-size:52px;margin-bottom:14px;">🎉</div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px;">予約が完了しました！</h2>
+      <h2 style="font-size:22px;margin-bottom:8px;">予約が完了しました！</h2>
       <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.8;">${t.name}先生との授業が予約されました。</p>
       <button class="btn btn-dark" onclick="proceedToPayment();" style="width:100%;padding:14px;">支払いへ進む</button>
     </div>`;
