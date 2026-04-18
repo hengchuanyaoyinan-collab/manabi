@@ -8,6 +8,8 @@
 <meta property="og:title" content="manabi — 学びをシェアする">
 <meta property="og:description" content="身近な人から学べる、教えられる。スキルのマーケットプレイス。">
 <meta property="og:type" content="website">
+<meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%232D2D2D'/%3E%3Ctext x='600' y='340' font-size='120' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='800'%3Emanabi%3C/text%3E%3Ctext x='600' y='420' font-size='36' text-anchor='middle' fill='%23C8C4BC' font-family='sans-serif'%3E学びをシェアするマーケットプレイス%3C/text%3E%3C/svg%3E">
+<meta name="robots" content="index, follow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232D2D2D'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <title>manabi — スキルのマーケットプレイス</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1320,7 +1322,7 @@ async function renderMatching() {
   if (!currentUser) { el.innerHTML = ''; return; }
   el.innerHTML = '<div style="text-align:center;padding:40px 0;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:24px;height:24px;"></span></div>';
   const { data } = await sb.from('bookings')
-    .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(name,avatar_url)')
+    .select('id, student_id, teacher_id, skill_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(name,avatar_url)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
     .order('created_at', { ascending: false }).limit(20);
   if (!data || !data.length) {
@@ -1504,6 +1506,11 @@ function closeModal() { document.getElementById('modal').classList.remove('open'
 function renderPaySummary() {
   const el = document.getElementById('pay-summary');
   if (!el) return;
+  if (!payCart.amount && !payCart.teacher_name) {
+    el.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;"><i data-lucide="info" style="width:20px;height:20px;display:block;margin:0 auto 8px;"></i>先生を予約すると決済情報が表示されます。<br><a href="#" onclick="showPage(\'explore\')" style="color:var(--accent);font-weight:500;">先生を探す →</a></div>';
+    refreshIcons();
+    return;
+  }
   const total = payCart.amount + payCart.fee;
   const subject = selTeacher ? selTeacher.subject : '';
   el.innerHTML = `
