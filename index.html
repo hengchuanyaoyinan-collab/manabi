@@ -444,7 +444,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-outline" onclick="goPayStep(1)">← 戻る</button>
-      <button class="btn btn-dark" id="btn-pay" style="flex:1;padding:14px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="startStripeCheckout()">¥2,100 を支払う <i data-lucide="lock" style="width:14px;height:14px;"></i></button>
+      <button class="btn btn-dark" id="btn-pay" style="flex:1;padding:14px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="startStripeCheckout()">支払う <i data-lucide="lock" style="width:14px;height:14px;"></i></button>
     </div>
   </div>
   <div class="pay-panel" id="pp3">
@@ -1547,7 +1547,7 @@ function renderPaySummary() {
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>手数料 (5%)</span><span>¥${payCart.fee.toLocaleString()}</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;font-weight:700;"><span>合計</span><span style="color:var(--accent);">¥${total.toLocaleString()}</span></div>`;
   const btn = document.getElementById('btn-pay');
-  if (btn) { btn.innerHTML = `¥${total.toLocaleString()} を支払う`; refreshIcons(); }
+  if (btn) { btn.innerHTML = `¥${total.toLocaleString()} を支払う <i data-lucide="lock" style="width:14px;height:14px;"></i>`; refreshIcons(); }
   const doneMsg = document.getElementById('pay-done-msg');
   if (doneMsg) doneMsg.innerHTML = `${escapeHtml(payCart.teacher_name)}先生へ ¥${payCart.amount.toLocaleString()} が預託されました。<br>セッション後に自動で送金されます。`;
 }
