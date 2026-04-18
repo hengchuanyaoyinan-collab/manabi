@@ -50,13 +50,13 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 /* BUTTONS */
 .btn{padding:12px 28px;border-radius:12px;border:none;cursor:pointer;font-size:14px;font-family:inherit;transition:all .15s;font-weight:600;letter-spacing:.01em;}
 .btn-dark{background:var(--primary);color:white;}
-.btn-dark:hover{background:#D63E4A;transform:translateY(-1px);}
+.btn-dark:hover{background:var(--mid);transform:translateY(-1px);}
 .btn-dark:active{transform:translateY(0);}
 .btn-dark:disabled{background:#DDD;color:#AAA;cursor:not-allowed;transform:none;}
 .btn-outline{background:transparent;color:var(--dark);border:1.5px solid var(--border);}
 .btn-outline:hover{border-color:var(--dark);background:var(--lighter);}
 .btn-accent{background:var(--accent);color:white;}
-.btn-accent:hover{background:#3DBEB5;}
+.btn-accent:hover{background:#3F51B5;}
 /* CARDS */
 .card{background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
 .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
@@ -68,9 +68,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 .pill-sm:hover,.pill-sm.active{background:var(--primary);color:white;border-color:var(--primary);}
 /* FORM */
 .form-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;transition:all .2s;background:white;}
-.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(232,72,85,.08);}
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(45,45,45,.06);}
 /* AI */
-.ai-panel{background:linear-gradient(135deg,#FFF0F1,#E8FAF8);border:1px solid #F0D0D3;border-radius:16px;padding:20px;margin-bottom:20px;}
+.ai-panel{background:linear-gradient(135deg,var(--accent-light),#E8F5E9);border:1px solid #C5CAE9;border-radius:16px;padding:20px;margin-bottom:20px;}
 .ai-dot{width:5px;height:5px;border-radius:50%;background:var(--primary);display:inline-block;animation:abounce 1s infinite;}
 .ai-dot:nth-child(2){animation-delay:.2s;}.ai-dot:nth-child(3){animation-delay:.4s;}
 @keyframes abounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
@@ -158,7 +158,6 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
       <button class="btn btn-dark" id="btn-login" style="width:100%;padding:13px;font-size:14px;" onclick="doLogin()">ログイン</button>
       <div style="display:flex;align-items:center;gap:8px;margin:14px 0;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="font-size:11px;color:var(--muted);">または</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
       <button onclick="doGoogle()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;">🔵 Googleでログイン</button>
-      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px;">デモ：test@manabi.com / password123</p>
     </div>
     <!-- SIGNUP -->
     <div id="tab-signup" style="display:none;">
@@ -219,7 +218,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
       <input type="text" placeholder="科目・キーワードで検索..." style="flex:1;padding:13px 16px;border:none;font-size:13px;font-family:inherit;outline:none;" oninput="document.getElementById('explore-search').value=this.value">
       <button class="btn btn-dark" style="border-radius:0;padding:13px 18px;" onclick="showPage('explore')">🔍</button>
     </div>
-    <p style="color:#9A9690;font-size:11px;margin-top:12px;">登録教師数 <strong style="color:#C8C4BC;">1,240名</strong>　·　累計授業数 <strong style="color:#C8C4BC;">32,000回</strong></p>
+    <p style="color:#9A9690;font-size:11px;margin-top:12px;">登録教師数 <strong style="color:#C8C4BC;" id="hero-teacher-count">--</strong>　·　累計授業数 <strong style="color:#C8C4BC;" id="hero-session-count">--</strong></p>
   </section>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:32px;">
     <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="font-size:24px;margin-bottom:7px;">🎯</div><div style="font-weight:700;font-size:13px;margin-bottom:4px;">即時マッチング</div><div style="font-size:11px;color:var(--muted);line-height:1.5;">クラブ不要。今すぐつながる。</div></div>
@@ -488,6 +487,9 @@ sb.auth.onAuthStateChange(async (event, session) => {
     document.getElementById('auth-screen').style.display = 'none';
     updateNavUser();
     await loadProfile();
+    await loadSkillsFromDB();
+    loadHeroStats();
+    subscribeRealtimeMessages();
   } else {
     currentUser = null;
     document.getElementById('auth-screen').style.display = 'flex';
@@ -1112,11 +1114,12 @@ function handlePaymentReturn() {
   history.replaceState({}, '', window.location.pathname);
 }
 function renderPayMethods() {
-  const ms = [['card','💳','クレジットカード'],['paypay','📱','PayPay'],['bank','🏦','銀行振込'],['apple','🍎','Apple Pay']];
-  document.getElementById('pay-methods').innerHTML = ms.map(([v,ic,lb]) =>
-    `<div onclick="curPay='${v}';renderPayMethods();" style="border:2px solid ${curPay===v?'var(--accent)':'var(--border)'};border-radius:12px;padding:13px;text-align:center;cursor:pointer;background:${curPay===v?'var(--accent-light)':'white'};">
-      <div style="font-size:22px;margin-bottom:5px;">${ic}</div><div style="font-size:12px;font-weight:600;">${lb}</div>
-    </div>`).join('');
+  document.getElementById('pay-methods').innerHTML = `
+    <div style="grid-column:1/-1;border:2px solid var(--accent);border-radius:12px;padding:16px;text-align:center;background:var(--accent-light);">
+      <div style="font-size:28px;margin-bottom:6px;">💳</div>
+      <div style="font-size:13px;font-weight:600;">クレジットカード / デビットカード</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">Visa, Mastercard, AMEX, JCB</div>
+    </div>`;
 }
 
 let selTeacher = null, bookStep = 0, selSlot = null;
@@ -1220,6 +1223,17 @@ function renderModal() {
   document.getElementById('modal-body').innerHTML = html;
 }
 
+async function loadHeroStats() {
+  const [skillsRes, bookingsRes] = await Promise.all([
+    sb.from('skills').select('id', { count: 'exact', head: true }),
+    sb.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
+  ]);
+  const tc = document.getElementById('hero-teacher-count');
+  const sc = document.getElementById('hero-session-count');
+  if (tc) tc.textContent = (skillsRes.count || 0) + '名';
+  if (sc) sc.textContent = (bookingsRes.count || 0) + '回';
+}
+
 // ── LOAD SKILLS FROM SUPABASE ──
 async function loadSkillsFromDB() {
   try {
@@ -1258,15 +1272,6 @@ renderAiChips();
 renderNotifs();
 handlePaymentReturn();
 
-sb.auth.onAuthStateChange(async (event, session) => {
-  if (session) {
-    currentUser = session.user;
-    updateNavUser();
-    await loadProfile();
-    await loadSkillsFromDB();
-    subscribeRealtimeMessages();
-  }
-});
 </script>
 </body>
 </html>

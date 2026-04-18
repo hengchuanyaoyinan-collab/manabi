@@ -22,7 +22,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY')!;
 const STRIPE_PRICE_PRODUCT_ID = Deno.env.get('STRIPE_PRICE_PRODUCT_ID')!;
-const PUBLIC_SITE_URL = Deno.env.get('PUBLIC_SITE_URL') ?? 'http://localhost:5173';
+const PUBLIC_SITE_URL = Deno.env.get('PUBLIC_SITE_URL') ?? '';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -54,6 +54,8 @@ Deno.serve(async (req) => {
     const { data: userData, error: userErr } = await userClient.auth.getUser(jwt);
     if (userErr || !userData?.user) return json({ error: 'invalid_token' }, 401);
     const user = userData.user;
+
+    const siteUrl = PUBLIC_SITE_URL || req.headers.get('origin') || 'https://manabi-bay.vercel.app';
 
     // --- 入力 ---
     const body = await req.json().catch(() => ({}));
@@ -116,8 +118,8 @@ Deno.serve(async (req) => {
         },
       ],
       customer_email: user.email ?? undefined,
-      success_url: `${PUBLIC_SITE_URL}?pay=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${PUBLIC_SITE_URL}?pay=cancel`,
+      success_url: `${siteUrl}?pay=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}?pay=cancel`,
       metadata: {
         booking_id: booking.id,
         payment_id: payment.id,
