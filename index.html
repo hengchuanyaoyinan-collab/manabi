@@ -657,6 +657,12 @@ async function doGoogle() {
 }
 
 async function doLogout() {
+  if (realtimeCh) { sb.removeChannel(realtimeCh); realtimeCh = null; }
+  notifsLoadedFromDB = false;
+  notifs = [];
+  chatThreads = [];
+  chatMsgs = {};
+  curChat = null;
   await sb.auth.signOut();
 }
 
@@ -1116,7 +1122,7 @@ function renderNotifs() {
   document.getElementById('notif-list').innerHTML = notifs.map((n,i) =>
     `<div onclick="readNotif(${i})" style="display:flex;gap:10px;padding:11px 16px;border-bottom:1px solid var(--light);cursor:pointer;background:${n.unread?'var(--bg)':'white'};">
       <div style="width:8px;height:8px;border-radius:50%;background:${n.color};flex-shrink:0;margin-top:5px;"></div>
-      <div><div style="font-size:12px;line-height:1.5;">${n.text}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">${n.time}</div></div>
+      <div><div style="font-size:12px;line-height:1.5;">${escapeHtml(n.text)}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">${escapeHtml(n.time)}</div></div>
     </div>`).join('');
   const c = notifs.filter(n => n.unread).length;
   const b = document.getElementById('notif-badge');
@@ -1213,8 +1219,8 @@ function renderChatList() {
     return `<div class="chat-item${i===curChat?' active':''}" onclick="renderChat(${i})">
       <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${av}</div>
       <div style="flex:1;min-width:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${o.name || '名前未設定'}</span></div>
-        <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${escapeHtml(o.name || '名前未設定')}</span></div>
+        <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(preview)}</p>
       </div>
     </div>`;
   }).join('');
