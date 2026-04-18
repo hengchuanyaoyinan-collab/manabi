@@ -483,6 +483,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <button class="btn btn-dark" id="btn-save-prof" style="width:100%;padding:13px;" onclick="saveProfile()">保存する</button>
     <div id="prof-saved" class="msg-box msg-success" style="margin-top:12px;margin-bottom:0;">保存しました！</div>
   </div>
+  <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-top:16px;">
+    <p style="font-weight:700;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><i data-lucide="star" style="width:16px;height:16px;color:var(--gold);"></i>受け取ったレビュー</p>
+    <div id="prof-reviews"><p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">レビューはまだありません</p></div>
+  </div>
   <button onclick="doLogout()" style="width:100%;margin-top:16px;padding:14px;background:transparent;border:1.5px solid var(--border);border-radius:12px;color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">ログアウト</button>
 </div>
 
@@ -762,12 +766,14 @@ async function loadDashboardReviews() {
     .eq('reviewee_id', currentUser.id)
     .order('created_at', { ascending: false }).limit(10);
   const el = document.getElementById('dash-reviews');
-  if (!el) return;
+  const profEl = document.getElementById('prof-reviews');
   if (!data || !data.length) {
-    el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">レビューはまだありません</p>';
+    const empty = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">レビューはまだありません</p>';
+    if (el) el.innerHTML = empty;
+    if (profEl) profEl.innerHTML = empty;
     return;
   }
-  el.innerHTML = data.map(r => {
+  const html = data.map(r => {
     const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
     const name = r.reviewer?.name || '匿名';
     const date = new Date(r.created_at);
@@ -787,6 +793,8 @@ async function loadDashboardReviews() {
       </div>
     </div>`;
   }).join('');
+  if (el) el.innerHTML = html;
+  if (profEl) profEl.innerHTML = html;
 }
 
 async function loadDashboardHistory() {
@@ -1328,7 +1336,7 @@ async function renderMatching() {
 
 function payForBooking(bookingId, teacherName, price, skillId) {
   const fee = Math.round(price * 0.05);
-  payCart = { teacher_name: teacherName, teacher_id: null, skill_id: skillId || null, scheduled_at: null, amount: price, fee: fee };
+  payCart = { teacher_name: teacherName, teacher_id: null, skill_id: skillId || null, scheduled_at: null, amount: price, fee: fee, booking_id: bookingId || null };
   showPage('payment');
   goPayStep(1);
   renderPaySummary();
@@ -1355,6 +1363,7 @@ async function startStripeCheckout() {
         scheduled_at: payCart.scheduled_at,
         amount: payCart.amount,
         fee: payCart.fee,
+        booking_id: payCart.booking_id || null,
       },
     });
     if (error) throw error;
@@ -1441,7 +1450,8 @@ function generateSlots(availableDays) {
 }
 function openModal(id) {
   selTeacher = teachers.find(t => t.id === id);
-  bookStep = 0; renderModal();
+  if (selTeacher) selTeacher._bookingCreated = false;
+  bookStep = 0; selSlot = null; renderModal();
   document.getElementById('modal').classList.add('open');
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }

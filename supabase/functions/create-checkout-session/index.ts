@@ -66,6 +66,7 @@ Deno.serve(async (req) => {
       amount,                      // 必須: 円 (整数)
       fee = 0,                     // 任意: 円 (整数)
       scheduled_at = null,         // 任意: ISO8601
+      booking_id = null,           // optional: existing booking id
     } = body ?? {};
 
     const totalYen = Math.round(Number(amount) + Number(fee));
@@ -76,24 +77,28 @@ Deno.serve(async (req) => {
     // --- service role で booking / payment を作成 ---
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    const { data: booking, error: bErr } = await admin
-      .from('bookings')
-      .insert({
-        student_id: user.id,
-        teacher_id,
-        skill_id,
-        price: totalYen,
-        scheduled_at,
-        status: 'pending',
-      })
-      .select('id')
-      .single();
-    if (bErr) return json({ error: 'booking_insert_failed', message: bErr.message }, 500);
+    let bookingId = booking_id;
+    if (!bookingId) {
+      const { data: booking, error: bErr } = await admin
+        .from('bookings')
+        .insert({
+          student_id: user.id,
+          teacher_id,
+          skill_id,
+          price: totalYen,
+          scheduled_at,
+          status: 'pending',
+        })
+        .select('id')
+        .single();
+      if (bErr) return json({ error: 'booking_insert_failed', message: bErr.message }, 500);
+      bookingId = booking.id;
+    }
 
     const { data: payment, error: pErr } = await admin
       .from('payments')
       .insert({
-        booking_id: booking.id,
+        booking_id: bookingId,
         amount: Number(amount),
         fee: Number(fee),
         currency: 'jpy',
@@ -121,7 +126,7 @@ Deno.serve(async (req) => {
       success_url: `${siteUrl}?pay=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}?pay=cancel`,
       metadata: {
-        booking_id: booking.id,
+        booking_id: bookingId,
         payment_id: payment.id,
         student_id: user.id,
         teacher_name,
@@ -133,7 +138,7 @@ Deno.serve(async (req) => {
       .update({ stripe_session_id: session.id, updated_at: new Date().toISOString() })
       .eq('id', payment.id);
 
-    return json({ url: session.url, session_id: session.id, booking_id: booking.id });
+    return json({ url: session.url, session_id: session.id, booking_id: bookingId });
   } catch (e) {
     console.error('create-checkout-session error', e);
     return json({ error: 'internal_error', message: String(e?.message ?? e) }, 500);
