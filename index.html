@@ -1034,9 +1034,9 @@ function formatAiResult(matches, query) {
   top.forEach((t, i) => {
     const stars = '★'.repeat(Math.floor(t.rating)) + (t.rating % 1 >= 0.5 ? '☆' : '');
     html += `<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--light);cursor:pointer;" onclick="openModal(${t.id})">`;
-    html += `<strong>${t.name}</strong>（${t.subject}）`;
+    html += `<strong>${escapeHtml(t.name)}</strong>（${escapeHtml(t.subject)}）`;
     html += `<br><span style="color:var(--gold);">${stars}</span> ${t.rating} · ¥${t.price.toLocaleString()}/50分`;
-    if (t.tags.length) html += `<br><span style="font-size:11px;color:var(--muted);">${t.tags.slice(0,3).join(' · ')}</span>`;
+    if (t.tags.length) html += `<br><span style="font-size:11px;color:var(--muted);">${t.tags.slice(0,3).map(g=>escapeHtml(g)).join(' · ')}</span>`;
     html += '</div>';
   });
   if (matches.length > 3) html += `<p style="font-size:11px;color:var(--muted);margin-top:4px;">他${matches.length - 3}名の先生も対応可能です</p>`;
@@ -1573,20 +1573,18 @@ function proceedToPayment() {
   renderPaySummary();
 }
 async function createBookingInDB(t) {
-  if (!currentUser || !t.db_user_id) return;
-  if (t.db_user_id === currentUser.id) return;
-  try {
-    const { data, error } = await sb.from('bookings').insert({
-      student_id: currentUser.id,
-      teacher_id: t.db_user_id,
-      skill_id: t.db_skill_id || null,
-      scheduled_at: selSlot || null,
-      price: t.price || 0,
-      status: 'pending',
-    }).select().single();
-    if (error) { console.error('Booking insert error:', error); return; }
-    payCart.booking_id = data.id;
-  } catch(e) { console.error('createBookingInDB error:', e); }
+  if (!currentUser || !t.db_user_id) throw new Error('ログインが必要です');
+  if (t.db_user_id === currentUser.id) throw new Error('自分のスキルは予約できません');
+  const { data, error } = await sb.from('bookings').insert({
+    student_id: currentUser.id,
+    teacher_id: t.db_user_id,
+    skill_id: t.db_skill_id || null,
+    scheduled_at: selSlot || null,
+    price: t.price || 0,
+    status: 'pending',
+  }).select().single();
+  if (error) throw new Error(error.message);
+  payCart.booking_id = data.id;
 }
 function renderModal() {
   const t = selTeacher; if (!t) return;
@@ -1628,6 +1626,15 @@ function renderModal() {
           <button class="btn btn-dark" onclick="proceedToPayment();" style="width:100%;padding:14px;">支払いへ進む</button>
         </div>`;
         addNotif({text:`${escapeHtml(t.name)}先生との予約が完了しました`, time:'たった今', unread:true, color:'var(--green)'});
+        refreshIcons();
+      }).catch(err => {
+        t._bookingCreated = false;
+        document.getElementById('modal-body').innerHTML = `<div style="text-align:center;padding:20px 0;">
+          <div style="color:var(--red);margin-bottom:14px;display:flex;justify-content:center;"><i data-lucide="alert-circle" style="width:52px;height:52px;"></i></div>
+          <h2 style="font-size:20px;margin-bottom:8px;">予約に失敗しました</h2>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">${escapeHtml(err.message)}</p>
+          <button class="btn btn-outline" onclick="closeModal()" style="width:100%;padding:14px;">閉じる</button>
+        </div>`;
         refreshIcons();
       });
       return;
