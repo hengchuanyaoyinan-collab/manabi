@@ -344,34 +344,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 
 <!-- MATCHING -->
 <div class="page" id="matching">
-  <h2 class="section-title">マッチング中</h2>
-  <div style="background:white;border-radius:20px;padding:24px;margin-bottom:16px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-      <div><p style="font-weight:700;font-size:15px;">🎸 ギター基礎レッスン</p><p style="font-size:12px;color:var(--muted);margin-top:2px;">田中 美咲 → あなた</p></div>
-      <span style="padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;color:var(--gold);background:#FFF8E1;">交渉中</span>
-    </div>
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-      <div style="background:var(--lighter);border-radius:12px;padding:10px 18px;text-align:center;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px;">先生の希望</label><input value="¥3,500" style="background:none;border:none;font-weight:700;font-size:15px;width:80px;text-align:center;font-family:inherit;outline:none;"></div>
-      <span style="font-size:18px;color:var(--muted);">⇄</span>
-      <div style="background:var(--lighter);border-radius:12px;padding:10px 18px;text-align:center;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px;">あなたの希望</label><input value="¥3,000" style="background:none;border:none;font-weight:700;font-size:15px;width:80px;text-align:center;font-family:inherit;outline:none;"></div>
-      <button class="btn btn-dark" onclick="openModal(1)">この金額で依頼</button>
-    </div>
-  </div>
-  <div style="background:white;border-radius:20px;padding:24px;margin-bottom:16px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-      <div><p style="font-weight:700;font-size:15px;">⚽ サッカー練習パートナー</p><p style="font-size:12px;color:var(--muted);margin-top:2px;">中村 拓海 → あなた</p></div>
-      <span style="padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;color:var(--green);background:var(--green-light);">確定済み</span>
-    </div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;font-size:12px;">
-      <span><span style="color:var(--muted);">日時：</span>4月15日 14:00〜</span>
-      <span><span style="color:var(--muted);">場所：</span>渋谷スポーツパーク</span>
-      <span><span style="color:var(--muted);">金額：</span><strong>¥2,000</strong></span>
-    </div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-accent" style="font-size:12px;padding:8px 16px;" onclick="showPage('payment')">支払いへ 💴</button>
-      <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;" onclick="showPage('chat')">チャット 💬</button>
-    </div>
-  </div>
+  <h2 class="section-title">予約・マッチング</h2>
+  <div id="matching-list"></div>
   <div style="text-align:center;margin-top:16px;"><button class="btn btn-outline" onclick="showPage('explore')">新しい先生を探す</button></div>
 </div>
 
@@ -740,11 +714,9 @@ const mapPins = [
   {name:"中村 拓海",subject:"サッカー",price:"¥2,000〜",score:"★ 4.6",x:"20%",y:"65%",color:"#B7E8D5",avatar:"NT"},
   {name:"小林 美咲",subject:"ヨガ",price:"¥2,500〜",score:"★ 4.8",x:"62%",y:"72%",color:"#E8D5E0",avatar:"KM"},
 ];
-const chatData = [
-  {name:"田中 美咲",avatar:"TM",color:"#E8D5B7",online:true,msgs:[{me:false,text:"こんにちは！英語レッスンに興味があります。"},{me:true,text:"はじめまして！どのレベルから始めたいですか？"},{me:false,text:"日常会話からビジネス英語まで学びたいです。"},{me:true,text:"まず体験レッスンはいかがですか？😊"},{me:false,text:"ぜひお願いします！"}]},
-  {name:"鈴木 健太",avatar:"SK",color:"#B7D5E8",online:false,msgs:[{me:false,text:"受験数学を教えてもらえますか？"},{me:true,text:"志望校はどちらですか？"},{me:false,text:"東大を目指しています。"}]},
-  {name:"山田 花子",avatar:"YH",color:"#D5E8B7",online:true,msgs:[{me:false,text:"Pythonを一から学びたいです。"},{me:true,text:"基礎からしっかり教えます✨"}]},
-];
+let chatThreads = [];
+let chatMsgs = {};
+let realtimeCh = null;
 const aiRes = {
   "英語":"📚 <strong>田中 美咲</strong>（英語）がおすすめ。<br>元外資系・TOEIC対応・初心者歓迎。評価4.9・¥3,500〜。<br><br>💡 まず体験レッスンから！",
   "数学":"📐 <strong>鈴木 健太</strong>（数学）がおすすめ。<br>東大院卒・受験〜大学数学対応。評価4.8・¥4,000〜。",
@@ -754,7 +726,7 @@ const aiRes = {
 };
 const subjects = ["すべて","英語","数学","プログラミング","ピアノ","日本語","美術","サッカー","ヨガ"];
 const days = ["月","火","水","木","金","土","日"];
-let curSubj = "すべて", curDay = null, curChat = 0, curPay = "card";
+let curSubj = "すべて", curDay = null, curChat = null, curPay = "card";
 let notifs = [
   {text:"田中 美咲先生からメッセージが届きました",time:"2分前",unread:true,color:"#5C6BC0"},
   {text:"鈴木 健太先生との授業が明日14:00に確定しました",time:"1時間前",unread:true,color:"#4CAF50"},
@@ -774,7 +746,8 @@ function showPage(id) {
   document.querySelectorAll('.btm-tab').forEach(b => {
     b.classList.toggle('active', b.dataset.page === id);
   });
-  if (id === 'chat') renderChat(curChat);
+  if (id === 'chat') loadChatThreads();
+  if (id === 'matching') renderMatching();
   if (id === 'map') renderMap();
   if (id === 'profile' || id === 'dashboard') loadProfile();
   document.querySelector('.nav-links')?.classList.remove('open');
@@ -916,37 +889,156 @@ document.addEventListener('click', e => {
     document.getElementById('notif-panel').classList.remove('open');
 });
 
+async function loadChatThreads() {
+  if (!currentUser) return;
+  const { data: bookings } = await sb.from('bookings')
+    .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(id,name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(id,name,avatar_url)')
+    .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
+    .order('created_at', { ascending: false });
+  const map = new Map();
+  for (const b of (bookings || [])) {
+    const other = b.student_id === currentUser.id ? b.teacher : b.student;
+    if (!other?.id) continue;
+    if (!map.has(other.id)) map.set(other.id, { other, bookings: [] });
+    map.get(other.id).bookings.push(b);
+  }
+  chatThreads = Array.from(map.values());
+  await Promise.all(chatThreads.map(t => loadMsgsFor(t.other.id)));
+  renderChatList();
+  if (chatThreads.length && curChat == null) renderChat(0);
+}
+
+async function loadMsgsFor(otherId) {
+  const [a, b] = await Promise.all([
+    sb.from('messages').select('*').eq('sender_id', currentUser.id).eq('receiver_id', otherId),
+    sb.from('messages').select('*').eq('sender_id', otherId).eq('receiver_id', currentUser.id),
+  ]);
+  const merged = [...(a.data || []), ...(b.data || [])].sort((x, y) =>
+    new Date(x.created_at) - new Date(y.created_at));
+  chatMsgs[otherId] = merged;
+}
+
+function renderChatList() {
+  const el = document.getElementById('chat-list-items');
+  if (!chatThreads.length) {
+    el.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted);font-size:12px;">予約するとチャットが始まります</div>';
+    return;
+  }
+  el.innerHTML = chatThreads.map((t,i) => {
+    const o = t.other;
+    const last = (chatMsgs[o.id] || []).slice(-1)[0];
+    const preview = last ? last.content : 'メッセージはまだありません';
+    const av = o.avatar_url ? `<img src="${o.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : (o.name || '?').substring(0,2).toUpperCase();
+    return `<div class="chat-item${i===curChat?' active':''}" onclick="renderChat(${i})">
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${av}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${o.name || '名前未設定'}</span></div>
+        <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function renderChat(idx) {
   curChat = idx;
-  const c = chatData[idx];
-  document.getElementById('chat-av').textContent = c.avatar;
-  document.getElementById('chat-av').style.background = c.color;
-  document.getElementById('chat-name').textContent = c.name + '先生';
-  document.getElementById('chat-status').textContent = c.online ? 'オンライン' : 'オフライン';
-  document.getElementById('chat-status').style.color = c.online ? 'var(--green)' : 'var(--muted)';
+  const t = chatThreads[idx];
+  if (!t) {
+    document.getElementById('chat-msgs').innerHTML = '<div style="margin:auto;color:var(--muted);font-size:12px;">スレッドを選択</div>';
+    document.getElementById('chat-name').textContent = '';
+    document.getElementById('chat-status').textContent = '';
+    return;
+  }
+  const o = t.other;
+  const av = document.getElementById('chat-av');
+  if (o.avatar_url) av.innerHTML = `<img src="${o.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  else { av.textContent = (o.name || '?').substring(0,2).toUpperCase(); av.style.background = 'linear-gradient(135deg,var(--accent),#9575CD)'; av.style.color = 'white'; }
+  document.getElementById('chat-name').textContent = o.name || '名前未設定';
+  document.getElementById('chat-status').textContent = (t.bookings[0]?.status === 'confirmed') ? '予約確定済み' : '予約あり';
+  document.getElementById('chat-status').style.color = 'var(--muted)';
   const msgs = document.getElementById('chat-msgs');
-  msgs.innerHTML = c.msgs.map(m => `<div class="${m.me?'msg-me':'msg-them'}">${m.text}</div>`).join('');
+  const list = chatMsgs[o.id] || [];
+  msgs.innerHTML = list.length
+    ? list.map(m => `<div class="${m.sender_id===currentUser.id?'msg-me':'msg-them'}">${escapeHtml(m.content)}</div>`).join('')
+    : '<div style="margin:auto;color:var(--muted);font-size:12px;">まだメッセージはありません</div>';
   msgs.scrollTop = msgs.scrollHeight;
-  document.getElementById('chat-list-items').innerHTML = chatData.map((ch,i) =>
-    `<div class="chat-item${i===idx?' active':''}" onclick="renderChat(${i})">
-      <div style="width:38px;height:38px;border-radius:50%;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${ch.avatar}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${ch.name}</span>${ch.online?'<div style="width:7px;height:7px;border-radius:50%;background:var(--green);"></div>':''}</div>
-        <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ch.msgs[ch.msgs.length-1].text}</p>
-      </div>
-    </div>`).join('');
+  renderChatList();
 }
-function sendMsg() {
+
+function escapeHtml(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function sendMsg() {
   const inp = document.getElementById('chat-input');
-  const text = inp.value.trim(); if (!text) return;
-  chatData[curChat].msgs.push({me:true, text}); inp.value = '';
+  const text = inp.value.trim();
+  if (!text || !currentUser || curChat == null) return;
+  const t = chatThreads[curChat];
+  if (!t) return;
+  inp.value = '';
+  const { data, error } = await sb.from('messages').insert({
+    sender_id: currentUser.id, receiver_id: t.other.id, content: text,
+  }).select().single();
+  if (error) { alert('送信失敗: ' + error.message); inp.value = text; return; }
+  chatMsgs[t.other.id] = [...(chatMsgs[t.other.id] || []), data];
   renderChat(curChat);
-  setTimeout(() => {
-    const rs = ['なるほど！','了解です😊','ありがとうございます！','いいですね👍','確認しました！'];
-    chatData[curChat].msgs.push({me:false, text:rs[Math.floor(Math.random()*rs.length)]});
-    renderChat(curChat);
-    addNotif({text:`${chatData[curChat].name}先生からメッセージが届きました`, time:'たった今', unread:true, color:'#5C6BC0'});
-  }, 900);
+}
+
+function subscribeRealtimeMessages() {
+  if (!currentUser || realtimeCh) return;
+  realtimeCh = sb.channel('messages-for-' + currentUser.id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `receiver_id=eq.${currentUser.id}` }, (p) => {
+      const m = p.new;
+      chatMsgs[m.sender_id] = [...(chatMsgs[m.sender_id] || []), m];
+      const idx = chatThreads.findIndex(t => t.other.id === m.sender_id);
+      if (idx >= 0) {
+        if (idx === curChat) renderChat(idx);
+        else renderChatList();
+        const name = chatThreads[idx].other.name || '相手';
+        addNotif({ text: `${name}さんからメッセージ`, time:'たった今', unread:true, color:'var(--accent)' });
+      } else {
+        loadChatThreads();
+      }
+    })
+    .subscribe();
+}
+
+async function renderMatching() {
+  const el = document.getElementById('matching-list');
+  if (!currentUser) { el.innerHTML = ''; return; }
+  const { data } = await sb.from('bookings')
+    .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(name,avatar_url)')
+    .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
+    .order('created_at', { ascending: false }).limit(20);
+  if (!data || !data.length) {
+    el.innerHTML = '<div style="background:white;border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);color:var(--muted);"><p style="font-size:32px;margin-bottom:10px;">📋</p><p style="font-size:13px;">予約はまだありません。<br>先生を探して予約してみましょう。</p></div>';
+    return;
+  }
+  el.innerHTML = data.map(b => {
+    const amStudent = b.student_id === currentUser.id;
+    const other = amStudent ? b.teacher : b.student;
+    const statusMap = {
+      pending: { label: '支払い待ち', color: 'var(--gold)', bg: '#FFF8E1' },
+      confirmed: { label: '確定', color: 'var(--green)', bg: 'var(--green-light)' },
+      completed: { label: '完了', color: 'var(--muted)', bg: 'var(--lighter)' },
+      cancelled: { label: 'キャンセル', color: 'var(--red)', bg: '#FFEBEE' },
+    };
+    const s = statusMap[b.status] || statusMap.pending;
+    const dt = b.scheduled_at ? new Date(b.scheduled_at) : null;
+    const dtStr = dt ? `${dt.getMonth()+1}/${dt.getDate()} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}〜` : '日時未定';
+    return `<div style="background:white;border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div><p style="font-weight:700;font-size:15px;">${b.skills?.subject || 'セッション'}</p><p style="font-size:12px;color:var(--muted);margin-top:2px;">${amStudent?'先生':'生徒'}: ${other?.name || '名前未設定'}</p></div>
+        <span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;color:${s.color};background:${s.bg};">${s.label}</span>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:#555;">
+        <span><span style="color:var(--muted);">日時：</span>${dtStr}</span>
+        <span><span style="color:var(--muted);">金額：</span><strong>¥${(b.price||0).toLocaleString()}</strong></span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;" onclick="showPage('chat')">チャット 💬</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // Stripe Checkout を Supabase Edge Function 経由で起動する。
@@ -1172,6 +1264,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
     updateNavUser();
     await loadProfile();
     await loadSkillsFromDB();
+    subscribeRealtimeMessages();
   }
 });
 </script>
