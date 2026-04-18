@@ -1341,10 +1341,28 @@ async function renderMatching() {
         <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:12px;height:12px;"></i>チャット</button>
         ${b.status === 'pending' && amStudent ? `<button class="btn btn-accent" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="payForBooking('${escapeHtml(b.id)}','${escapeHtml(other?.name||'先生')}',${b.price||0},'${escapeHtml(b.skill_id||'')}')"><i data-lucide="credit-card" style="width:12px;height:12px;"></i>支払う</button>` : ''}
         ${b.status === 'confirmed' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="openReviewModal('${escapeHtml(b.id)}','${escapeHtml(other?.name||'')}','${escapeHtml(amStudent ? (b.teacher_id||'') : (b.student_id||''))}')"><i data-lucide="star" style="width:12px;height:12px;"></i>レビュー</button>` : ''}
+        ${b.status === 'confirmed' && !amStudent ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--green);border-color:var(--green);" onclick="completeBooking('${escapeHtml(b.id)}')"><i data-lucide="check" style="width:12px;height:12px;"></i>完了にする</button>` : ''}
+        ${b.status === 'pending' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--red);border-color:var(--red);" onclick="cancelBooking('${escapeHtml(b.id)}')"><i data-lucide="x" style="width:12px;height:12px;"></i>キャンセル</button>` : ''}
       </div>
     </div>`;
   }).join('');
   refreshIcons();
+}
+
+async function cancelBooking(bookingId) {
+  if (!confirm('この予約をキャンセルしますか？')) return;
+  const { error } = await sb.from('bookings').update({ status: 'cancelled' }).eq('id', bookingId);
+  if (error) { alert('キャンセルに失敗しました: ' + error.message); return; }
+  addNotif({ text: '予約をキャンセルしました', time: 'たった今', unread: false, color: 'var(--red)' });
+  renderMatching();
+}
+
+async function completeBooking(bookingId) {
+  if (!confirm('このセッションを完了にしますか？')) return;
+  const { error } = await sb.from('bookings').update({ status: 'completed' }).eq('id', bookingId);
+  if (error) { alert('完了処理に失敗しました: ' + error.message); return; }
+  addNotif({ text: 'セッションが完了しました', time: 'たった今', unread: false, color: 'var(--green)' });
+  renderMatching();
 }
 
 function payForBooking(bookingId, teacherName, price, skillId) {
