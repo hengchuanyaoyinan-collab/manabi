@@ -355,15 +355,12 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
   <div class="pay-panel" id="pp2">
     <p style="font-weight:700;font-size:14px;margin-bottom:14px;">支払い方法を選択</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;" id="pay-methods"></div>
-    <div style="background:white;border-radius:14px;padding:18px;border:1px solid var(--light);margin-bottom:18px;">
-      <p style="font-size:13px;font-weight:700;margin-bottom:13px;color:var(--muted);">💳 カード情報</p>
-      <input class="form-input" placeholder="カード番号 例：1234 5678 9012 3456" style="margin-bottom:10px;">
-      <input class="form-input" placeholder="名義人 例：HANAKO YAMADA" style="margin-bottom:10px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><input class="form-input" placeholder="有効期限 MM/YY"><input class="form-input" placeholder="CVV"></div>
+    <div style="background:var(--accent-light);border-radius:12px;padding:16px;margin-bottom:18px;">
+      <p style="font-size:13px;color:#3949AB;line-height:1.6;">🔒 「支払う」を押すと Stripe の安全な決済画面に移動します。<br>カード情報はそちらで入力してください。</p>
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-outline" onclick="goPayStep(1)">← 戻る</button>
-      <button class="btn btn-dark" id="btn-pay" style="flex:1;padding:14px;font-size:14px;" onclick="goPayStep(3)">¥2,100 を支払う 🔒</button>
+      <button class="btn btn-dark" id="btn-pay" style="flex:1;padding:14px;font-size:14px;" onclick="startStripeCheckout()">¥2,100 を支払う 🔒</button>
     </div>
   </div>
   <div class="pay-panel" id="pp3">
@@ -430,10 +427,10 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
 
 <script>
 // ── SUPABASE ──
-// 新しい publishable key 形式 (sb_publishable_...) を使用。
-// このキーはクライアントに公開して問題ありません。
+// Edge Function 呼び出しには legacy anon key (JWT形式) が必要。
+// このキーはクライアントに公開して問題ない (anon role のみ)。
 const SB_URL = 'https://dajngnlvrwesosvgoilh.supabase.co';
-const SB_KEY = 'sb_publishable_TRB_lManD97eMnC74p175g_tm34NK07';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRham5nbmx2cndlc29zdmdvaWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3ODc4NDksImV4cCI6MjA5MTM2Mzg0OX0.AuNr5eoUAPaRwgIHvICq3aKqlvlsjPjks5vGrmeVZN0';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 let currentUser = null;
 
@@ -843,11 +840,7 @@ function goPayStep(n) {
     document.getElementById('ps'+i).className = 'pay-step'+(i===n?' active':i<n?' done':'');
     document.getElementById('pp'+i).className = 'pay-panel'+(i===n?' active':'');
   }
-  if (n===2) renderPayMethods();
-  if (n===3) {
-    // Stripe Checkout に遷移
-    startStripeCheckout();
-  }
+  if (n===2) { renderPayMethods(); renderPaySummary(); }
 }
 
 // success_url でリダイレクトされて戻ってきたとき、
