@@ -604,7 +604,7 @@ async function loadMySkills() {
 }
 
 // ── STATIC DATA ──
-const teachers = [
+let teachers = [
   {id:1,name:"田中 美咲",subject:"英語",rating:4.9,reviews:128,price:3500,tags:["TOEIC","ビジネス英語","初心者歓迎"],available:["月","水","金"],bio:"元外資系企業勤務。実践的な英語を楽しく教えます。",avatar:"TM",color:"#E8D5B7",dist:"0.4km"},
   {id:2,name:"鈴木 健太",subject:"数学",rating:4.8,reviews:94,price:4000,tags:["大学受験","高校数学","微積分"],available:["火","木","土"],bio:"東大院卒。受験数学から大学数学まで丁寧に指導。",avatar:"SK",color:"#B7D5E8",dist:"0.7km"},
   {id:3,name:"山田 花子",subject:"プログラミング",rating:5.0,reviews:67,price:5000,tags:["Python","Web開発","初心者歓迎"],available:["月","火","水","木","金"],bio:"現役エンジニア。実務で使えるスキルを基礎から。",avatar:"YH",color:"#D5E8B7",dist:"1.0km"},
@@ -915,8 +915,8 @@ function proceedToPayment() {
     const fee = Math.round(price * 0.05);
     payCart = {
       teacher_name: selTeacher.name,
-      teacher_id: null,
-      skill_id: null,
+      teacher_id: selTeacher.db_user_id || null,
+      skill_id: selTeacher.db_skill_id || null,
       amount: price,
       fee: fee,
     };
@@ -963,23 +963,26 @@ function renderModal() {
 // ── LOAD SKILLS FROM SUPABASE ──
 async function loadSkillsFromDB() {
   try {
-    const { data, error } = await sb.from('skills').select('*');
+    const { data, error } = await sb.from('skills').select('*, profiles(name)');
     if (error || !data || data.length === 0) return;
     const colors = ['#E8D5B7','#B7D5E8','#D5E8B7','#E8B7D5','#E8E0B7','#D5B7E8','#B7E8D5','#E8D5E0'];
     const dbTeachers = data.map((s, i) => ({
       id: 1000 + i,
-      name: s.description || 'スキル',
+      name: s.profiles?.name || s.subject || 'スキル',
       subject: s.subject || 'その他',
       rating: 5.0,
       reviews: 0,
       price: s.price_min || 0,
       tags: Array.isArray(s.tags) ? s.tags : [],
-      available: ['月','火','水','木','金','土','日'],
+      available: s.available_days || ['月','火','水','木','金','土','日'],
       bio: s.description || '',
-      avatar: (s.subject || 'S').substring(0, 2).toUpperCase(),
+      avatar: (s.profiles?.name || s.subject || 'S').substring(0, 2).toUpperCase(),
       color: colors[i % colors.length],
-      dist: '近く',
+      dist: s.area || '近く',
+      db_user_id: s.user_id,
+      db_skill_id: s.id,
     }));
+    teachers = teachers.filter(t => !t.db_skill_id);
     teachers.unshift(...dbTeachers);
     renderHome();
     renderExplore();
