@@ -21,6 +21,7 @@
 :root{--bg:#FAFAF7;--white:#fff;--dark:#2D2D2D;--mid:#4A4A4A;--muted:#888;--light:#EEEAE4;--lighter:#F0EDE8;--primary:#2D2D2D;--primary-light:#F0EDE8;--accent:#5C6BC0;--accent-light:#E8EAF6;--green:#4CAF50;--green-light:#E8F5E9;--gold:#F5A623;--red:#E57373;--border:#E0DDD8;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Sans JP',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;-webkit-font-smoothing:antialiased;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 /* AUTH */
 #auth-screen{position:fixed;inset:0;background:#fff;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;}
 .auth-box{background:white;border-radius:16px;padding:32px 28px;width:100%;max-width:380px;}
@@ -163,17 +164,22 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <div id="auth-msg" class="msg-box"></div>
     <!-- LOGIN -->
     <div id="tab-login">
-      <input class="auth-input" id="login-email" type="email" placeholder="メールアドレス">
-      <div style="position:relative;"><input class="auth-input" id="login-pass" type="password" placeholder="パスワード" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePass('login-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
+      <label for="login-email" class="sr-only">メールアドレス</label>
+      <input class="auth-input" id="login-email" type="email" placeholder="メールアドレス" autocomplete="email">
+      <label for="login-pass" class="sr-only">パスワード</label>
+      <div style="position:relative;"><input class="auth-input" id="login-pass" type="password" placeholder="パスワード" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePass('login-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
       <button class="btn btn-dark" id="btn-login" style="width:100%;padding:13px;font-size:14px;" onclick="doLogin()">ログイン</button>
       <div style="display:flex;align-items:center;gap:8px;margin:14px 0;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="font-size:11px;color:var(--muted);">または</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
       <button onclick="doGoogle()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Googleでログイン</button>
     </div>
     <!-- SIGNUP -->
     <div id="tab-signup" style="display:none;">
-      <input class="auth-input" id="signup-name" type="text" placeholder="お名前">
-      <input class="auth-input" id="signup-email" type="email" placeholder="メールアドレス">
-      <div style="position:relative;"><input class="auth-input" id="signup-pass" type="password" placeholder="パスワード（8文字以上）" onkeydown="if(event.key==='Enter')doSignup()"><button type="button" onclick="togglePass('signup-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
+      <label for="signup-name" class="sr-only">お名前</label>
+      <input class="auth-input" id="signup-name" type="text" placeholder="お名前" autocomplete="name">
+      <label for="signup-email" class="sr-only">メールアドレス</label>
+      <input class="auth-input" id="signup-email" type="email" placeholder="メールアドレス" autocomplete="email">
+      <label for="signup-pass" class="sr-only">パスワード</label>
+      <div style="position:relative;"><input class="auth-input" id="signup-pass" type="password" placeholder="パスワード（8文字以上）" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()"><button type="button" onclick="togglePass('signup-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
       <button class="btn btn-dark" id="btn-signup" style="width:100%;padding:13px;font-size:14px;" onclick="doSignup()">アカウントを作成</button>
     </div>
   </div>
@@ -541,16 +547,24 @@ let payCart = {
 };
 
 // AUTH STATE
+let authLoading = false;
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     currentUser = session.user;
     document.getElementById('auth-screen').style.display = 'none';
     updateNavUser();
-    await loadProfile();
-    await loadSkillsFromDB();
-    loadHeroStats();
-    loadNotificationsFromDB();
-    subscribeRealtimeMessages();
+    if (event === 'TOKEN_REFRESHED') return;
+    if (authLoading) return;
+    authLoading = true;
+    try {
+      await loadProfile();
+      await loadSkillsFromDB();
+      loadHeroStats();
+      loadNotificationsFromDB();
+      subscribeRealtimeMessages();
+    } finally {
+      authLoading = false;
+    }
   } else {
     currentUser = null;
     document.getElementById('auth-screen').style.display = 'flex';
@@ -789,8 +803,9 @@ async function loadDashboardReviews() {
     const name = r.reviewer?.name || '匿名';
     const date = new Date(r.created_at);
     const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
-    const avInner = r.reviewer?.avatar_url
-      ? `<img src="${r.reviewer.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    const safeRevAv = safeImgUrl(r.reviewer?.avatar_url);
+    const avInner = safeRevAv
+      ? `<img src="${escapeHtml(safeRevAv)}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
       : escapeHtml(name.substring(0,2).toUpperCase());
     return `<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--light);">
       <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${avInner}</div>
@@ -1502,6 +1517,14 @@ function openModal(id) {
   document.getElementById('modal').classList.add('open');
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('modal').classList.contains('open')) closeModal();
+    document.getElementById('notif-panel').classList.remove('open');
+    const editModal = document.getElementById('edit-skill-modal');
+    if (editModal) editModal.remove();
+  }
+});
 
 function renderPaySummary() {
   const el = document.getElementById('pay-summary');
@@ -1638,7 +1661,7 @@ async function editSkill(skillId) {
   modal.id = 'edit-skill-modal';
   modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;';
   modal.innerHTML = `<div style="background:white;border-radius:16px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:700;">スキル編集</h2><button onclick="document.getElementById('edit-skill-modal').remove()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);">✕</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:700;">スキル編集</h2><button onclick="document.getElementById('edit-skill-modal').remove()" aria-label="閉じる" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);"><i data-lucide="x" style="width:20px;height:20px;"></i></button></div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">カテゴリ</label>
       <select class="form-input" id="edit-cat">${cats.map(c => `<option ${c===skill.subject?'selected':''}>${c}</option>`).join('')}</select></div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">スキル・提供内容</label><input class="form-input" id="edit-desc" value="${escapeHtml(skill.description||'')}"></div>
@@ -1744,7 +1767,7 @@ function openReviewModal(bookingId, name, reviewee) {
     <h2 style="font-size:20px;margin-bottom:6px;">${escapeHtml(name)}さんのレビュー</h2>
     <p style="font-size:12px;color:var(--muted);margin-bottom:20px;">セッションの評価をしてください</p>
     <div id="review-stars" style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
-      ${[1,2,3,4,5].map(n => `<button onclick="setReviewRating(${n})" style="background:none;border:none;cursor:pointer;font-size:32px;color:${n<=5?'var(--gold)':'var(--border)'};">★</button>`).join('')}
+      ${[1,2,3,4,5].map(n => `<button onclick="setReviewRating(${n})" aria-label="${n}つ星" style="background:none;border:none;cursor:pointer;font-size:32px;color:${n<=5?'var(--gold)':'var(--border)'};">★</button>`).join('')}
     </div>
     <textarea id="review-comment" class="form-input" rows="3" placeholder="感想やフィードバックを書いてください（任意）" style="resize:vertical;margin-bottom:16px;"></textarea>
     <div style="display:flex;gap:10px;">
