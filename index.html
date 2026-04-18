@@ -492,9 +492,13 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="color:var(--accent);margin-bottom:6px;"><i data-lucide="book-open" style="width:24px;height:24px;"></i></div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-learned">0</div><div style="font-size:11px;color:var(--muted);">学んだ回数</div></div>
     <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="color:var(--accent);margin-bottom:6px;"><i data-lucide="trending-up" style="width:24px;height:24px;"></i></div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-score">0</div><div style="font-size:11px;color:var(--muted);">信用スコア</div></div>
   </div>
-  <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;">登録済みスキル</h3>
-  <div id="my-skills" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+  <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="layers" style="width:18px;height:18px;color:var(--accent);"></i>登録済みスキル</h3>
+  <div id="my-skills" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="showPage('register')" style="color:var(--accent);">スキルを登録する →</a></p>
+  </div>
+  <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="history" style="width:18px;height:18px;color:var(--accent);"></i>取引履歴</h3>
+  <div id="dash-history" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+    <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">取引履歴はまだありません</p>
   </div>
 </div>
 
@@ -567,6 +571,7 @@ async function loadProfile() {
   }
   loadMySkills();
   loadDashboardStats();
+  loadDashboardHistory();
 }
 
 async function loadDashboardStats() {
@@ -730,6 +735,36 @@ async function submitSkill() {
   }
 }
 
+async function loadDashboardHistory() {
+  if (!currentUser) return;
+  const { data } = await sb.from('payments')
+    .select('id, amount, fee, status, created_at, stripe_session_id, bookings(id, status, scheduled_at, skills(subject), teacher:profiles!bookings_teacher_id_fkey(name), student:profiles!bookings_student_id_fkey(name))')
+    .or(`bookings.student_id.eq.${currentUser.id},bookings.teacher_id.eq.${currentUser.id}`)
+    .order('created_at', { ascending: false }).limit(20);
+  const el = document.getElementById('dash-history');
+  if (!el) return;
+  const filtered = (data || []).filter(p => p.bookings);
+  if (!filtered.length) {
+    el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">取引履歴はまだありません</p>';
+    return;
+  }
+  const statusMap = { pending:'支払い待ち', paid:'支払い済み', failed:'失敗', refunded:'返金済み' };
+  const statusColors = { pending:'var(--gold)', paid:'var(--green)', failed:'var(--red)', refunded:'var(--muted)' };
+  el.innerHTML = filtered.map(p => {
+    const b = p.bookings;
+    const other = b?.teacher?.name || b?.student?.name || '';
+    const subject = b?.skills?.subject || 'セッション';
+    const date = new Date(p.created_at);
+    const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
+    const s = statusMap[p.status] || p.status;
+    const sc = statusColors[p.status] || 'var(--muted)';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--light);">
+      <div><p style="font-weight:600;font-size:13px;">${subject}</p><p style="font-size:11px;color:var(--muted);">${other} · ${dateStr}</p></div>
+      <div style="text-align:right;"><p style="font-weight:700;font-size:13px;">¥${(p.amount||0).toLocaleString()}</p><span style="font-size:11px;color:${sc};font-weight:500;">${s}</span></div>
+    </div>`;
+  }).join('');
+}
+
 async function loadMySkills() {
   if (!currentUser) return;
   const { data } = await sb.from('skills').select('*').eq('user_id', currentUser.id);
@@ -737,7 +772,14 @@ async function loadMySkills() {
   if (!data || !data.length) {
     el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="showPage(\'register\')" style="color:var(--accent);">スキルを登録する →</a></p>';
   } else {
-    el.innerHTML = data.map(s => `<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;"><div><p style="font-weight:700;font-size:13px;">${s.subject}</p><p style="font-size:11px;color:var(--muted);">${s.description}</p></div><p style="font-weight:700;font-size:13px;color:var(--accent);">¥${(s.price_min||0).toLocaleString()}〜</p></div>`).join('');
+    el.innerHTML = data.map(s => `<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <div style="flex:1;"><p style="font-weight:700;font-size:13px;">${s.subject}</p><p style="font-size:11px;color:var(--muted);">${s.description}</p>
+        ${s.tags?.length ? '<div style="margin-top:4px;">' + s.tags.map(t=>'<span class="tag">'+t+'</span>').join('') + '</div>' : ''}
+      </div>
+      <div style="text-align:right;flex-shrink:0;"><p style="font-weight:700;font-size:13px;color:var(--accent);">¥${(s.price_min||0).toLocaleString()}〜</p>
+        <button onclick="deleteSkill('${s.id}')" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;margin-top:4px;">削除</button>
+      </div>
+    </div>`).join('');
   }
 }
 
@@ -1210,11 +1252,20 @@ async function renderMatching() {
         <span><span style="color:var(--muted);">金額：</span><strong>¥${(b.price||0).toLocaleString()}</strong></span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;" onclick="showPage('chat')">チャット</button>
+        <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:12px;height:12px;"></i>チャット</button>
+        ${b.status === 'pending' && amStudent ? `<button class="btn btn-accent" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="payForBooking('${b.id}','${other?.name||'先生'}',${b.price||0},'${b.skill_id||''}')"><i data-lucide="credit-card" style="width:12px;height:12px;"></i>支払う</button>` : ''}
       </div>
     </div>`;
   }).join('');
   refreshIcons();
+}
+
+function payForBooking(bookingId, teacherName, price, skillId) {
+  const fee = Math.round(price * 0.05);
+  payCart = { teacher_name: teacherName, teacher_id: null, skill_id: skillId || null, scheduled_at: null, amount: price, fee: fee };
+  showPage('payment');
+  goPayStep(1);
+  renderPaySummary();
 }
 
 // Stripe Checkout を Supabase Edge Function 経由で起動する。
@@ -1413,6 +1464,14 @@ async function loadHeroStats() {
   const sc = document.getElementById('hero-session-count');
   if (tc) tc.textContent = (skillsRes.count || 0) + '名';
   if (sc) sc.textContent = (bookingsRes.count || 0) + '回';
+}
+
+async function deleteSkill(skillId) {
+  if (!confirm('このスキルを削除しますか？')) return;
+  const { error } = await sb.from('skills').delete().eq('id', skillId).eq('user_id', currentUser.id);
+  if (error) { alert('削除に失敗しました: ' + error.message); return; }
+  loadMySkills();
+  loadSkillsFromDB();
 }
 
 // ── LOAD SKILLS FROM SUPABASE ──
