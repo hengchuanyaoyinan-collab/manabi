@@ -220,8 +220,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <p style="color:#C8C4BC;font-size:12px;letter-spacing:.1em;margin-bottom:10px;">あなたにぴったりの先生を見つけよう</p>
     <h1 style="color:white;font-size:32px;line-height:1.2;margin-bottom:20px;">学びを、もっと<br>パーソナルに。</h1>
     <div style="display:flex;max-width:460px;margin:0 auto;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.2);">
-      <input type="text" placeholder="科目・キーワードで検索..." style="flex:1;padding:13px 16px;border:none;font-size:13px;font-family:inherit;outline:none;" oninput="document.getElementById('explore-search').value=this.value">
-      <button class="btn btn-dark" style="border-radius:0;padding:13px 18px;display:flex;align-items:center;" onclick="showPage('explore')"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
+      <input type="text" id="hero-search" placeholder="科目・キーワードで検索..." style="flex:1;padding:13px 16px;border:none;font-size:13px;font-family:inherit;outline:none;" onkeydown="if(event.key==='Enter'){document.getElementById('explore-search').value=this.value;showPage('explore');renderExplore();}">
+      <button class="btn btn-dark" style="border-radius:0;padding:13px 18px;display:flex;align-items:center;" onclick="document.getElementById('explore-search').value=document.getElementById('hero-search').value;showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
     </div>
     <p style="color:#9A9690;font-size:11px;margin-top:12px;">登録教師数 <strong style="color:#C8C4BC;" id="hero-teacher-count">--</strong>　·　累計授業数 <strong style="color:#C8C4BC;" id="hero-session-count">--</strong></p>
   </section>
@@ -475,6 +475,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
     await loadProfile();
     await loadSkillsFromDB();
     loadHeroStats();
+    loadNotificationsFromDB();
     subscribeRealtimeMessages();
   } else {
     currentUser = null;
@@ -945,6 +946,40 @@ function toggleNotif() { document.getElementById('notif-panel').classList.toggle
 function readNotif(i) { notifs[i].unread = false; renderNotifs(); }
 function clearNotifs() { notifs.forEach(n => n.unread = false); renderNotifs(); }
 function addNotif(n) { notifs.unshift(n); renderNotifs(); }
+async function loadNotificationsFromDB() {
+  if (!currentUser) return;
+  const { data: bookings } = await sb.from('bookings')
+    .select('id, status, price, created_at, scheduled_at, skills(subject), student:profiles!bookings_student_id_fkey(name), teacher:profiles!bookings_teacher_id_fkey(name)')
+    .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
+    .order('created_at', { ascending: false }).limit(10);
+  if (!bookings || !bookings.length) return;
+  const dbNotifs = bookings.map(b => {
+    const isStudent = b.student?.name !== undefined;
+    const other = isStudent ? b.teacher : b.student;
+    const name = other?.name || '相手';
+    const subject = b.skills?.subject || 'セッション';
+    const statusLabels = { pending: '予約リクエスト', confirmed: '予約確定', completed: '完了', cancelled: 'キャンセル' };
+    const statusColors = { pending: 'var(--gold)', confirmed: 'var(--green)', completed: 'var(--muted)', cancelled: 'var(--red)' };
+    const ago = formatTimeAgo(b.created_at);
+    return {
+      text: `${name}さんとの${subject} — ${statusLabels[b.status] || b.status}`,
+      time: ago, unread: b.status === 'pending' || b.status === 'confirmed',
+      color: statusColors[b.status] || 'var(--accent)',
+    };
+  });
+  notifs = [...dbNotifs, ...notifs];
+  renderNotifs();
+}
+function formatTimeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'たった今';
+  if (mins < 60) return `${mins}分前`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}時間前`;
+  const days = Math.floor(hours / 24);
+  return `${days}日前`;
+}
 document.addEventListener('click', e => {
   if (!e.target.closest('.notif-panel') && !e.target.closest('[onclick="toggleNotif()"]'))
     document.getElementById('notif-panel').classList.remove('open');
@@ -1047,6 +1082,14 @@ async function sendMsg() {
 function subscribeRealtimeMessages() {
   if (!currentUser || realtimeCh) return;
   realtimeCh = sb.channel('messages-for-' + currentUser.id)
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'bookings' }, (p) => {
+      const b = p.new;
+      if (b.student_id !== currentUser.id && b.teacher_id !== currentUser.id) return;
+      const statusLabels = { confirmed: '予約が確定しました', completed: 'セッションが完了しました', cancelled: '予約がキャンセルされました' };
+      if (statusLabels[b.status]) {
+        addNotif({ text: statusLabels[b.status], time: 'たった今', unread: true, color: b.status === 'confirmed' ? 'var(--green)' : 'var(--muted)' });
+      }
+    })
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `receiver_id=eq.${currentUser.id}` }, (p) => {
       const m = p.new;
       chatMsgs[m.sender_id] = [...(chatMsgs[m.sender_id] || []), m];
@@ -1150,7 +1193,8 @@ function goPayStep(n) {
     document.getElementById('ps'+i).className = 'pay-step'+(i===n?' active':i<n?' done':'');
     document.getElementById('pp'+i).className = 'pay-panel'+(i===n?' active':'');
   }
-  if (n===2) { renderPayMethods(); renderPaySummary(); }
+  if (n>=1) renderPaySummary();
+  if (n===2) renderPayMethods();
 }
 
 // success_url でリダイレクトされて戻ってきたとき、
