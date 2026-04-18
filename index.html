@@ -701,7 +701,10 @@ async function saveProfile() {
   if (!error) {
     document.getElementById('prof-saved').style.display = 'block';
     document.getElementById('prof-name').textContent = name;
-    document.getElementById('nav-av').textContent = name.substring(0, 2).toUpperCase();
+    const navAv = document.getElementById('nav-av');
+    if (!navAv.querySelector('img')) {
+      navAv.textContent = name.substring(0, 2).toUpperCase();
+    }
     setTimeout(() => document.getElementById('prof-saved').style.display = 'none', 3000);
   }
 }
@@ -730,6 +733,14 @@ async function submitSkill() {
     document.getElementById('reg-ok').style.display = 'block';
     addNotif({ text: `「${skill}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
     setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
+    document.getElementById('reg-skill').value = '';
+    document.getElementById('reg-cat').value = '';
+    document.getElementById('reg-desc').value = '';
+    document.getElementById('reg-min').value = '';
+    document.getElementById('reg-max').value = '';
+    document.getElementById('reg-area').value = '';
+    document.getElementById('reg-tags').value = '';
+    document.querySelectorAll('#reg-days .pill-sm.active').forEach(b => b.classList.remove('active'));
     loadMySkills();
     loadSkillsFromDB();
   } else {
@@ -776,11 +787,14 @@ async function loadMySkills() {
     el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="showPage(\'register\')" style="color:var(--accent);">スキルを登録する →</a></p>';
   } else {
     el.innerHTML = data.map(s => `<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;gap:12px;">
-      <div style="flex:1;"><p style="font-weight:700;font-size:13px;">${s.subject}</p><p style="font-size:11px;color:var(--muted);">${s.description}</p>
-        ${s.tags?.length ? '<div style="margin-top:4px;">' + s.tags.map(t=>'<span class="tag">'+t+'</span>').join('') + '</div>' : ''}
+      <div style="flex:1;"><p style="font-weight:700;font-size:13px;">${escapeHtml(s.subject)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(s.description)}</p>
+        ${s.tags?.length ? '<div style="margin-top:4px;">' + s.tags.map(t=>'<span class="tag">'+escapeHtml(t)+'</span>').join('') + '</div>' : ''}
       </div>
       <div style="text-align:right;flex-shrink:0;"><p style="font-weight:700;font-size:13px;color:var(--accent);">¥${(s.price_min||0).toLocaleString()}〜</p>
-        <button onclick="deleteSkill('${s.id}')" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;margin-top:4px;">削除</button>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button onclick="editSkill('${s.id}')" style="font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;">編集</button>
+          <button onclick="deleteSkill('${s.id}')" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;">削除</button>
+        </div>
       </div>
     </div>`).join('');
   }
@@ -1170,7 +1184,14 @@ function renderChat(idx) {
   const msgs = document.getElementById('chat-msgs');
   const list = chatMsgs[o.id] || [];
   msgs.innerHTML = list.length
-    ? list.map(m => `<div class="${m.sender_id===currentUser.id?'msg-me':'msg-them'}">${escapeHtml(m.content)}</div>`).join('')
+    ? list.map(m => {
+        const d = new Date(m.created_at);
+        const ts = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+        return `<div style="display:flex;flex-direction:column;align-items:${m.sender_id===currentUser.id?'flex-end':'flex-start'};">
+          <div class="${m.sender_id===currentUser.id?'msg-me':'msg-them'}">${escapeHtml(m.content)}</div>
+          <span style="font-size:10px;color:var(--muted);margin-top:2px;">${ts}</span>
+        </div>`;
+      }).join('')
     : '<div style="margin:auto;color:var(--muted);font-size:12px;">まだメッセージはありません</div>';
   msgs.scrollTop = msgs.scrollHeight;
   renderChatList();
@@ -1256,7 +1277,8 @@ async function renderMatching() {
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:12px;height:12px;"></i>チャット</button>
-        ${b.status === 'pending' && amStudent ? `<button class="btn btn-accent" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="payForBooking('${b.id}','${other?.name||'先生'}',${b.price||0},'${b.skill_id||''}')"><i data-lucide="credit-card" style="width:12px;height:12px;"></i>支払う</button>` : ''}
+        ${b.status === 'pending' && amStudent ? `<button class="btn btn-accent" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="payForBooking('${escapeHtml(b.id)}','${escapeHtml(other?.name||'先生')}',${b.price||0},'${escapeHtml(b.skill_id||'')}')"><i data-lucide="credit-card" style="width:12px;height:12px;"></i>支払う</button>` : ''}
+        ${b.status === 'confirmed' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="openReviewModal('${escapeHtml(b.id)}','${escapeHtml(other?.name||'')}','${escapeHtml(amStudent ? (b.teacher_id||'') : (b.student_id||''))}')"><i data-lucide="star" style="width:12px;height:12px;"></i>レビュー</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -1469,6 +1491,57 @@ async function loadHeroStats() {
   if (sc) sc.textContent = (bookingsRes.count || 0) + '回';
 }
 
+async function editSkill(skillId) {
+  if (!currentUser) return;
+  const { data: skill, error } = await sb.from('skills').select('*').eq('id', skillId).eq('user_id', currentUser.id).single();
+  if (error || !skill) { alert('スキル情報の取得に失敗しました'); return; }
+  const days = ['月','火','水','木','金','土','日'];
+  const activeDays = skill.available_days || [];
+  const cats = ['英語','数学','プログラミング','音楽','美術','スポーツ','その他'];
+  const modal = document.createElement('div');
+  modal.id = 'edit-skill-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.innerHTML = `<div style="background:var(--card);border-radius:16px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:700;">スキル編集</h2><button onclick="document.getElementById('edit-skill-modal').remove()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);">✕</button></div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">カテゴリ</label>
+      <select class="form-input" id="edit-cat">${cats.map(c => `<option ${c===skill.subject?'selected':''}>${c}</option>`).join('')}</select></div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">スキル・提供内容</label><input class="form-input" id="edit-desc" value="${escapeHtml(skill.description||'')}"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">最低単価</label><input class="form-input" type="number" id="edit-min" value="${skill.price_min||''}"></div>
+      <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">最高単価</label><input class="form-input" type="number" id="edit-max" value="${skill.price_max||''}"></div>
+    </div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">活動エリア</label><input class="form-input" id="edit-area" value="${escapeHtml(skill.area||'')}"></div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">対応曜日</label>
+      <div id="edit-days" style="display:flex;gap:6px;flex-wrap:wrap;">${days.map(d => `<button type="button" class="pill-sm ${activeDays.includes(d)?'active':''}" onclick="this.classList.toggle('active')">${d}</button>`).join('')}</div></div>
+    <div style="margin-bottom:16px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">タグ（カンマ区切り）</label><input class="form-input" id="edit-tags" value="${escapeHtml((skill.tags||[]).join(', '))}"></div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-dark" id="edit-save-btn" onclick="saveEditedSkill('${skillId}')" style="flex:1;padding:12px;">保存する</button>
+      <button class="btn btn-outline" onclick="document.getElementById('edit-skill-modal').remove()" style="flex:1;padding:12px;">キャンセル</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  refreshIcons();
+}
+async function saveEditedSkill(skillId) {
+  const btn = document.getElementById('edit-save-btn');
+  btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
+  const selDays = Array.from(document.querySelectorAll('#edit-days .pill-sm.active')).map(b => b.textContent);
+  const { error } = await sb.from('skills').update({
+    subject: document.getElementById('edit-cat').value,
+    description: document.getElementById('edit-desc').value.trim(),
+    price_min: parseInt(document.getElementById('edit-min').value) || 0,
+    price_max: parseInt(document.getElementById('edit-max').value) || 0,
+    area: document.getElementById('edit-area').value.trim(),
+    available_days: selDays.length ? selDays : null,
+    tags: document.getElementById('edit-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+  }).eq('id', skillId).eq('user_id', currentUser.id);
+  btn.innerHTML = '保存する'; btn.disabled = false;
+  if (error) { alert('更新に失敗しました: ' + error.message); return; }
+  document.getElementById('edit-skill-modal').remove();
+  loadMySkills();
+  loadSkillsFromDB();
+}
+
 async function deleteSkill(skillId) {
   if (!confirm('このスキルを削除しますか？')) return;
   const { error } = await sb.from('skills').delete().eq('id', skillId).eq('user_id', currentUser.id);
@@ -1480,26 +1553,41 @@ async function deleteSkill(skillId) {
 // ── LOAD SKILLS FROM SUPABASE ──
 async function loadSkillsFromDB() {
   try {
-    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url)');
+    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url, score)');
     if (error || !data || data.length === 0) return;
+    const userIds = [...new Set(data.map(s => s.user_id).filter(Boolean))];
+    let reviewStats = {};
+    if (userIds.length) {
+      const { data: revData } = await sb.from('reviews').select('reviewee_id, rating');
+      if (revData) {
+        for (const r of revData) {
+          if (!reviewStats[r.reviewee_id]) reviewStats[r.reviewee_id] = { sum: 0, count: 0 };
+          reviewStats[r.reviewee_id].sum += r.rating;
+          reviewStats[r.reviewee_id].count++;
+        }
+      }
+    }
     const colors = ['#E8D5B7','#B7D5E8','#D5E8B7','#E8B7D5','#E8E0B7','#D5B7E8','#B7E8D5','#E8D5E0'];
-    const dbTeachers = data.map((s, i) => ({
-      id: 1000 + i,
-      name: s.profiles?.name || s.subject || 'スキル',
-      subject: s.subject || 'その他',
-      rating: 5.0,
-      reviews: 0,
-      price: s.price_min || 0,
-      tags: Array.isArray(s.tags) ? s.tags : [],
-      available: s.available_days || ['月','火','水','木','金','土','日'],
-      bio: s.description || '',
-      avatar: (s.profiles?.name || s.subject || 'S').substring(0, 2).toUpperCase(),
-      avatar_url: s.profiles?.avatar_url || null,
-      color: colors[i % colors.length],
-      dist: s.area || '近く',
-      db_user_id: s.user_id,
-      db_skill_id: s.id,
-    }));
+    const dbTeachers = data.map((s, i) => {
+      const rs = reviewStats[s.user_id];
+      return {
+        id: 1000 + i,
+        name: s.profiles?.name || s.subject || 'スキル',
+        subject: s.subject || 'その他',
+        rating: rs ? Math.round((rs.sum / rs.count) * 10) / 10 : 0,
+        reviews: rs ? rs.count : 0,
+        price: s.price_min || 0,
+        tags: Array.isArray(s.tags) ? s.tags : [],
+        available: s.available_days || ['月','火','水','木','金','土','日'],
+        bio: s.description || '',
+        avatar: (s.profiles?.name || s.subject || 'S').substring(0, 2).toUpperCase(),
+        avatar_url: s.profiles?.avatar_url || null,
+        color: colors[i % colors.length],
+        dist: s.area || '近く',
+        db_user_id: s.user_id,
+        db_skill_id: s.id,
+      };
+    });
     teachers = teachers.filter(t => !t.db_skill_id);
     teachers.unshift(...dbTeachers);
     const allSubjects = [...new Set(teachers.map(t => t.subject))];
@@ -1509,6 +1597,59 @@ async function loadSkillsFromDB() {
     renderExplore();
     renderAiChips();
   } catch(e) { console.log('DB load error:', e); }
+}
+
+let reviewBookingId = null, revieweeId = null, reviewRating = 5;
+function openReviewModal(bookingId, name, reviewee) {
+  reviewBookingId = bookingId;
+  revieweeId = reviewee;
+  reviewRating = 5;
+  const html = `<div style="text-align:center;">
+    <h2 style="font-size:20px;margin-bottom:6px;">${escapeHtml(name)}さんのレビュー</h2>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:20px;">セッションの評価をしてください</p>
+    <div id="review-stars" style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
+      ${[1,2,3,4,5].map(n => `<button onclick="setReviewRating(${n})" style="background:none;border:none;cursor:pointer;font-size:32px;color:${n<=5?'var(--gold)':'var(--border)'};">★</button>`).join('')}
+    </div>
+    <textarea id="review-comment" class="form-input" rows="3" placeholder="感想やフィードバックを書いてください（任意）" style="resize:vertical;margin-bottom:16px;"></textarea>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline" onclick="closeModal()" style="flex:1;">キャンセル</button>
+      <button class="btn btn-dark" id="btn-review-submit" onclick="submitReview()" style="flex:2;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="send" style="width:14px;height:14px;"></i>送信する</button>
+    </div>
+  </div>`;
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').classList.add('open');
+  refreshIcons();
+}
+function setReviewRating(n) {
+  reviewRating = n;
+  document.querySelectorAll('#review-stars button').forEach((btn, i) => {
+    btn.style.color = i < n ? 'var(--gold)' : 'var(--border)';
+  });
+}
+async function submitReview() {
+  if (!currentUser || !reviewBookingId || !revieweeId) return;
+  const btn = document.getElementById('btn-review-submit');
+  btn.innerHTML = '<span class="spinner"></span>送信中...'; btn.disabled = true;
+  const comment = document.getElementById('review-comment')?.value?.trim() || '';
+  const { error } = await sb.from('reviews').insert({
+    booking_id: reviewBookingId,
+    reviewer_id: currentUser.id,
+    reviewee_id: revieweeId,
+    rating: reviewRating,
+    comment: comment || null,
+  });
+  if (error) {
+    if (error.message.includes('duplicate') || error.message.includes('unique')) {
+      alert('このセッションのレビューは既に送信済みです');
+    } else {
+      alert('レビューの送信に失敗しました: ' + error.message);
+    }
+    btn.innerHTML = '送信する'; btn.disabled = false;
+    return;
+  }
+  addNotif({ text: 'レビューを送信しました', time: 'たった今', unread: false, color: 'var(--green)' });
+  closeModal();
+  loadSkillsFromDB();
 }
 
 function refreshIcons() {
