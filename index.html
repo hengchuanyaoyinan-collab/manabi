@@ -275,6 +275,14 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
       <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;">🎓 教える</button>
       <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;">📖 学ぶ</button>
     </div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+      <div style="position:relative;flex-shrink:0;">
+        <div id="reg-av-preview" style="width:56px;height:56px;border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--muted);overflow:hidden;">📷</div>
+        <label for="reg-avatar" style="position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;border:2px solid white;">+</label>
+        <input type="file" id="reg-avatar" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previewRegAvatar(this)">
+      </div>
+      <p style="font-size:12px;color:var(--muted);">プロフィール写真を追加（任意）</p>
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
       <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="reg-name" placeholder="山田 花子"></div>
       <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">カテゴリ</label>
@@ -395,7 +403,11 @@ nav{background:white;border-bottom:1px solid var(--light);padding:12px 20px;disp
 <!-- PROFILE -->
 <div class="page" id="profile">
   <div style="background:white;border-radius:20px;padding:26px;margin-bottom:20px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--light);">
-    <div id="prof-av" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;flex-shrink:0;">?</div>
+    <div style="position:relative;flex-shrink:0;">
+      <div id="prof-av" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;overflow:hidden;"></div>
+      <label for="avatar-upload" style="position:absolute;bottom:-2px;right:-2px;width:26px;height:26px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:2px solid white;">📷</label>
+      <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="uploadAvatar(this)">
+    </div>
     <div>
       <h2 style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;" id="prof-name">読み込み中...</h2>
       <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="prof-email"></p>
@@ -482,8 +494,13 @@ async function loadProfile() {
     document.getElementById('prof-email').textContent = currentUser.email;
     document.getElementById('prof-score').textContent = data.score || 0;
     document.getElementById('dash-score').textContent = data.score || 0;
-    document.getElementById('prof-av').textContent = (data.name || 'U').substring(0, 2).toUpperCase();
-    document.getElementById('nav-av').textContent = (data.name || currentUser.email).substring(0, 2).toUpperCase();
+    if (data.avatar_url) {
+      document.getElementById('prof-av').innerHTML = `<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover;">`;
+      document.getElementById('nav-av').innerHTML = `<img src="${data.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      document.getElementById('prof-av').textContent = (data.name || 'U').substring(0, 2).toUpperCase();
+      document.getElementById('nav-av').textContent = (data.name || currentUser.email).substring(0, 2).toUpperCase();
+    }
     if (data.name) document.getElementById('edit-name').value = data.name;
     if (data.bio) document.getElementById('edit-bio').value = data.bio;
     if (data.role) document.getElementById('edit-role').value = data.role;
@@ -549,6 +566,44 @@ async function doLogout() {
   await sb.auth.signOut();
 }
 
+async function uploadAvatar(input) {
+  if (!currentUser || !input.files[0]) return;
+  const file = input.files[0];
+  const ext = file.name.split('.').pop().toLowerCase();
+  const path = `${currentUser.id}/avatar.${ext}`;
+  const profAv = document.getElementById('prof-av');
+  profAv.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;"></span>';
+  const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
+  if (upErr) { alert('アップロード失敗: ' + upErr.message); profAv.textContent = '?'; return; }
+  const { data: urlData } = sb.storage.from('avatars').getPublicUrl(path);
+  const avatar_url = urlData.publicUrl + '?t=' + Date.now();
+  await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
+  profAv.innerHTML = `<img src="${avatar_url}" style="width:100%;height:100%;object-fit:cover;">`;
+  document.getElementById('nav-av').innerHTML = `<img src="${avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+}
+
+function previewRegAvatar(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('reg-av-preview').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+async function uploadRegAvatar() {
+  if (!currentUser) return;
+  const input = document.getElementById('reg-avatar');
+  if (!input.files[0]) return;
+  const file = input.files[0];
+  const ext = file.name.split('.').pop().toLowerCase();
+  const path = `${currentUser.id}/avatar.${ext}`;
+  await sb.storage.from('avatars').upload(path, file, { upsert: true });
+  const { data } = sb.storage.from('avatars').getPublicUrl(path);
+  const avatar_url = data.publicUrl;
+  await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
+}
+
 async function saveProfile() {
   if (!currentUser) return;
   const name = document.getElementById('edit-name').value.trim();
@@ -582,10 +637,14 @@ async function submitSkill() {
   });
   btn.innerHTML = '登録する'; btn.disabled = false;
   if (!error) {
+    const regName = document.getElementById('reg-name').value.trim();
+    if (regName) await sb.from('profiles').update({ name: regName }).eq('id', currentUser.id);
+    await uploadRegAvatar();
     document.getElementById('reg-ok').style.display = 'block';
     addNotif({ text: `「${skill}」が公開されました！🎉`, time: 'たった今', unread: true, color: 'var(--green)' });
     setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
     loadMySkills();
+    loadSkillsFromDB();
   } else {
     document.getElementById('reg-err').textContent = '登録に失敗しました: ' + error.message;
     document.getElementById('reg-err').style.display = 'block';
@@ -656,9 +715,12 @@ function showPage(id) {
 }
 
 function makeCard(t) {
+  const avInner = t.avatar_url
+    ? `<img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    : t.avatar;
   return `<div class="card" onclick="openModal(${t.id})">
     <div style="height:70px;background:${t.color};display:flex;align-items:center;justify-content:center;">
-      <div style="width:50px;height:50px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.1);">${t.avatar}</div>
+      <div style="width:50px;height:50px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;">${avInner}</div>
     </div>
     <div style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
@@ -931,7 +993,7 @@ function renderModal() {
   let html = '';
   if (bookStep === 0) {
     html = `<div style="display:flex;gap:16px;margin-bottom:18px;">
-      <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;">${t.avatar}</div>
+      <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;">${t.avatar_url ? `<img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : t.avatar}</div>
       <div><h2 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:2px;">${t.name}</h2><p style="font-size:13px;color:var(--muted);">${t.subject}</p><div style="display:flex;align-items:center;gap:3px;margin-top:4px;"><span style="color:var(--gold);">★</span><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div></div>
     </div>
     <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px;">${t.bio}</p>
@@ -963,7 +1025,7 @@ function renderModal() {
 // ── LOAD SKILLS FROM SUPABASE ──
 async function loadSkillsFromDB() {
   try {
-    const { data, error } = await sb.from('skills').select('*, profiles(name)');
+    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url)');
     if (error || !data || data.length === 0) return;
     const colors = ['#E8D5B7','#B7D5E8','#D5E8B7','#E8B7D5','#E8E0B7','#D5B7E8','#B7E8D5','#E8D5E0'];
     const dbTeachers = data.map((s, i) => ({
@@ -977,6 +1039,7 @@ async function loadSkillsFromDB() {
       available: s.available_days || ['月','火','水','木','金','土','日'],
       bio: s.description || '',
       avatar: (s.profiles?.name || s.subject || 'S').substring(0, 2).toUpperCase(),
+      avatar_url: s.profiles?.avatar_url || null,
       color: colors[i % colors.length],
       dist: s.area || '近く',
       db_user_id: s.user_id,
