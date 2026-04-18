@@ -499,6 +499,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
   <div id="my-skills" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="showPage('register')" style="color:var(--accent);">スキルを登録する →</a></p>
   </div>
+  <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="star" style="width:18px;height:18px;color:var(--gold);"></i>受け取ったレビュー</h3>
+  <div id="dash-reviews" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
+    <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">レビューはまだありません</p>
+  </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="history" style="width:18px;height:18px;color:var(--accent);"></i>取引履歴</h3>
   <div id="dash-history" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">取引履歴はまだありません</p>
@@ -574,6 +578,7 @@ async function loadProfile() {
   }
   loadMySkills();
   loadDashboardStats();
+  loadDashboardReviews();
   loadDashboardHistory();
 }
 
@@ -717,8 +722,9 @@ async function submitSkill() {
   const btn = document.getElementById('reg-btn');
   btn.innerHTML = '<span class="spinner"></span>登録中...'; btn.disabled = true;
   const selDays = Array.from(document.querySelectorAll('#reg-days .pill-sm.active')).map(b => b.textContent);
+  const desc = document.getElementById('reg-desc').value.trim();
   const { error } = await sb.from('skills').insert({
-    user_id: currentUser.id, subject: cat, description: skill,
+    user_id: currentUser.id, subject: cat, description: desc || skill,
     price_min: parseInt(document.getElementById('reg-min').value) || 0,
     price_max: parseInt(document.getElementById('reg-max').value) || 0,
     area: document.getElementById('reg-area').value,
@@ -747,6 +753,40 @@ async function submitSkill() {
     document.getElementById('reg-err').textContent = '登録に失敗しました: ' + error.message;
     document.getElementById('reg-err').style.display = 'block';
   }
+}
+
+async function loadDashboardReviews() {
+  if (!currentUser) return;
+  const { data } = await sb.from('reviews')
+    .select('id, rating, comment, created_at, reviewer:profiles!reviews_reviewer_id_fkey(name, avatar_url)')
+    .eq('reviewee_id', currentUser.id)
+    .order('created_at', { ascending: false }).limit(10);
+  const el = document.getElementById('dash-reviews');
+  if (!el) return;
+  if (!data || !data.length) {
+    el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">レビューはまだありません</p>';
+    return;
+  }
+  el.innerHTML = data.map(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    const name = r.reviewer?.name || '匿名';
+    const date = new Date(r.created_at);
+    const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
+    const avInner = r.reviewer?.avatar_url
+      ? `<img src="${r.reviewer.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+      : escapeHtml(name.substring(0,2).toUpperCase());
+    return `<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--light);">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${avInner}</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span style="font-weight:600;font-size:13px;">${escapeHtml(name)}</span>
+          <span style="font-size:11px;color:var(--muted);">${dateStr}</span>
+        </div>
+        <div style="color:var(--gold);font-size:12px;margin-bottom:4px;">${stars}</div>
+        ${r.comment ? `<p style="font-size:12px;color:#555;line-height:1.6;">${escapeHtml(r.comment)}</p>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 async function loadDashboardHistory() {
@@ -861,13 +901,13 @@ function makeCard(t) {
     </div>
     <div style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-        <div><p style="font-weight:700;font-size:14px;">${t.name}</p><p style="font-size:11px;color:var(--muted);">${t.subject}${t.dist?' · '+t.dist:''}</p></div>
+        <div><p style="font-weight:700;font-size:14px;">${escapeHtml(t.name)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(t.subject)}${t.dist?' · '+escapeHtml(t.dist):''}</p></div>
         <div style="text-align:right;"><p style="font-size:13px;font-weight:700;">¥${t.price.toLocaleString()}</p><p style="font-size:10px;color:var(--muted);">/50分</p></div>
       </div>
       <div style="display:flex;align-items:center;gap:3px;margin-bottom:8px;"><span style="color:var(--gold);font-size:12px;">★</span><span style="font-size:12px;font-weight:600;">${t.rating}</span><span style="font-size:11px;color:var(--muted);">(${t.reviews}件)</span></div>
-      <p style="font-size:11px;color:#666;margin-bottom:9px;line-height:1.6;">${t.bio}</p>
-      <div style="margin-bottom:8px;">${t.tags.map(g=>`<span class="tag">${g}</span>`).join('')}</div>
-      <div style="display:flex;gap:4px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:#666;">${d}</span>`).join('')}</div>
+      <p style="font-size:11px;color:#666;margin-bottom:9px;line-height:1.6;">${escapeHtml(t.bio)}</p>
+      <div style="margin-bottom:8px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>
+      <div style="display:flex;gap:4px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:#666;">${escapeHtml(d)}</span>`).join('')}</div>
     </div>
   </div>`;
 }
@@ -1023,8 +1063,8 @@ function renderMap() {
     const icon = L.divIcon({ html: iconHtml, className: '', iconSize: [36,36], iconAnchor: [18,18] });
     const marker = L.marker([lat, lng], { icon }).addTo(leafletMap);
     const popupContent = `<div class="map-popup-inner">
-      <div class="popup-name">${t.name}</div>
-      <div class="popup-subject">${t.subject}</div>
+      <div class="popup-name">${escapeHtml(t.name)}</div>
+      <div class="popup-subject">${escapeHtml(t.subject)}</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
         <span class="popup-price">¥${t.price.toLocaleString()}〜</span>
         <span class="popup-rating">★ ${t.rating}</span>
@@ -1076,16 +1116,17 @@ function toggleNotif() { document.getElementById('notif-panel').classList.toggle
 function readNotif(i) { notifs[i].unread = false; renderNotifs(); }
 function clearNotifs() { notifs.forEach(n => n.unread = false); renderNotifs(); }
 function addNotif(n) { notifs.unshift(n); renderNotifs(); }
+let notifsLoadedFromDB = false;
 async function loadNotificationsFromDB() {
-  if (!currentUser) return;
+  if (!currentUser || notifsLoadedFromDB) return;
+  notifsLoadedFromDB = true;
   const { data: bookings } = await sb.from('bookings')
     .select('id, status, price, created_at, scheduled_at, skills(subject), student:profiles!bookings_student_id_fkey(name), teacher:profiles!bookings_teacher_id_fkey(name)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
     .order('created_at', { ascending: false }).limit(10);
   if (!bookings || !bookings.length) return;
   const dbNotifs = bookings.map(b => {
-    const isStudent = b.student?.name !== undefined;
-    const other = isStudent ? b.teacher : b.student;
+    const other = b.teacher || b.student;
     const name = other?.name || '相手';
     const subject = b.skills?.subject || 'セッション';
     const statusLabels = { pending: '予約リクエスト', confirmed: '予約確定', completed: '完了', cancelled: 'キャンセル' };
@@ -1440,41 +1481,61 @@ function proceedToPayment() {
   goPayStep(1);
   renderPaySummary();
 }
+async function createBookingInDB(t) {
+  if (!currentUser || !t.db_user_id) return;
+  if (t.db_user_id === currentUser.id) return;
+  try {
+    const { data, error } = await sb.from('bookings').insert({
+      student_id: currentUser.id,
+      teacher_id: t.db_user_id,
+      skill_id: t.db_skill_id || null,
+      scheduled_at: selSlot || null,
+      price: t.price || 0,
+      status: 'pending',
+    }).select().single();
+    if (error) { console.error('Booking insert error:', error); return; }
+    payCart.booking_id = data.id;
+  } catch(e) { console.error('createBookingInDB error:', e); }
+}
 function renderModal() {
   const t = selTeacher; if (!t) return;
   let html = '';
   if (bookStep === 0) {
     const verified = t.db_skill_id ? '<span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--green);background:var(--green-light);padding:2px 8px;border-radius:6px;margin-top:4px;"><i data-lucide="badge-check" style="width:12px;height:12px;"></i>認証済み</span>' : '';
-    const tagsHtml = t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px;">${t.tags.map(g=>`<span class="tag">${g}</span>`).join('')}</div>` : '';
+    const tagsHtml = t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>` : '';
     html = `<div style="display:flex;gap:16px;margin-bottom:18px;">
       <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;">${t.avatar_url ? `<img src="${t.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : t.avatar}</div>
-      <div><h2 style="font-size:20px;margin-bottom:2px;">${t.name}</h2><p style="font-size:13px;color:var(--muted);">${t.subject}</p><div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><span style="color:var(--gold);">★</span><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div>${verified}</div>
+      <div><h2 style="font-size:20px;margin-bottom:2px;">${escapeHtml(t.name)}</h2><p style="font-size:13px;color:var(--muted);">${escapeHtml(t.subject)}</p><div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><span style="color:var(--gold);">★</span><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div>${verified}</div>
     </div>
-    <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px;">${t.bio}</p>
+    <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px;">${escapeHtml(t.bio)}</p>
     ${tagsHtml}
     <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:20px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:12px;color:var(--muted);">授業料</span><span style="font-weight:700;font-size:15px;color:var(--accent);">¥${t.price.toLocaleString()} <span style="font-size:11px;color:var(--muted);font-weight:400;">/ 50分</span></span></div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:12px;color:var(--muted);">対応曜日</span><span style="font-size:12px;">${t.available.join('・')}</span></div>
-      <div style="display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--muted);">エリア</span><span style="font-size:12px;">${t.dist || 'オンライン'}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:12px;color:var(--muted);">対応曜日</span><span style="font-size:12px;">${t.available.map(d=>escapeHtml(d)).join('・')}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="font-size:12px;color:var(--muted);">エリア</span><span style="font-size:12px;">${escapeHtml(t.dist || 'オンライン')}</span></div>
     </div>
-    <div style="display:flex;gap:10px;"><button class="btn btn-outline" onclick="closeModal()" style="flex:1;">閉じる</button><button class="btn btn-dark" onclick="bookStep=1;renderModal();" style="flex:2;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="calendar" style="width:16px;height:16px;"></i>予約する</button></div>`;
+    <div style="display:flex;gap:10px;"><button class="btn btn-outline" onclick="closeModal()" style="flex:1;">閉じる</button>${currentUser && t.db_user_id === currentUser.id ? '<button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;">自分のスキルです</button>' : '<button class="btn btn-dark" onclick="bookStep=1;renderModal();" style="flex:2;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="calendar" style="width:16px;height:16px;"></i>予約する</button>'}</div>`;
   } else if (bookStep === 1) {
     const slots = generateSlots(t.available);
     html = `<h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">日程を選択</h2>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">${t.name}先生の空き時間</p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">${escapeHtml(t.name)}先生の空き時間</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;max-height:320px;overflow-y:auto;">
       ${slots.map(s =>
         `<button onclick="selSlot='${s.iso}';bookStep=2;renderModal();" style="padding:12px;border:1.5px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${s.label}</button>`).join('')}
     </div>
     <button class="btn btn-outline" onclick="bookStep=0;renderModal();" style="width:100%;">戻る</button>`;
   } else {
+    if (!t._bookingCreated) {
+      t._bookingCreated = true;
+      createBookingInDB(t);
+    }
     html = `<div style="text-align:center;padding:20px 0;">
       <div style="color:var(--green);margin-bottom:14px;display:flex;justify-content:center;"><i data-lucide="check-circle-2" style="width:52px;height:52px;"></i></div>
       <h2 style="font-size:22px;margin-bottom:8px;">予約が完了しました！</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.8;">${t.name}先生との授業が予約されました。</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.8;">${escapeHtml(t.name)}先生との授業が予約されました。</p>
       <button class="btn btn-dark" onclick="proceedToPayment();" style="width:100%;padding:14px;">支払いへ進む</button>
     </div>`;
-    addNotif({text:`${t.name}先生との予約が完了しました`, time:'たった今', unread:true, color:'var(--green)'});
+    addNotif({text:`${escapeHtml(t.name)}先生との予約が完了しました`, time:'たった今', unread:true, color:'var(--green)'});
   }
   document.getElementById('modal-body').innerHTML = html;
   refreshIcons();
@@ -1501,7 +1562,7 @@ async function editSkill(skillId) {
   const modal = document.createElement('div');
   modal.id = 'edit-skill-modal';
   modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;';
-  modal.innerHTML = `<div style="background:var(--card);border-radius:16px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;">
+  modal.innerHTML = `<div style="background:white;border-radius:16px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:700;">スキル編集</h2><button onclick="document.getElementById('edit-skill-modal').remove()" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);">✕</button></div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">カテゴリ</label>
       <select class="form-input" id="edit-cat">${cats.map(c => `<option ${c===skill.subject?'selected':''}>${c}</option>`).join('')}</select></div>
