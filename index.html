@@ -860,6 +860,7 @@ async function loadDashboardHistory() {
 
 async function loadMySkills() {
   if (!currentUser) return;
+  try {
   const { data } = await sb.from('skills').select('*').eq('user_id', currentUser.id);
   const el = document.getElementById('my-skills');
   if (!data || !data.length) {
@@ -877,6 +878,7 @@ async function loadMySkills() {
       </div>
     </div>`).join('');
   }
+  } catch(e) { console.error('loadMySkills error:', e); }
 }
 
 // ── STATIC DATA ──
@@ -1167,6 +1169,7 @@ let notifsLoadedFromDB = false;
 async function loadNotificationsFromDB() {
   if (!currentUser || notifsLoadedFromDB) return;
   notifsLoadedFromDB = true;
+  try {
   const { data: bookings } = await sb.from('bookings')
     .select('id, status, price, created_at, scheduled_at, skills(subject), student:profiles!bookings_student_id_fkey(name), teacher:profiles!bookings_teacher_id_fkey(name)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
@@ -1187,6 +1190,7 @@ async function loadNotificationsFromDB() {
   });
   notifs = [...dbNotifs, ...notifs];
   renderNotifs();
+  } catch(e) { console.error('loadNotificationsFromDB error:', e); }
 }
 function formatTimeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -1348,6 +1352,7 @@ async function renderMatching() {
   const el = document.getElementById('matching-list');
   if (!currentUser) { el.innerHTML = ''; return; }
   el.innerHTML = '<div style="text-align:center;padding:40px 0;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:24px;height:24px;"></span></div>';
+  try {
   const { data } = await sb.from('bookings')
     .select('id, student_id, teacher_id, skill_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(name,avatar_url)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
@@ -1387,6 +1392,7 @@ async function renderMatching() {
     </div>`;
   }).join('');
   refreshIcons();
+  } catch(e) { console.error('renderMatching error:', e); el.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--muted);font-size:13px;">読み込みに失敗しました</div>'; }
 }
 
 async function cancelBooking(bookingId) {
