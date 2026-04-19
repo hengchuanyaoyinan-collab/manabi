@@ -834,7 +834,7 @@ async function loadDashboardReviews() {
     return;
   }
   const html = data.map(r => {
-    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    const stars = Array.from({length:5}, (_,i) => `<i data-lucide="${i < r.rating ? 'star' : 'star'}" style="width:14px;height:14px;${i < r.rating ? 'fill:var(--gold);color:var(--gold);' : 'color:var(--border);'}"></i>`).join('');
     const name = r.reviewer?.name || '匿名';
     const date = new Date(r.created_at);
     const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
@@ -982,7 +982,7 @@ function makeCard(t) {
         <div><p style="font-weight:700;font-size:14px;">${escapeHtml(t.name)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(t.subject)}${t.dist?' · '+escapeHtml(t.dist):''}</p></div>
         <div style="text-align:right;"><p style="font-size:13px;font-weight:700;">¥${t.price.toLocaleString()}</p><p style="font-size:10px;color:var(--muted);">/50分</p></div>
       </div>
-      <div style="display:flex;align-items:center;gap:3px;margin-bottom:8px;"><span style="color:var(--gold);font-size:12px;">★</span><span style="font-size:12px;font-weight:600;">${t.rating}</span><span style="font-size:11px;color:var(--muted);">(${t.reviews}件)</span></div>
+      <div style="display:flex;align-items:center;gap:3px;margin-bottom:8px;"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:12px;font-weight:600;">${t.rating}</span><span style="font-size:11px;color:var(--muted);">(${t.reviews}件)</span></div>
       <p style="font-size:11px;color:#666;margin-bottom:9px;line-height:1.6;">${escapeHtml(t.bio)}</p>
       <div style="margin-bottom:8px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>
       <div style="display:flex;gap:4px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:#666;">${escapeHtml(d)}</span>`).join('')}</div>
@@ -1074,7 +1074,9 @@ function formatAiResult(matches, query) {
   let html = '<strong>AIの分析結果</strong><br><br>';
   const top = matches.slice(0, 3);
   top.forEach((t, i) => {
-    const stars = '★'.repeat(Math.floor(t.rating)) + (t.rating % 1 >= 0.5 ? '☆' : '');
+    const fullStars = Math.floor(t.rating);
+    const halfStar = t.rating % 1 >= 0.5;
+    const stars = Array.from({length:5}, (_,i) => `<i data-lucide="star" style="width:12px;height:12px;${i < fullStars ? 'fill:var(--gold);color:var(--gold);' : (i === fullStars && halfStar ? 'color:var(--gold);' : 'color:var(--border);')}"></i>`).join('');
     html += `<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--light);cursor:pointer;" onclick="openModal(${t.id})">`;
     html += `<strong>${escapeHtml(t.name)}</strong>（${escapeHtml(t.subject)}）`;
     html += `<br><span style="color:var(--gold);">${stars}</span> ${t.rating} · ¥${t.price.toLocaleString()}/50分`;
@@ -1150,7 +1152,7 @@ function renderMap() {
       <div class="popup-subject">${escapeHtml(t.subject)}</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
         <span class="popup-price">¥${t.price.toLocaleString()}〜</span>
-        <span class="popup-rating">★ ${t.rating}</span>
+        <span class="popup-rating"><i data-lucide="star" style="width:12px;height:12px;fill:var(--gold);color:var(--gold);"></i> ${t.rating}</span>
       </div>
       <button class="btn btn-dark" style="width:100%;padding:8px;font-size:12px;" onclick="openModal(${t.id})">詳しく見る</button>
     </div>`;
@@ -1661,7 +1663,7 @@ function renderModal() {
     const tagsHtml = t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>` : '';
     html = `<div style="display:flex;gap:16px;margin-bottom:18px;">
       <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;">${safeImgUrl(t.avatar_url) ? `<img src="${escapeHtml(safeImgUrl(t.avatar_url))}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;">` : escapeHtml(t.avatar)}</div>
-      <div><h2 style="font-size:20px;margin-bottom:2px;">${escapeHtml(t.name)}</h2><p style="font-size:13px;color:var(--muted);">${escapeHtml(t.subject)}</p><div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><span style="color:var(--gold);">★</span><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div>${verified}</div>
+      <div><h2 style="font-size:20px;margin-bottom:2px;">${escapeHtml(t.name)}</h2><p style="font-size:13px;color:var(--muted);">${escapeHtml(t.subject)}</p><div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div>${verified}</div>
     </div>
     <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px;">${escapeHtml(t.bio)}</p>
     ${tagsHtml}
@@ -1857,7 +1859,7 @@ function openReviewModal(bookingId, name, reviewee) {
     <h2 style="font-size:20px;margin-bottom:6px;">${escapeHtml(name)}さんのレビュー</h2>
     <p style="font-size:12px;color:var(--muted);margin-bottom:20px;">セッションの評価をしてください</p>
     <div id="review-stars" style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
-      ${[1,2,3,4,5].map(n => `<button onclick="setReviewRating(${n})" aria-label="${n}つ星" style="background:none;border:none;cursor:pointer;font-size:32px;color:${n<=reviewRating?'var(--gold)':'var(--border)'};">★</button>`).join('')}
+      ${[1,2,3,4,5].map(n => `<button onclick="setReviewRating(${n})" aria-label="${n}つ星" style="background:none;border:none;cursor:pointer;color:${n<=reviewRating?'var(--gold)':'var(--border)'};display:flex;align-items:center;"><i data-lucide="star" style="width:32px;height:32px;${n<=reviewRating?'fill:var(--gold);':''}"></i></button>`).join('')}
     </div>
     <textarea id="review-comment" class="form-input" rows="3" placeholder="感想やフィードバックを書いてください（任意）" style="resize:vertical;margin-bottom:16px;"></textarea>
     <div style="display:flex;gap:10px;">
@@ -1873,6 +1875,8 @@ function setReviewRating(n) {
   reviewRating = n;
   document.querySelectorAll('#review-stars button').forEach((btn, i) => {
     btn.style.color = i < n ? 'var(--gold)' : 'var(--border)';
+    const icon = btn.querySelector('i, svg');
+    if (icon) icon.style.fill = i < n ? 'var(--gold)' : '';
   });
 }
 async function submitReview() {
