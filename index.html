@@ -1784,7 +1784,7 @@ async function loadSkillsFromDB() {
     renderHome();
     renderExplore();
     renderAiChips();
-  } catch(e) { console.log('DB load error:', e); }
+  } catch(e) { console.error('loadSkillsFromDB error:', e); }
 }
 
 let reviewBookingId = null, revieweeId = null, reviewRating = 5;
