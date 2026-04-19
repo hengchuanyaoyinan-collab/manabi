@@ -106,7 +106,10 @@ Deno.serve(async (req) => {
         })
         .select('id')
         .single();
-      if (bErr) return json({ error: 'booking_insert_failed', message: bErr.message }, 500);
+      if (bErr) {
+        console.error('booking insert error:', bErr.message);
+        return json({ error: 'booking_insert_failed', message: '予約の作成に失敗しました' }, 500);
+      }
       bookingId = booking.id;
     }
 
@@ -121,7 +124,10 @@ Deno.serve(async (req) => {
       })
       .select('id')
       .single();
-    if (pErr) return json({ error: 'payment_insert_failed', message: pErr.message }, 500);
+    if (pErr) {
+      console.error('payment insert error:', pErr.message);
+      return json({ error: 'payment_insert_failed', message: '決済情報の作成に失敗しました' }, 500);
+    }
 
     // --- Stripe Checkout Session ---
     const idempotencyKey = `checkout_${bookingId}_${payment.id}`;
