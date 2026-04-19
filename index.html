@@ -689,7 +689,15 @@ function showConfirm(msg) {
     document.body.appendChild(overlay);
     overlay.querySelector('#confirm-yes').onclick = () => { overlay.remove(); resolve(true); };
     overlay.querySelector('#confirm-no').onclick = () => { overlay.remove(); resolve(false); };
-    overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape') { overlay.remove(); resolve(false); } });
+    overlay.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { overlay.remove(); resolve(false); }
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const btns = overlay.querySelectorAll('button');
+        const next = document.activeElement === btns[0] ? btns[1] : btns[0];
+        next.focus();
+      }
+    });
     overlay.querySelector('#confirm-no').focus();
   });
 }
@@ -797,6 +805,7 @@ async function uploadAvatar(input) {
 
 function previewRegAvatar(input) {
   if (!input.files[0]) return;
+  if (input.files[0].size > 5 * 1024 * 1024) { addNotif({ text: 'ファイルサイズは5MB以下にしてください', time: 'たった今', unread: true, color: 'var(--red)' }); input.value = ''; return; }
   const reader = new FileReader();
   reader.onload = e => {
     document.getElementById('reg-av-preview').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
