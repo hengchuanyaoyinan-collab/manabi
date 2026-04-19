@@ -821,7 +821,7 @@ function previewRegAvatar(input) {
   if (input.files[0].size > 5 * 1024 * 1024) { addNotif({ text: 'ファイルサイズは5MB以下にしてください', time: 'たった今', unread: true, color: 'var(--red)' }); input.value = ''; return; }
   const reader = new FileReader();
   reader.onload = e => {
-    document.getElementById('reg-av-preview').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+    document.getElementById('reg-av-preview').innerHTML = `<img src="${e.target.result}" alt="プロフィール写真プレビュー" style="width:100%;height:100%;object-fit:cover;">`;
   };
   reader.readAsDataURL(input.files[0]);
 }
@@ -1124,7 +1124,7 @@ function renderHome() {
     catEl.innerHTML = allSubjects.map(s => {
       const icon = catIcons[s] || 'book-open';
       const count = allVisible.filter(t => t.subject === s).length;
-      return `<button onclick="curSubj='${s}';showPage('explore');renderFilters();renderExplore();" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="${icon}" style="width:16px;height:16px;color:var(--accent);"></i>${s}<span style="font-size:11px;color:var(--muted);">(${count})</span></button>`;
+      return `<button onclick="curSubj=${escapeHtml(JSON.stringify(s))};showPage('explore');renderFilters();renderExplore();" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="${icon}" style="width:16px;height:16px;color:var(--accent);"></i>${escapeHtml(s)}<span style="font-size:11px;color:var(--muted);">(${count})</span></button>`;
     }).join('');
   }
   refreshIcons();
@@ -1152,9 +1152,9 @@ function renderExplore() {
 
 function renderFilters() {
   document.getElementById('subj-filters').innerHTML = subjects.map(s =>
-    `<button class="pill${curSubj===s?' active':''}" onclick="setSubj('${s}')">${s}</button>`).join('');
+    `<button class="pill${curSubj===s?' active':''}" onclick="setSubj(${escapeHtml(JSON.stringify(s))})">${escapeHtml(s)}</button>`).join('');
   document.getElementById('day-filters').innerHTML = days.map(d =>
-    `<button class="pill-sm${curDay===d?' active':''}" onclick="toggleDay('${d}')">${d}</button>`).join('');
+    `<button class="pill-sm${curDay===d?' active':''}" onclick="toggleDay(${escapeHtml(JSON.stringify(d))})">${escapeHtml(d)}</button>`).join('');
 }
 const debouncedExplore = debounce(renderExplore, 150);
 function setSubj(s) { curSubj = s; renderFilters(); renderExplore(); }
@@ -1164,7 +1164,7 @@ function renderAiChips() {
   const allSubjects = [...new Set(visibleTeachers().map(t => t.subject))];
   const chips = allSubjects.length ? allSubjects.slice(0, 6) : ['英語','数学','プログラミング','音楽','スポーツ'];
   document.getElementById('ai-chips').innerHTML = chips.map(c =>
-    `<button onclick="doAi('${c}')" style="padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${c}</button>`).join('');
+    `<button onclick="doAi(${escapeHtml(JSON.stringify(c))})" style="padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(c)}</button>`).join('');
 }
 function aiSearchTeachers(query) {
   const q = query.toLowerCase();
