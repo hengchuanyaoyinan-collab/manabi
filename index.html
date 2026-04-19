@@ -197,7 +197,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <!-- LOGIN -->
     <div id="tab-login">
       <label for="login-email" class="sr-only">メールアドレス</label>
-      <input class="auth-input" id="login-email" type="email" placeholder="メールアドレス" autocomplete="email">
+      <input class="auth-input" id="login-email" type="email" placeholder="メールアドレス" autocomplete="email" required>
       <label for="login-pass" class="sr-only">パスワード</label>
       <div style="position:relative;"><input class="auth-input" id="login-pass" type="password" placeholder="パスワード" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePass('login-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
       <button class="btn btn-dark" id="btn-login" style="width:100%;padding:13px;font-size:14px;" onclick="doLogin()">ログイン</button>
@@ -352,12 +352,15 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
     <p id="result-count" style="font-size:12px;color:var(--muted);"></p>
-    <select id="explore-sort" class="form-input" onchange="renderExplore()" style="width:auto;padding:6px 12px;font-size:12px;border-radius:8px;">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="showPage('map')" style="font-size:12px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;color:var(--muted);white-space:nowrap;"><i data-lucide="map-pin" style="width:13px;height:13px;"></i>地図</button>
+      <select id="explore-sort" class="form-input" onchange="renderExplore()" style="width:auto;padding:6px 12px;font-size:12px;border-radius:8px;">
       <option value="rating">評価順</option>
       <option value="price-asc">料金：安い順</option>
       <option value="price-desc">料金：高い順</option>
       <option value="reviews">レビュー数順</option>
     </select>
+    </div>
   </div>
   <div class="cards-grid" id="explore-cards"></div>
 </div>
@@ -390,7 +393,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
       <div style="position:relative;flex-shrink:0;">
         <div id="reg-av-preview" style="width:56px;height:56px;border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden;"><i data-lucide="camera" style="width:22px;height:22px;"></i></div>
-        <label for="reg-avatar" style="position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;border:2px solid white;">+</label>
+        <label for="reg-avatar" style="position:absolute;bottom:-4px;right:-4px;width:28px;height:28px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;border:2px solid white;">+</label>
         <input type="file" id="reg-avatar" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previewRegAvatar(this)">
       </div>
       <p style="font-size:12px;color:var(--muted);">プロフィール写真を追加（任意）</p>
@@ -466,14 +469,14 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
   </div>
   <div class="pay-panel active" id="pp1">
     <div id="pay-summary" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);"></div>
-    <div style="background:var(--accent-light);border-radius:12px;padding:13px;font-size:12px;color:#3949AB;margin-bottom:18px;display:flex;align-items:center;gap:8px;"><i data-lucide="lock" style="width:14px;height:14px;flex-shrink:0;"></i>セッション完了後に先生へ自動送金。キャンセル時は全額返金されます。</div>
+    <div style="background:var(--accent-light);border-radius:12px;padding:13px;font-size:12px;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:8px;"><i data-lucide="lock" style="width:14px;height:14px;flex-shrink:0;"></i>セッション完了後に先生へ自動送金。キャンセル時は全額返金されます。</div>
     <button class="btn btn-dark" style="width:100%;padding:14px;font-size:14px;" onclick="goPayStep(2)">支払い方法を選ぶ →</button>
   </div>
   <div class="pay-panel" id="pp2">
     <p style="font-weight:700;font-size:14px;margin-bottom:14px;">支払い方法を選択</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;" id="pay-methods"></div>
     <div style="background:var(--accent-light);border-radius:12px;padding:16px;margin-bottom:18px;">
-      <p style="font-size:13px;color:#3949AB;line-height:1.6;display:flex;align-items:flex-start;gap:8px;"><i data-lucide="lock" style="width:14px;height:14px;flex-shrink:0;margin-top:3px;"></i><span>「支払う」を押すと Stripe の安全な決済画面に移動します。<br>カード情報はそちらで入力してください。</span></p>
+      <p style="font-size:13px;color:var(--accent);line-height:1.6;display:flex;align-items:flex-start;gap:8px;"><i data-lucide="lock" style="width:14px;height:14px;flex-shrink:0;margin-top:3px;"></i><span>「支払う」を押すと Stripe の安全な決済画面に移動します。<br>カード情報はそちらで入力してください。</span></p>
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-outline" onclick="goPayStep(1)">← 戻る</button>
@@ -1398,7 +1401,7 @@ function renderChatList() {
     return `<div class="chat-item${i===curChat?' active':''}" onclick="renderChat(${i})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')renderChat(${i})">
       <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${av}</div>
       <div style="flex:1;min-width:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${escapeHtml(o.name || '名前未設定')}</span>${lastTime ? `<span style="font-size:10px;color:var(--muted);flex-shrink:0;">${lastTime}</span>` : ''}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;"><span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(o.name || '名前未設定')}</span>${lastTime ? `<span style="font-size:10px;color:var(--muted);flex-shrink:0;">${lastTime}</span>` : ''}</div>
         <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(preview)}</p>
       </div>
     </div>`;
