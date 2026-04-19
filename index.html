@@ -1576,7 +1576,7 @@ function handlePaymentReturn() {
     addNotif({text:'支払いがキャンセルされました', time:'たった今', unread:true, color:'var(--red)'});
   }
   // クエリを消してURLをきれいに
-  history.replaceState({}, '', window.location.pathname);
+  history.replaceState({ page: 'payment' }, '', window.location.pathname + '#payment');
 }
 function renderPayMethods() {
   document.getElementById('pay-methods').innerHTML = `
@@ -1843,7 +1843,7 @@ async function loadSkillsFromDB() {
     const userIds = [...new Set(data.map(s => s.user_id).filter(Boolean))];
     let reviewStats = {};
     if (userIds.length) {
-      const { data: revData } = await sb.from('reviews').select('reviewee_id, rating');
+      const { data: revData } = await sb.from('reviews').select('reviewee_id, rating').in('reviewee_id', userIds);
       if (revData) {
         for (const r of revData) {
           if (!reviewStats[r.reviewee_id]) reviewStats[r.reviewee_id] = { sum: 0, count: 0 };
