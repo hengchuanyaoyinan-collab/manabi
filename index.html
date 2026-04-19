@@ -509,7 +509,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
   </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="layers" style="width:18px;height:18px;color:var(--accent);"></i>登録済みスキル</h3>
   <div id="my-skills" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
-    <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="showPage('register')" style="color:var(--accent);">スキルを登録する →</a></p>
+    <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="event.preventDefault();showPage('register')" style="color:var(--accent);">スキルを登録する →</a></p>
   </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="star" style="width:18px;height:18px;color:var(--gold);"></i>受け取ったレビュー</h3>
   <div id="dash-reviews" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
@@ -534,6 +534,7 @@ const SB_URL = 'https://dajngnlvrwesosvgoilh.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRham5nbmx2cndlc29zdmdvaWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3ODc4NDksImV4cCI6MjA5MTM2Mzg0OX0.AuNr5eoUAPaRwgIHvICq3aKqlvlsjPjks5vGrmeVZN0';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 let currentUser = null;
+const FEE_RATE = 0.05;
 
 // 現在カートに入っている決済対象 (予約モーダルで設定される)
 // teacher_id / skill_id は Supabase 上の uuid。デモデータの数値ID は null にする。
@@ -598,28 +599,27 @@ async function loadProfile() {
   } else {
     await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
   }
-  loadMySkills();
-  loadDashboardStats();
-  loadDashboardReviews();
-  loadDashboardHistory();
+  Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory()]);
 }
 
 async function loadDashboardStats() {
   if (!currentUser) return;
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const [taughtRes, learnedRes, paidRes] = await Promise.all([
-    sb.from('bookings').select('id', { count: 'exact', head: true }).eq('teacher_id', currentUser.id).eq('status', 'confirmed'),
-    sb.from('bookings').select('id', { count: 'exact', head: true }).eq('student_id', currentUser.id).eq('status', 'confirmed'),
-    sb.from('payments').select('amount, booking_id, bookings!inner(teacher_id)').eq('status', 'paid').eq('bookings.teacher_id', currentUser.id).gte('created_at', monthStart),
-  ]);
-  const earned = (paidRes.data || []).reduce((s, p) => s + (p.amount || 0), 0);
-  const taught = document.getElementById('dash-taught');
-  const learned = document.getElementById('dash-learned');
-  const earnedEl = document.getElementById('dash-earned');
-  if (taught) taught.textContent = taughtRes.count || 0;
-  if (learned) learned.textContent = learnedRes.count || 0;
-  if (earnedEl) earnedEl.textContent = '¥' + earned.toLocaleString();
+  try {
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const [taughtRes, learnedRes, paidRes] = await Promise.all([
+      sb.from('bookings').select('id', { count: 'exact', head: true }).eq('teacher_id', currentUser.id).eq('status', 'confirmed'),
+      sb.from('bookings').select('id', { count: 'exact', head: true }).eq('student_id', currentUser.id).eq('status', 'confirmed'),
+      sb.from('payments').select('amount, booking_id, bookings!inner(teacher_id)').eq('status', 'paid').eq('bookings.teacher_id', currentUser.id).gte('created_at', monthStart),
+    ]);
+    const earned = (paidRes.data || []).reduce((s, p) => s + (p.amount || 0), 0);
+    const taught = document.getElementById('dash-taught');
+    const learned = document.getElementById('dash-learned');
+    const earnedEl = document.getElementById('dash-earned');
+    if (taught) taught.textContent = taughtRes.count || 0;
+    if (learned) learned.textContent = learnedRes.count || 0;
+    if (earnedEl) earnedEl.textContent = '¥' + earned.toLocaleString();
+  } catch(e) { console.error('loadDashboardStats error:', e); }
 }
 
 // AUTH
@@ -825,6 +825,7 @@ async function loadDashboardReviews() {
 
 async function loadDashboardHistory() {
   if (!currentUser) return;
+  try {
   const { data } = await sb.from('payments')
     .select('id, amount, fee, status, created_at, stripe_session_id, bookings!inner(id, status, scheduled_at, student_id, teacher_id, skills(subject), teacher:profiles!bookings_teacher_id_fkey(name), student:profiles!bookings_student_id_fkey(name))')
     .order('created_at', { ascending: false }).limit(20);
@@ -850,6 +851,7 @@ async function loadDashboardHistory() {
       <div style="text-align:right;"><p style="font-weight:700;font-size:13px;">¥${(p.amount||0).toLocaleString()}</p><span style="font-size:11px;color:${sc};font-weight:500;">${s}</span></div>
     </div>`;
   }).join('');
+  } catch(e) { console.error('loadDashboardHistory error:', e); }
 }
 
 async function loadMySkills() {
@@ -857,7 +859,7 @@ async function loadMySkills() {
   const { data } = await sb.from('skills').select('*').eq('user_id', currentUser.id);
   const el = document.getElementById('my-skills');
   if (!data || !data.length) {
-    el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="showPage(\'register\')" style="color:var(--accent);">スキルを登録する →</a></p>';
+    el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="event.preventDefault();showPage(\'register\')" style="color:var(--accent);">スキルを登録する →</a></p>';
   } else {
     el.innerHTML = data.map(s => `<div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;gap:12px;">
       <div style="flex:1;"><p style="font-weight:700;font-size:13px;">${escapeHtml(s.subject)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(s.description)}</p>
@@ -1201,6 +1203,7 @@ async function loadChatThreads() {
   if (!currentUser) return;
   const listEl = document.getElementById('chat-list-items');
   if (listEl && !chatThreads.length) listEl.innerHTML = '<div style="padding:20px;text-align:center;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:20px;height:20px;"></span></div>';
+  try {
   const { data: bookings } = await sb.from('bookings')
     .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(id,name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(id,name,avatar_url)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
@@ -1213,9 +1216,10 @@ async function loadChatThreads() {
     map.get(other.id).bookings.push(b);
   }
   chatThreads = Array.from(map.values());
-  await Promise.all(chatThreads.map(t => loadMsgsFor(t.other.id)));
+  await Promise.allSettled(chatThreads.map(t => loadMsgsFor(t.other.id)));
   renderChatList();
   if (chatThreads.length && curChat == null) renderChat(0);
+  } catch(e) { console.error('loadChatThreads error:', e); }
 }
 
 async function loadMsgsFor(otherId) {
@@ -1231,7 +1235,7 @@ async function loadMsgsFor(otherId) {
 function renderChatList() {
   const el = document.getElementById('chat-list-items');
   if (!chatThreads.length) {
-    el.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted);font-size:12px;"><div style="display:flex;justify-content:center;margin-bottom:8px;"><i data-lucide="message-circle" style="width:24px;height:24px;"></i></div>先生を予約するとチャットが始まります<br><a href="#" onclick="showPage(\'explore\')" style="color:var(--accent);font-weight:500;">先生を探す →</a></div>';
+    el.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted);font-size:12px;"><div style="display:flex;justify-content:center;margin-bottom:8px;"><i data-lucide="message-circle" style="width:24px;height:24px;"></i></div>先生を予約するとチャットが始まります<br><a href="#" onclick="event.preventDefault();showPage(\'explore\')" style="color:var(--accent);font-weight:500;">先生を探す →</a></div>';
     document.getElementById('chat-msgs').innerHTML = '<div style="margin:auto;text-align:center;color:var(--muted);font-size:12px;"><i data-lucide="message-circle" style="width:24px;height:24px;display:block;margin:0 auto 8px;"></i>チャット相手を選択してください</div>';
     refreshIcons();
     return;
@@ -1398,7 +1402,7 @@ async function completeBooking(bookingId) {
 }
 
 function payForBooking(bookingId, teacherName, price, skillId) {
-  const fee = Math.round(price * 0.05);
+  const fee = Math.round(price * FEE_RATE);
   payCart = { teacher_name: teacherName, teacher_id: null, skill_id: skillId || null, scheduled_at: null, amount: price, fee: fee, booking_id: bookingId || null };
   showPage('payment');
   goPayStep(1);
@@ -1534,7 +1538,7 @@ function renderPaySummary() {
   const el = document.getElementById('pay-summary');
   if (!el) return;
   if (!payCart.amount && !payCart.teacher_name) {
-    el.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;"><i data-lucide="info" style="width:20px;height:20px;display:block;margin:0 auto 8px;"></i>先生を予約すると決済情報が表示されます。<br><a href="#" onclick="showPage(\'explore\')" style="color:var(--accent);font-weight:500;">先生を探す →</a></div>';
+    el.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;"><i data-lucide="info" style="width:20px;height:20px;display:block;margin:0 auto 8px;"></i>先生を予約すると決済情報が表示されます。<br><a href="#" onclick="event.preventDefault();showPage(\'explore\')" style="color:var(--accent);font-weight:500;">先生を探す →</a></div>';
     refreshIcons();
     return;
   }
@@ -1555,7 +1559,7 @@ function renderPaySummary() {
 function proceedToPayment() {
   if (selTeacher) {
     const price = selTeacher.price || 2000;
-    const fee = Math.round(price * 0.05);
+    const fee = Math.round(price * FEE_RATE);
     const existingBookingId = payCart.booking_id || null;
     payCart = {
       teacher_name: selTeacher.name,
@@ -1694,13 +1698,15 @@ async function editSkill(skillId) {
 }
 async function saveEditedSkill(skillId) {
   const btn = document.getElementById('edit-save-btn');
+  const priceMin = Math.max(0, parseInt(document.getElementById('edit-min').value) || 0);
+  const priceMax = Math.max(priceMin, parseInt(document.getElementById('edit-max').value) || 0);
   btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
   const selDays = Array.from(document.querySelectorAll('#edit-days .pill-sm.active')).map(b => b.textContent);
   const { error } = await sb.from('skills').update({
     subject: document.getElementById('edit-cat').value,
     description: document.getElementById('edit-desc').value.trim(),
-    price_min: parseInt(document.getElementById('edit-min').value) || 0,
-    price_max: parseInt(document.getElementById('edit-max').value) || 0,
+    price_min: priceMin,
+    price_max: priceMax,
     area: document.getElementById('edit-area').value.trim(),
     available_days: selDays.length ? selDays : null,
     tags: document.getElementById('edit-tags').value.split(',').map(t => t.trim()).filter(Boolean),
