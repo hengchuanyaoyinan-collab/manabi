@@ -73,6 +73,9 @@ Deno.serve(async (req) => {
     if (!Number.isFinite(totalYen) || totalYen < 50) {
       return json({ error: 'invalid_amount', message: '金額は¥50以上で指定してください' }, 400);
     }
+    if (totalYen > 1_000_000) {
+      return json({ error: 'invalid_amount', message: '金額は¥1,000,000以下で指定してください' }, 400);
+    }
 
     // --- service role で booking / payment を作成 ---
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -109,6 +112,7 @@ Deno.serve(async (req) => {
     if (pErr) return json({ error: 'payment_insert_failed', message: pErr.message }, 500);
 
     // --- Stripe Checkout Session ---
+    const idempotencyKey = `checkout_${bookingId}_${payment.id}`;
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
@@ -131,7 +135,7 @@ Deno.serve(async (req) => {
         student_id: user.id,
         teacher_name,
       },
-    });
+    }, { idempotencyKey });
 
     await admin
       .from('payments')

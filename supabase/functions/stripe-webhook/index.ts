@@ -101,6 +101,21 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case 'charge.dispute.created': {
+        const dispute = event.data.object as Stripe.Dispute;
+        const pi = typeof dispute.payment_intent === 'string'
+          ? dispute.payment_intent
+          : dispute.payment_intent?.id ?? null;
+        if (pi) {
+          await admin
+            .from('payments')
+            .update({ status: 'disputed', updated_at: new Date().toISOString() })
+            .eq('stripe_payment_intent_id', pi);
+        }
+        console.warn('Dispute received:', dispute.id, 'PI:', pi);
+        break;
+      }
+
       default:
         // 対応しないイベントは 200 で受け流す
         break;

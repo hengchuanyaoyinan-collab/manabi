@@ -601,7 +601,7 @@ async function loadProfile() {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
   } catch(e) { console.error('loadProfile error:', e); }
-  Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory()]);
+  await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory()]);
 }
 
 async function loadDashboardStats() {
@@ -694,7 +694,7 @@ async function uploadAvatar(input) {
   const profAv = document.getElementById('prof-av');
   profAv.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;"></span>';
   const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
-  if (upErr) { alert('アップロード失敗: ' + upErr.message); profAv.textContent = '?'; return; }
+  if (upErr) { addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); profAv.textContent = '?'; return; }
   const { data: urlData } = sb.storage.from('avatars').getPublicUrl(path);
   const avatar_url = urlData.publicUrl + '?t=' + Date.now();
   await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
@@ -746,10 +746,10 @@ async function saveProfile() {
 }
 
 async function submitSkill() {
-  if (!currentUser) { alert('ログインが必要です'); return; }
+  if (!currentUser) { addNotif({ text: 'ログインが必要です', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   const skill = document.getElementById('reg-skill').value.trim();
   const cat = document.getElementById('reg-cat').value;
-  if (!skill || !cat) { alert('スキルとカテゴリを入力してください'); return; }
+  if (!skill || !cat) { addNotif({ text: 'スキルとカテゴリを入力してください', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   const btn = document.getElementById('reg-btn');
   btn.innerHTML = '<span class="spinner"></span>登録中...'; btn.disabled = true;
   const selDays = Array.from(document.querySelectorAll('#reg-days .pill-sm.active')).map(b => b.textContent);
@@ -929,6 +929,8 @@ function showPage(id) {
   if (id === 'matching') renderMatching();
   if (id === 'map') renderMap();
   if (id === 'profile' || id === 'dashboard') loadProfile();
+  if (document.getElementById('modal').classList.contains('open')) closeModal();
+  bookStep = 0; selSlot = null;
   document.querySelector('.nav-links')?.classList.remove('open');
   window.scrollTo(0, 0);
   refreshIcons();
@@ -1318,7 +1320,7 @@ async function sendMsg() {
   const { data, error } = await sb.from('messages').insert({
     sender_id: currentUser.id, receiver_id: t.other.id, content: text,
   }).select().single();
-  if (error) { alert('送信失敗: ' + error.message); inp.value = text; return; }
+  if (error) { addNotif({ text: 'メッセージの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); inp.value = text; return; }
   chatMsgs[t.other.id] = [...(chatMsgs[t.other.id] || []), data];
   renderChat(curChat);
 }
@@ -1399,18 +1401,22 @@ async function renderMatching() {
 
 async function cancelBooking(bookingId) {
   if (!confirm('この予約をキャンセルしますか？')) return;
-  const { error } = await sb.from('bookings').update({ status: 'cancelled' }).eq('id', bookingId);
-  if (error) { alert('キャンセルに失敗しました: ' + error.message); return; }
-  addNotif({ text: '予約をキャンセルしました', time: 'たった今', unread: false, color: 'var(--red)' });
-  renderMatching();
+  try {
+    const { error } = await sb.from('bookings').update({ status: 'cancelled' }).eq('id', bookingId);
+    if (error) { addNotif({ text: 'キャンセルに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+    addNotif({ text: '予約をキャンセルしました', time: 'たった今', unread: false, color: 'var(--red)' });
+    renderMatching();
+  } catch(e) { console.error('cancelBooking error:', e); addNotif({ text: 'キャンセルに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 async function completeBooking(bookingId) {
   if (!confirm('このセッションを完了にしますか？')) return;
-  const { error } = await sb.from('bookings').update({ status: 'completed' }).eq('id', bookingId);
-  if (error) { alert('完了処理に失敗しました: ' + error.message); return; }
-  addNotif({ text: 'セッションが完了しました', time: 'たった今', unread: false, color: 'var(--green)' });
-  renderMatching();
+  try {
+    const { error } = await sb.from('bookings').update({ status: 'completed' }).eq('id', bookingId);
+    if (error) { addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+    addNotif({ text: 'セッションが完了しました', time: 'たった今', unread: false, color: 'var(--green)' });
+    renderMatching();
+  } catch(e) { console.error('completeBooking error:', e); addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 function payForBooking(bookingId, teacherName, price, skillId) {
@@ -1425,7 +1431,7 @@ function payForBooking(bookingId, teacherName, price, skillId) {
 // Edge Function 側で booking / payment を作成し、Stripe Checkout Session の URL を返す。
 async function startStripeCheckout() {
   if (!currentUser) {
-    alert('ログインしてください');
+    addNotif({ text: 'ログインしてください', time: 'たった今', unread: true, color: 'var(--red)' });
     return;
   }
   const btn = document.getElementById('btn-pay');
@@ -1459,7 +1465,7 @@ async function startStripeCheckout() {
     window.location.href = data.url;
   } catch (e) {
     console.error('checkout error', e);
-    alert('決済の開始に失敗しました: ' + (e.message || e));
+    addNotif({ text: '決済の開始に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' });
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = '¥' + (payCart.amount + payCart.fee).toLocaleString() + ' を支払う'; refreshIcons();
@@ -1591,6 +1597,10 @@ function proceedToPayment() {
 async function createBookingInDB(t) {
   if (!currentUser || !t.db_user_id) throw new Error('ログインが必要です');
   if (t.db_user_id === currentUser.id) throw new Error('自分のスキルは予約できません');
+  if (selSlot) {
+    const { data: existing } = await sb.from('bookings').select('id').eq('student_id', currentUser.id).eq('teacher_id', t.db_user_id).eq('scheduled_at', selSlot).in('status', ['pending','confirmed']).maybeSingle();
+    if (existing) throw new Error('同じ日時の予約が既に存在します');
+  }
   const { data, error } = await sb.from('bookings').insert({
     student_id: currentUser.id,
     teacher_id: t.db_user_id,
@@ -1626,7 +1636,7 @@ function renderModal() {
     <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">${escapeHtml(t.name)}先生の空き時間</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;max-height:320px;overflow-y:auto;">
       ${slots.map(s =>
-        `<button onclick="selSlot='${s.iso}';bookStep=2;renderModal();" style="padding:12px;border:1.5px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${s.label}</button>`).join('')}
+        `<button onclick="selSlot='${escapeHtml(s.iso)}';bookStep=2;renderModal();" style="padding:12px;border:1.5px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(s.label)}</button>`).join('')}
     </div>
     <button class="btn btn-outline" onclick="bookStep=0;renderModal();" style="width:100%;">戻る</button>`;
   } else {
@@ -1682,7 +1692,7 @@ async function loadHeroStats() {
 async function editSkill(skillId) {
   if (!currentUser) return;
   const { data: skill, error } = await sb.from('skills').select('*').eq('id', skillId).eq('user_id', currentUser.id).single();
-  if (error || !skill) { alert('スキル情報の取得に失敗しました'); return; }
+  if (error || !skill) { addNotif({ text: 'スキル情報の取得に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   const days = ['月','火','水','木','金','土','日'];
   const activeDays = skill.available_days || [];
   const cats = ['英語','数学','プログラミング','音楽','美術','スポーツ','その他'];
@@ -1715,29 +1725,35 @@ async function saveEditedSkill(skillId) {
   const priceMin = Math.max(0, parseInt(document.getElementById('edit-min').value) || 0);
   const priceMax = Math.max(priceMin, parseInt(document.getElementById('edit-max').value) || 0);
   btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
-  const selDays = Array.from(document.querySelectorAll('#edit-days .pill-sm.active')).map(b => b.textContent);
-  const { error } = await sb.from('skills').update({
-    subject: document.getElementById('edit-cat').value,
-    description: document.getElementById('edit-desc').value.trim(),
-    price_min: priceMin,
-    price_max: priceMax,
-    area: document.getElementById('edit-area').value.trim(),
-    available_days: selDays.length ? selDays : null,
-    tags: document.getElementById('edit-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-  }).eq('id', skillId).eq('user_id', currentUser.id);
-  btn.innerHTML = '保存する'; btn.disabled = false;
-  if (error) { alert('更新に失敗しました: ' + error.message); return; }
-  document.getElementById('edit-skill-modal').remove();
-  loadMySkills();
-  loadSkillsFromDB();
+  try {
+    const selDays = Array.from(document.querySelectorAll('#edit-days .pill-sm.active')).map(b => b.textContent);
+    const { error } = await sb.from('skills').update({
+      subject: document.getElementById('edit-cat').value,
+      description: document.getElementById('edit-desc').value.trim(),
+      price_min: priceMin,
+      price_max: priceMax,
+      area: document.getElementById('edit-area').value.trim(),
+      available_days: selDays.length ? selDays : null,
+      tags: document.getElementById('edit-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    }).eq('id', skillId).eq('user_id', currentUser.id);
+    btn.innerHTML = '保存する'; btn.disabled = false;
+    if (error) { addNotif({ text: '更新に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+    document.getElementById('edit-skill-modal').remove();
+    addNotif({ text: 'スキルを更新しました', time: 'たった今', unread: false, color: 'var(--green)' });
+    loadMySkills();
+    loadSkillsFromDB();
+  } catch(e) { console.error('saveEditedSkill error:', e); btn.innerHTML = '保存する'; btn.disabled = false; addNotif({ text: '更新に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 async function deleteSkill(skillId) {
   if (!confirm('このスキルを削除しますか？')) return;
-  const { error } = await sb.from('skills').delete().eq('id', skillId).eq('user_id', currentUser.id);
-  if (error) { alert('削除に失敗しました: ' + error.message); return; }
-  loadMySkills();
-  loadSkillsFromDB();
+  try {
+    const { error } = await sb.from('skills').delete().eq('id', skillId).eq('user_id', currentUser.id);
+    if (error) { addNotif({ text: '削除に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+    addNotif({ text: 'スキルを削除しました', time: 'たった今', unread: false, color: 'var(--green)' });
+    loadMySkills();
+    loadSkillsFromDB();
+  } catch(e) { console.error('deleteSkill error:', e); addNotif({ text: '削除に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 // ── LOAD SKILLS FROM SUPABASE ──
@@ -1798,7 +1814,7 @@ function openReviewModal(bookingId, name, reviewee) {
     <h2 style="font-size:20px;margin-bottom:6px;">${escapeHtml(name)}さんのレビュー</h2>
     <p style="font-size:12px;color:var(--muted);margin-bottom:20px;">セッションの評価をしてください</p>
     <div id="review-stars" style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
-      ${[1,2,3,4,5].map(n => `<button onclick="setReviewRating(${n})" aria-label="${n}つ星" style="background:none;border:none;cursor:pointer;font-size:32px;color:${n<=5?'var(--gold)':'var(--border)'};">★</button>`).join('')}
+      ${[1,2,3,4,5].map(n => `<button onclick="setReviewRating(${n})" aria-label="${n}つ星" style="background:none;border:none;cursor:pointer;font-size:32px;color:${n<=reviewRating?'var(--gold)':'var(--border)'};">★</button>`).join('')}
     </div>
     <textarea id="review-comment" class="form-input" rows="3" placeholder="感想やフィードバックを書いてください（任意）" style="resize:vertical;margin-bottom:16px;"></textarea>
     <div style="display:flex;gap:10px;">
@@ -1820,26 +1836,34 @@ async function submitReview() {
   if (!currentUser || !reviewBookingId || !revieweeId) return;
   const btn = document.getElementById('btn-review-submit');
   btn.innerHTML = '<span class="spinner"></span>送信中...'; btn.disabled = true;
-  const comment = document.getElementById('review-comment')?.value?.trim() || '';
-  const { error } = await sb.from('reviews').insert({
-    booking_id: reviewBookingId,
-    reviewer_id: currentUser.id,
-    reviewee_id: revieweeId,
-    rating: reviewRating,
-    comment: comment || null,
-  });
-  if (error) {
-    if (error.message.includes('duplicate') || error.message.includes('unique')) {
-      alert('このセッションのレビューは既に送信済みです');
-    } else {
-      alert('レビューの送信に失敗しました: ' + error.message);
+  try {
+    const comment = document.getElementById('review-comment')?.value?.trim() || '';
+    const { error } = await sb.from('reviews').insert({
+      booking_id: reviewBookingId,
+      reviewer_id: currentUser.id,
+      reviewee_id: revieweeId,
+      rating: reviewRating,
+      comment: comment || null,
+    });
+    if (error) {
+      if (error.message.includes('duplicate') || error.message.includes('unique') || error.code === '23505') {
+        addNotif({ text: 'このセッションのレビューは既に送信済みです', time: 'たった今', unread: true, color: 'var(--gold)' });
+      } else {
+        addNotif({ text: 'レビューの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' });
+      }
+      btn.innerHTML = '<i data-lucide="send" style="width:14px;height:14px;"></i>送信する'; btn.disabled = false;
+      refreshIcons();
+      return;
     }
-    btn.innerHTML = '送信する'; btn.disabled = false;
-    return;
-  }
   addNotif({ text: 'レビューを送信しました', time: 'たった今', unread: false, color: 'var(--green)' });
   closeModal();
   loadSkillsFromDB();
+  } catch(e) {
+    console.error('submitReview error:', e);
+    addNotif({ text: 'レビューの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' });
+    btn.innerHTML = '<i data-lucide="send" style="width:14px;height:14px;"></i>送信する'; btn.disabled = false;
+    refreshIcons();
+  }
 }
 
 function togglePass(inputId, btn) {
