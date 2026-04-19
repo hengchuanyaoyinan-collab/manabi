@@ -625,7 +625,7 @@ async function loadProfile() {
     } else {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
-  } catch(e) { console.error('loadProfile error:', e); }
+  } catch(e) { console.error('loadProfile error:', e); addNotif({ text: 'プロフィールの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
   await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory()]);
 }
 
@@ -710,7 +710,8 @@ async function doSignup() {
   try {
     const { data, error } = await sb.auth.signUp({ email, password: pass });
     if (error) {
-      showMsg('登録に失敗しました: ' + error.message, true);
+      const msg = error.message?.includes('already registered') ? 'このメールアドレスは既に登録されています' : '登録に失敗しました。入力内容を確認してください';
+      showMsg(msg, true);
     } else {
       if (data.user) await sb.from('profiles').upsert({ id: data.user.id, name, score: 0 }, { onConflict: 'id' });
       showMsg('登録完了！メールを確認してログインしてください。', false);
@@ -732,6 +733,10 @@ async function doLogout() {
     chatThreads = [];
     chatMsgs = {};
     curChat = null;
+    selTeacher = null;
+    payCart = { teacher_name:'', teacher_id:null, skill_id:null, subject:'', amount:0, fee:0, booking_id:null };
+    reviewBookingId = null;
+    revieweeId = null;
     await sb.auth.signOut();
   } catch(e) { console.error('doLogout error:', e); }
 }
@@ -846,7 +851,7 @@ async function submitSkill() {
       loadMySkills();
       loadSkillsFromDB();
     } else {
-      document.getElementById('reg-err').textContent = '登録に失敗しました: ' + error.message;
+      document.getElementById('reg-err').textContent = '登録に失敗しました。入力内容を確認してください';
       document.getElementById('reg-err').style.display = 'block';
     }
   } catch(e) { console.error('submitSkill error:', e); btn.innerHTML = '登録する'; btn.disabled = false; addNotif({ text: 'スキルの登録に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
@@ -968,7 +973,7 @@ let leafletMap = null;
 let mapMarkers = [];
 let chatThreads = [];
 let chatMsgs = {};
-let realtimeCh = null;
+let realtimeCh = null, realtimeRetries = 0;
 let subjects = ["すべて","英語","数学","プログラミング","ピアノ","日本語","美術","サッカー","ヨガ"];
 const days = ["月","火","水","木","金","土","日"];
 let curSubj = "すべて", curDay = null, curChat = null;
@@ -1309,7 +1314,7 @@ async function loadChatThreads() {
   await Promise.allSettled(chatThreads.map(t => loadMsgsFor(t.other.id)));
   renderChatList();
   if (chatThreads.length && curChat == null) renderChat(0);
-  } catch(e) { console.error('loadChatThreads error:', e); }
+  } catch(e) { console.error('loadChatThreads error:', e); addNotif({ text: 'チャットの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 async function loadMsgsFor(otherId) {
@@ -1402,7 +1407,8 @@ async function sendMsg() {
       sender_id: currentUser.id, receiver_id: t.other.id, content: text,
     }).select().single();
     if (error) { addNotif({ text: 'メッセージの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); inp.value = text; return; }
-    chatMsgs[t.other.id] = [...(chatMsgs[t.other.id] || []), data];
+    const msgs = chatMsgs[t.other.id] || [];
+    if (!msgs.some(e => e.id === data.id)) chatMsgs[t.other.id] = [...msgs, data];
     renderChat(curChat);
   } catch(e) { console.error('sendMsg error:', e); inp.value = text; addNotif({ text: 'メッセージの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
   finally { if (sendBtn) sendBtn.disabled = false; }
@@ -1422,7 +1428,9 @@ function subscribeRealtimeMessages() {
     })
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `receiver_id=eq.${currentUser.id}` }, (p) => {
       const m = p.new;
-      chatMsgs[m.sender_id] = [...(chatMsgs[m.sender_id] || []), m];
+      const existing = chatMsgs[m.sender_id] || [];
+      if (existing.some(e => e.id === m.id)) return;
+      chatMsgs[m.sender_id] = [...existing, m];
       const idx = chatThreads.findIndex(t => t.other.id === m.sender_id);
       if (idx >= 0) {
         if (idx === curChat) renderChat(idx);
@@ -1437,7 +1445,13 @@ function subscribeRealtimeMessages() {
       if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
         console.error('Realtime subscription error:', status, err);
         realtimeCh = null;
-        setTimeout(() => subscribeRealtimeMessages(), 5000);
+        realtimeRetries = Math.min((realtimeRetries || 0) + 1, 6);
+        if (realtimeRetries <= 6) {
+          const delay = Math.min(2000 * Math.pow(2, realtimeRetries - 1), 60000);
+          setTimeout(() => subscribeRealtimeMessages(), delay);
+        }
+      } else if (status === 'SUBSCRIBED') {
+        realtimeRetries = 0;
       }
     });
 }
@@ -1610,7 +1624,6 @@ function renderPayMethods() {
 let selTeacher = null, bookStep = 0, selSlot = null;
 
 function generateSlots(availableDays) {
-  const dayMap = {'日':0,'月':1,'火':2,'水':3,'木':4,'金':5,'土':6};
   const dayLabels = ['日','月','火','水','木','金','土'];
   const hours = [10, 14, 19];
   const out = [];
@@ -1638,6 +1651,17 @@ function openModal(id) {
   document.getElementById('modal').classList.add('open');
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function trapFocus(e) {
+  const modal = document.getElementById('modal');
+  if (!modal.classList.contains('open')) return;
+  if (e.key === 'Tab') {
+    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+    else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+  }
+}
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (document.getElementById('modal').classList.contains('open')) closeModal();
@@ -1645,6 +1669,7 @@ document.addEventListener('keydown', e => {
     const editModal = document.getElementById('edit-skill-modal');
     if (editModal) editModal.remove();
   }
+  if (e.key === 'Tab') trapFocus(e);
 });
 
 function renderPaySummary() {
@@ -1904,7 +1929,7 @@ async function loadSkillsFromDB() {
     renderHome();
     renderExplore();
     renderAiChips();
-  } catch(e) { console.error('loadSkillsFromDB error:', e); }
+  } catch(e) { console.error('loadSkillsFromDB error:', e); addNotif({ text: '先生データの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 let reviewBookingId = null, revieweeId = null, reviewRating = 5;
