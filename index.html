@@ -865,8 +865,8 @@ async function loadDashboardHistory() {
     el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">取引履歴はまだありません</p>';
     return;
   }
-  const statusMap = { pending:'支払い待ち', paid:'支払い済み', failed:'失敗', refunded:'返金済み' };
-  const statusColors = { pending:'var(--gold)', paid:'var(--green)', failed:'var(--red)', refunded:'var(--muted)' };
+  const statusMap = { pending:'支払い待ち', paid:'支払い済み', failed:'失敗', refunded:'返金済み', disputed:'異議申立て中' };
+  const statusColors = { pending:'var(--gold)', paid:'var(--green)', failed:'var(--red)', refunded:'var(--muted)', disputed:'var(--red)' };
   el.innerHTML = filtered.map(p => {
     const b = p.bookings;
     const other = b?.teacher?.name || b?.student?.name || '';
