@@ -727,16 +727,17 @@ async function uploadAvatar(input) {
   const ext = file.name.split('.').pop().toLowerCase();
   const path = `${currentUser.id}/avatar.${ext}`;
   const profAv = document.getElementById('prof-av');
-  profAv.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;"></span>';
+  if (profAv) profAv.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;"></span>';
   try {
     const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
-    if (upErr) { addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); profAv.textContent = '?'; return; }
+    if (upErr) { addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (profAv) profAv.textContent = '?'; return; }
     const { data: urlData } = sb.storage.from('avatars').getPublicUrl(path);
     const avatar_url = urlData.publicUrl + '?t=' + Date.now();
     await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
-    profAv.innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="プロフィール写真" style="width:100%;height:100%;object-fit:cover;">`;
-    document.getElementById('nav-av').innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-  } catch(e) { console.error('uploadAvatar error:', e); profAv.textContent = '?'; addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+    if (profAv) profAv.innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="プロフィール写真" style="width:100%;height:100%;object-fit:cover;">`;
+    const navAv = document.getElementById('nav-av');
+    if (navAv) navAv.innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  } catch(e) { console.error('uploadAvatar error:', e); if (profAv) profAv.textContent = '?'; addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 function previewRegAvatar(input) {
@@ -995,7 +996,7 @@ function makeCard(t) {
     ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" loading="lazy" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
     : escapeHtml(t.avatar);
   const sampleBadge = !t.db_skill_id ? '<span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:white;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">サンプル</span>' : '';
-  return `<div class="card" onclick="openModal(${t.id})" style="position:relative;">
+  return `<div class="card" onclick="openModal(${t.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openModal(${t.id})" style="position:relative;">
     ${sampleBadge}
     <div style="height:70px;background:${t.color};display:flex;align-items:center;justify-content:center;">
       <div style="width:50px;height:50px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;">${avInner}</div>
@@ -1215,10 +1216,10 @@ function setRole(r) {
 
 function renderNotifs() {
   document.getElementById('notif-list').innerHTML = notifs.map((n,i) =>
-    `<div onclick="readNotif(${i})" style="display:flex;gap:10px;padding:11px 16px;border-bottom:1px solid var(--light);cursor:pointer;background:${n.unread?'var(--bg)':'white'};">
+    `<button onclick="readNotif(${i})" style="display:flex;gap:10px;padding:11px 16px;border-bottom:1px solid var(--light);cursor:pointer;background:${n.unread?'var(--bg)':'white'};border:none;width:100%;text-align:left;font-family:inherit;">
       <div style="width:8px;height:8px;border-radius:50%;background:${n.color};flex-shrink:0;margin-top:5px;"></div>
       <div><div style="font-size:12px;line-height:1.5;">${escapeHtml(n.text)}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">${escapeHtml(n.time)}</div></div>
-    </div>`).join('');
+    </button>`).join('');
   const c = notifs.filter(n => n.unread).length;
   const b = document.getElementById('notif-badge');
   b.textContent = c > 99 ? '99+' : c;
@@ -1319,7 +1320,7 @@ function renderChatList() {
     const preview = last ? last.content : 'メッセージはまだありません';
     const safeChatAv = safeImgUrl(o.avatar_url);
     const av = safeChatAv ? `<img src="${escapeHtml(safeChatAv)}" alt="${escapeHtml(o.name||'')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : escapeHtml((o.name || '?').substring(0,2).toUpperCase());
-    return `<div class="chat-item${i===curChat?' active':''}" onclick="renderChat(${i})">
+    return `<div class="chat-item${i===curChat?' active':''}" onclick="renderChat(${i})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')renderChat(${i})">
       <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${av}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${escapeHtml(o.name || '名前未設定')}</span></div>
@@ -1529,7 +1530,8 @@ async function startStripeCheckout() {
     });
     if (error) throw error;
     if (!data?.url) throw new Error('決済URLの取得に失敗しました');
-    document.getElementById('tx-id').textContent = '#' + (data.booking_id || Date.now());
+    const txEl = document.getElementById('tx-id');
+    if (txEl) txEl.textContent = '#' + (data.booking_id || Date.now());
     addNotif({
       text: `¥${(payCart.amount + payCart.fee).toLocaleString()} の支払いが開始されました`,
       time: 'たった今', unread: true, color: 'var(--gold)',
