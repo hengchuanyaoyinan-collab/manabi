@@ -50,7 +50,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 /* BOTTOM TAB (mobile) */
 .btm-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);z-index:100;padding:4px 0 env(safe-area-inset-bottom,0);box-shadow:0 -1px 8px rgba(0,0,0,.06);}
 .btm-tabs-inner{display:flex;justify-content:space-around;max-width:500px;margin:0 auto;}
-.btm-tab{background:none;border:none;cursor:pointer;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:inherit;color:var(--muted);transition:color .15s;min-width:56px;}
+.btm-tab{background:none;border:none;cursor:pointer;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:inherit;color:var(--muted);transition:color .15s;min-width:56px;-webkit-tap-highlight-color:transparent;}
 .btm-tab .btm-icon{font-size:22px;line-height:1;}
 .btm-tab .btm-label{font-size:10px;font-weight:500;}
 .btm-tab.active{color:var(--primary);}
@@ -1065,6 +1065,20 @@ window.addEventListener('popstate', (e) => {
   if (valid.includes(page)) showPage(page, false);
 });
 
+function makeSkeletonCards(n) {
+  return Array(n).fill(`<div class="card" style="pointer-events:none;">
+    <div style="height:70px;background:var(--lighter);display:flex;align-items:center;justify-content:center;">
+      <div class="skeleton" style="width:50px;height:50px;border-radius:50%;"></div>
+    </div>
+    <div style="padding:14px 16px;">
+      <div class="skeleton" style="width:60%;height:14px;margin-bottom:8px;"></div>
+      <div class="skeleton" style="width:40%;height:11px;margin-bottom:10px;"></div>
+      <div class="skeleton" style="width:80%;height:11px;margin-bottom:6px;"></div>
+      <div class="skeleton" style="width:50%;height:11px;"></div>
+    </div>
+  </div>`).join('');
+}
+
 function makeCard(t) {
   const safeAv = safeImgUrl(t.avatar_url);
   const avInner = safeAv
@@ -1974,6 +1988,10 @@ async function deleteSkill(skillId, btn) {
 
 // ── LOAD SKILLS FROM SUPABASE ──
 async function loadSkillsFromDB() {
+  const homeEl = document.getElementById('home-cards');
+  const exploreEl = document.getElementById('explore-cards');
+  if (homeEl && !homeEl.children.length) homeEl.innerHTML = makeSkeletonCards(4);
+  if (exploreEl && !exploreEl.children.length) exploreEl.innerHTML = makeSkeletonCards(6);
   try {
     const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url, score)');
     if (error || !data || data.length === 0) return;
