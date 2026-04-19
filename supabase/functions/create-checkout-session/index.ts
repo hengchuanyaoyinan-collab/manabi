@@ -84,6 +84,9 @@ Deno.serve(async (req) => {
     if (skill_id && !uuidRe.test(skill_id)) {
       return json({ error: 'invalid_skill_id' }, 400);
     }
+    if (booking_id && !uuidRe.test(booking_id)) {
+      return json({ error: 'invalid_booking_id' }, 400);
+    }
     if (scheduled_at) {
       const d = new Date(scheduled_at);
       if (isNaN(d.getTime())) return json({ error: 'invalid_scheduled_at' }, 400);
