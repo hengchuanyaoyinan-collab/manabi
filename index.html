@@ -579,26 +579,28 @@ function updateNavUser() {
 
 async function loadProfile() {
   if (!currentUser) return;
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  if (data) {
-    document.getElementById('prof-name').textContent = data.name || currentUser.email;
-    document.getElementById('prof-email').textContent = currentUser.email;
-    document.getElementById('prof-score').textContent = data.score || 0;
-    document.getElementById('dash-score').textContent = data.score || 0;
-    const safeAv = safeImgUrl(data.avatar_url);
-    if (safeAv) {
-      document.getElementById('prof-av').innerHTML = `<img src="${escapeHtml(safeAv)}" alt="プロフィール写真" style="width:100%;height:100%;object-fit:cover;">`;
-      document.getElementById('nav-av').innerHTML = `<img src="${escapeHtml(safeAv)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  try {
+    const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (data) {
+      document.getElementById('prof-name').textContent = data.name || currentUser.email;
+      document.getElementById('prof-email').textContent = currentUser.email;
+      document.getElementById('prof-score').textContent = data.score || 0;
+      document.getElementById('dash-score').textContent = data.score || 0;
+      const safeAv = safeImgUrl(data.avatar_url);
+      if (safeAv) {
+        document.getElementById('prof-av').innerHTML = `<img src="${escapeHtml(safeAv)}" alt="プロフィール写真" style="width:100%;height:100%;object-fit:cover;">`;
+        document.getElementById('nav-av').innerHTML = `<img src="${escapeHtml(safeAv)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      } else {
+        document.getElementById('prof-av').textContent = (data.name || 'U').substring(0, 2).toUpperCase();
+        document.getElementById('nav-av').textContent = (data.name || currentUser.email).substring(0, 2).toUpperCase();
+      }
+      if (data.name) document.getElementById('edit-name').value = data.name;
+      if (data.bio) document.getElementById('edit-bio').value = data.bio;
+      if (data.role) document.getElementById('edit-role').value = data.role;
     } else {
-      document.getElementById('prof-av').textContent = (data.name || 'U').substring(0, 2).toUpperCase();
-      document.getElementById('nav-av').textContent = (data.name || currentUser.email).substring(0, 2).toUpperCase();
+      await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
-    if (data.name) document.getElementById('edit-name').value = data.name;
-    if (data.bio) document.getElementById('edit-bio').value = data.bio;
-    if (data.role) document.getElementById('edit-role').value = data.role;
-  } else {
-    await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
-  }
+  } catch(e) { console.error('loadProfile error:', e); }
   Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory()]);
 }
 
