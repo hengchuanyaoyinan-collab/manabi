@@ -77,6 +77,18 @@ Deno.serve(async (req) => {
       return json({ error: 'invalid_amount', message: '金額は¥1,000,000以下で指定してください' }, 400);
     }
 
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (teacher_id && !uuidRe.test(teacher_id)) {
+      return json({ error: 'invalid_teacher_id' }, 400);
+    }
+    if (skill_id && !uuidRe.test(skill_id)) {
+      return json({ error: 'invalid_skill_id' }, 400);
+    }
+    if (scheduled_at) {
+      const d = new Date(scheduled_at);
+      if (isNaN(d.getTime())) return json({ error: 'invalid_scheduled_at' }, 400);
+    }
+
     // --- service role で booking / payment を作成 ---
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -145,7 +157,7 @@ Deno.serve(async (req) => {
     return json({ url: session.url, session_id: session.id, booking_id: bookingId });
   } catch (e) {
     console.error('create-checkout-session error', e);
-    return json({ error: 'internal_error', message: String(e?.message ?? e) }, 500);
+    return json({ error: 'internal_error', message: '決済処理中にエラーが発生しました' }, 500);
   }
 });
 
