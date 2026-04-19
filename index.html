@@ -22,6 +22,8 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Sans JP',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 /* AUTH */
 #auth-screen{position:fixed;inset:0;background:#fff;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;}
 .auth-box{background:white;border-radius:16px;padding:32px 28px;width:100%;max-width:380px;}
@@ -81,7 +83,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 .ai-dot:nth-child(2){animation-delay:.2s;}.ai-dot:nth-child(3){animation-delay:.4s;}
 @keyframes abounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
 /* NOTIF */
-.notif-panel{position:fixed;top:56px;right:12px;width:320px;background:white;border:1px solid var(--border);border-radius:14px;z-index:150;box-shadow:0 12px 40px rgba(0,0,0,.12);display:none;}
+.notif-panel{position:fixed;top:56px;right:12px;width:320px;background:white;border:1px solid var(--border);border-radius:14px;z-index:150;box-shadow:0 12px 40px rgba(0,0,0,.12);display:none;max-height:calc(100vh - 80px);overflow-y:auto;}
 .notif-panel.open{display:block;}
 /* MAP */
 .map-area{position:relative;height:400px;background:var(--lighter);overflow:hidden;border-radius:12px;}
@@ -689,6 +691,7 @@ async function doLogout() {
 async function uploadAvatar(input) {
   if (!currentUser || !input.files[0]) return;
   const file = input.files[0];
+  if (file.size > 5 * 1024 * 1024) { addNotif({ text: 'ファイルサイズは5MB以下にしてください', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   const ext = file.name.split('.').pop().toLowerCase();
   const path = `${currentUser.id}/avatar.${ext}`;
   const profAv = document.getElementById('prof-av');
@@ -717,6 +720,7 @@ async function uploadRegAvatar() {
   if (!currentUser) return;
   const input = document.getElementById('reg-avatar');
   if (!input.files[0]) return;
+  if (input.files[0].size > 5 * 1024 * 1024) { console.error('reg avatar too large'); return; }
   try {
     const file = input.files[0];
     const ext = file.name.split('.').pop().toLowerCase();
