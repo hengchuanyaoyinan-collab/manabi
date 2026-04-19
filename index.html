@@ -693,13 +693,15 @@ async function uploadAvatar(input) {
   const path = `${currentUser.id}/avatar.${ext}`;
   const profAv = document.getElementById('prof-av');
   profAv.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;"></span>';
-  const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
-  if (upErr) { addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); profAv.textContent = '?'; return; }
-  const { data: urlData } = sb.storage.from('avatars').getPublicUrl(path);
-  const avatar_url = urlData.publicUrl + '?t=' + Date.now();
-  await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
-  profAv.innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="プロフィール写真" style="width:100%;height:100%;object-fit:cover;">`;
-  document.getElementById('nav-av').innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  try {
+    const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
+    if (upErr) { addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); profAv.textContent = '?'; return; }
+    const { data: urlData } = sb.storage.from('avatars').getPublicUrl(path);
+    const avatar_url = urlData.publicUrl + '?t=' + Date.now();
+    await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
+    profAv.innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="プロフィール写真" style="width:100%;height:100%;object-fit:cover;">`;
+    document.getElementById('nav-av').innerHTML = `<img src="${escapeHtml(avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  } catch(e) { console.error('uploadAvatar error:', e); profAv.textContent = '?'; addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 function previewRegAvatar(input) {
@@ -715,14 +717,16 @@ async function uploadRegAvatar() {
   if (!currentUser) return;
   const input = document.getElementById('reg-avatar');
   if (!input.files[0]) return;
-  const file = input.files[0];
-  const ext = file.name.split('.').pop().toLowerCase();
-  const path = `${currentUser.id}/avatar.${ext}`;
-  const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
-  if (upErr) { console.error('reg avatar upload failed:', upErr); return; }
-  const { data } = sb.storage.from('avatars').getPublicUrl(path);
-  const avatar_url = data.publicUrl;
-  await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
+  try {
+    const file = input.files[0];
+    const ext = file.name.split('.').pop().toLowerCase();
+    const path = `${currentUser.id}/avatar.${ext}`;
+    const { error: upErr } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
+    if (upErr) { console.error('reg avatar upload failed:', upErr); return; }
+    const { data } = sb.storage.from('avatars').getPublicUrl(path);
+    const avatar_url = data.publicUrl;
+    await sb.from('profiles').update({ avatar_url }).eq('id', currentUser.id);
+  } catch(e) { console.error('uploadRegAvatar error:', e); }
 }
 
 async function saveProfile() {
@@ -732,17 +736,21 @@ async function saveProfile() {
   const role = document.getElementById('edit-role').value;
   const btn = document.getElementById('btn-save-prof');
   btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
-  const { error } = await sb.from('profiles').upsert({ id: currentUser.id, name, bio, role });
-  btn.innerHTML = '保存する'; btn.disabled = false;
-  if (!error) {
-    document.getElementById('prof-saved').style.display = 'block';
-    document.getElementById('prof-name').textContent = name;
-    const navAv = document.getElementById('nav-av');
-    if (!navAv.querySelector('img')) {
-      navAv.textContent = name.substring(0, 2).toUpperCase();
+  try {
+    const { error } = await sb.from('profiles').upsert({ id: currentUser.id, name, bio, role });
+    btn.innerHTML = '保存する'; btn.disabled = false;
+    if (!error) {
+      document.getElementById('prof-saved').style.display = 'block';
+      document.getElementById('prof-name').textContent = name;
+      const navAv = document.getElementById('nav-av');
+      if (!navAv.querySelector('img')) {
+        navAv.textContent = name.substring(0, 2).toUpperCase();
+      }
+      setTimeout(() => document.getElementById('prof-saved').style.display = 'none', 3000);
+    } else {
+      addNotif({ text: 'プロフィールの保存に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' });
     }
-    setTimeout(() => document.getElementById('prof-saved').style.display = 'none', 3000);
-  }
+  } catch(e) { console.error('saveProfile error:', e); btn.innerHTML = '保存する'; btn.disabled = false; addNotif({ text: 'プロフィールの保存に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 async function submitSkill() {
@@ -752,40 +760,42 @@ async function submitSkill() {
   if (!skill || !cat) { addNotif({ text: 'スキルとカテゴリを入力してください', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   const btn = document.getElementById('reg-btn');
   btn.innerHTML = '<span class="spinner"></span>登録中...'; btn.disabled = true;
-  const selDays = Array.from(document.querySelectorAll('#reg-days .pill-sm.active')).map(b => b.textContent);
-  const desc = document.getElementById('reg-desc').value.trim();
-  const priceMin = Math.max(0, parseInt(document.getElementById('reg-min').value) || 0);
-  const priceMax = Math.max(priceMin, parseInt(document.getElementById('reg-max').value) || 0);
-  const { error } = await sb.from('skills').insert({
-    user_id: currentUser.id, subject: cat, description: desc || skill,
-    price_min: priceMin,
-    price_max: priceMax,
-    area: document.getElementById('reg-area').value,
-    available_days: selDays.length ? selDays : null,
-    tags: document.getElementById('reg-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-  });
-  btn.innerHTML = '登録する'; btn.disabled = false;
-  if (!error) {
-    const regName = document.getElementById('reg-name').value.trim();
-    if (regName) await sb.from('profiles').update({ name: regName }).eq('id', currentUser.id);
-    await uploadRegAvatar();
-    document.getElementById('reg-ok').style.display = 'block';
-    addNotif({ text: `「${skill}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
-    setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
-    document.getElementById('reg-skill').value = '';
-    document.getElementById('reg-cat').value = '';
-    document.getElementById('reg-desc').value = '';
-    document.getElementById('reg-min').value = '';
-    document.getElementById('reg-max').value = '';
-    document.getElementById('reg-area').value = '';
-    document.getElementById('reg-tags').value = '';
-    document.querySelectorAll('#reg-days .pill-sm.active').forEach(b => b.classList.remove('active'));
-    loadMySkills();
-    loadSkillsFromDB();
-  } else {
-    document.getElementById('reg-err').textContent = '登録に失敗しました: ' + error.message;
-    document.getElementById('reg-err').style.display = 'block';
-  }
+  try {
+    const selDays = Array.from(document.querySelectorAll('#reg-days .pill-sm.active')).map(b => b.textContent);
+    const desc = document.getElementById('reg-desc').value.trim();
+    const priceMin = Math.max(0, parseInt(document.getElementById('reg-min').value) || 0);
+    const priceMax = Math.max(priceMin, parseInt(document.getElementById('reg-max').value) || 0);
+    const { error } = await sb.from('skills').insert({
+      user_id: currentUser.id, subject: cat, description: desc || skill,
+      price_min: priceMin,
+      price_max: priceMax,
+      area: document.getElementById('reg-area').value,
+      available_days: selDays.length ? selDays : null,
+      tags: document.getElementById('reg-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    });
+    btn.innerHTML = '登録する'; btn.disabled = false;
+    if (!error) {
+      const regName = document.getElementById('reg-name').value.trim();
+      if (regName) await sb.from('profiles').update({ name: regName }).eq('id', currentUser.id);
+      await uploadRegAvatar();
+      document.getElementById('reg-ok').style.display = 'block';
+      addNotif({ text: `「${escapeHtml(skill)}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
+      setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
+      document.getElementById('reg-skill').value = '';
+      document.getElementById('reg-cat').value = '';
+      document.getElementById('reg-desc').value = '';
+      document.getElementById('reg-min').value = '';
+      document.getElementById('reg-max').value = '';
+      document.getElementById('reg-area').value = '';
+      document.getElementById('reg-tags').value = '';
+      document.querySelectorAll('#reg-days .pill-sm.active').forEach(b => b.classList.remove('active'));
+      loadMySkills();
+      loadSkillsFromDB();
+    } else {
+      document.getElementById('reg-err').textContent = '登録に失敗しました: ' + error.message;
+      document.getElementById('reg-err').style.display = 'block';
+    }
+  } catch(e) { console.error('submitSkill error:', e); btn.innerHTML = '登録する'; btn.disabled = false; addNotif({ text: 'スキルの登録に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 async function loadDashboardReviews() {
@@ -1317,12 +1327,14 @@ async function sendMsg() {
   const t = chatThreads[curChat];
   if (!t) return;
   inp.value = '';
-  const { data, error } = await sb.from('messages').insert({
-    sender_id: currentUser.id, receiver_id: t.other.id, content: text,
-  }).select().single();
-  if (error) { addNotif({ text: 'メッセージの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); inp.value = text; return; }
-  chatMsgs[t.other.id] = [...(chatMsgs[t.other.id] || []), data];
-  renderChat(curChat);
+  try {
+    const { data, error } = await sb.from('messages').insert({
+      sender_id: currentUser.id, receiver_id: t.other.id, content: text,
+    }).select().single();
+    if (error) { addNotif({ text: 'メッセージの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); inp.value = text; return; }
+    chatMsgs[t.other.id] = [...(chatMsgs[t.other.id] || []), data];
+    renderChat(curChat);
+  } catch(e) { console.error('sendMsg error:', e); inp.value = text; addNotif({ text: 'メッセージの送信に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 function subscribeRealtimeMessages() {
@@ -1691,6 +1703,7 @@ async function loadHeroStats() {
 
 async function editSkill(skillId) {
   if (!currentUser) return;
+  try {
   const { data: skill, error } = await sb.from('skills').select('*').eq('id', skillId).eq('user_id', currentUser.id).single();
   if (error || !skill) { addNotif({ text: 'スキル情報の取得に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   const days = ['月','火','水','木','金','土','日'];
@@ -1713,12 +1726,13 @@ async function editSkill(skillId) {
       <div id="edit-days" style="display:flex;gap:6px;flex-wrap:wrap;">${days.map(d => `<button type="button" class="pill-sm ${activeDays.includes(d)?'active':''}" onclick="this.classList.toggle('active')">${d}</button>`).join('')}</div></div>
     <div style="margin-bottom:16px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">タグ（カンマ区切り）</label><input class="form-input" id="edit-tags" value="${escapeHtml((skill.tags||[]).join(', '))}"></div>
     <div style="display:flex;gap:10px;">
-      <button class="btn btn-dark" id="edit-save-btn" onclick="saveEditedSkill('${skillId}')" style="flex:1;padding:12px;">保存する</button>
+      <button class="btn btn-dark" id="edit-save-btn" onclick="saveEditedSkill('${escapeHtml(skillId)}')" style="flex:1;padding:12px;">保存する</button>
       <button class="btn btn-outline" onclick="document.getElementById('edit-skill-modal').remove()" style="flex:1;padding:12px;">キャンセル</button>
     </div>
   </div>`;
   document.body.appendChild(modal);
   refreshIcons();
+  } catch(e) { console.error('editSkill error:', e); addNotif({ text: 'スキル情報の取得に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 async function saveEditedSkill(skillId) {
   const btn = document.getElementById('edit-save-btn');
