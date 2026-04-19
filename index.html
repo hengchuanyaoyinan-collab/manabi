@@ -559,6 +559,7 @@ let payCart = {
   teacher_name: '',
   teacher_id: null,
   skill_id: null,
+  subject: '',
   amount: 0,
   fee: 0,
   booking_id: null,
@@ -810,6 +811,7 @@ async function submitSkill() {
     const desc = document.getElementById('reg-desc').value.trim();
     const priceMin = Math.max(0, parseInt(document.getElementById('reg-min').value) || 0);
     const priceMax = Math.max(priceMin, parseInt(document.getElementById('reg-max').value) || 0);
+    if (priceMin <= 0) { addNotif({ text: '最低単価を1円以上で設定してください', time: 'たった今', unread: true, color: 'var(--red)' }); btn.innerHTML = '登録する'; btn.disabled = false; return; }
     const { error } = await sb.from('skills').insert({
       user_id: currentUser.id, subject: cat, description: desc || skill,
       price_min: priceMin,
@@ -1507,7 +1509,7 @@ async function completeBooking(bookingId, btn) {
 
 function payForBooking(bookingId, teacherName, price, skillId) {
   const fee = Math.round(price * FEE_RATE);
-  payCart = { teacher_name: teacherName, teacher_id: null, skill_id: skillId || null, scheduled_at: null, amount: price, fee: fee, booking_id: bookingId || null };
+  payCart = { teacher_name: teacherName, teacher_id: null, skill_id: skillId || null, subject: '', scheduled_at: null, amount: price, fee: fee, booking_id: bookingId || null };
   showPage('payment');
   goPayStep(1);
   renderPaySummary();
@@ -1581,8 +1583,10 @@ function handlePaymentReturn() {
       document.getElementById('ps'+i).className = 'pay-step'+(i===3?' active':' done');
       document.getElementById('pp'+i).className = 'pay-panel'+(i===3?' active':'');
     }
-    document.getElementById('tx-id').textContent = '#' + (params.get('session_id') || Date.now());
+    const txIdEl = document.getElementById('tx-id');
+    if (txIdEl) txIdEl.textContent = '#' + (params.get('session_id') || Date.now());
     addNotif({text:'支払いが完了しました', time:'たった今', unread:true, color:'var(--green)'});
+    setTimeout(() => { loadDashboardStats(); loadDashboardHistory(); }, 2000);
   } else if (status === 'cancel') {
     addNotif({text:'支払いがキャンセルされました', time:'たった今', unread:true, color:'var(--red)'});
   }
@@ -1648,7 +1652,7 @@ function renderPaySummary() {
     return;
   }
   const total = payCart.amount + payCart.fee;
-  const subject = selTeacher ? selTeacher.subject : '';
+  const subject = payCart.subject || '';
   el.innerHTML = `
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>サービス</span><span>${escapeHtml(subject || 'セッション')}</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);font-size:13px;"><span>先生</span><span>${escapeHtml(payCart.teacher_name)}</span></div>
@@ -1670,6 +1674,7 @@ function proceedToPayment() {
       teacher_name: selTeacher.name,
       teacher_id: selTeacher.db_user_id || null,
       skill_id: selTeacher.db_skill_id || null,
+      subject: selTeacher.subject || '',
       scheduled_at: selSlot,
       amount: price,
       fee: fee,
@@ -1732,6 +1737,7 @@ function renderModal() {
       html = `<div style="text-align:center;padding:40px 0;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:28px;height:28px;"></span><p style="font-size:13px;color:var(--muted);margin-top:12px;">予約を作成中...</p></div>`;
       document.getElementById('modal-body').innerHTML = html;
       createBookingInDB(t).then(() => {
+        if (!document.getElementById('modal').classList.contains('open')) return;
         document.getElementById('modal-body').innerHTML = `<div style="text-align:center;padding:20px 0;">
           <div style="color:var(--green);margin-bottom:14px;display:flex;justify-content:center;"><i data-lucide="check-circle-2" style="width:52px;height:52px;"></i></div>
           <h2 style="font-size:22px;margin-bottom:8px;">予約が完了しました！</h2>
@@ -1742,6 +1748,7 @@ function renderModal() {
         refreshIcons();
       }).catch(err => {
         t._bookingCreated = false;
+        if (!document.getElementById('modal').classList.contains('open')) return;
         document.getElementById('modal-body').innerHTML = `<div style="text-align:center;padding:20px 0;">
           <div style="color:var(--red);margin-bottom:14px;display:flex;justify-content:center;"><i data-lucide="alert-circle" style="width:52px;height:52px;"></i></div>
           <h2 style="font-size:20px;margin-bottom:8px;">予約に失敗しました</h2>
@@ -1813,6 +1820,7 @@ async function saveEditedSkill(skillId) {
   const btn = document.getElementById('edit-save-btn');
   const priceMin = Math.max(0, parseInt(document.getElementById('edit-min').value) || 0);
   const priceMax = Math.max(priceMin, parseInt(document.getElementById('edit-max').value) || 0);
+  if (priceMin <= 0) { addNotif({ text: '最低単価を1円以上で設定してください', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
   try {
     const selDays = Array.from(document.querySelectorAll('#edit-days .pill-sm.active')).map(b => b.textContent);
