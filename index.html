@@ -122,8 +122,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 @keyframes spin{to{transform:rotate(360deg);}}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#DDD;border-radius:2px;}
 @media(max-width:640px){
-  .chat-layout{grid-template-columns:1fr;height:auto;}
-  .chat-list{height:160px;border-right:none;border-bottom:1px solid var(--border);}
+  .chat-layout{grid-template-columns:1fr;height:calc(100vh - 180px);}
+  .chat-list{height:140px;border-right:none;border-bottom:1px solid var(--border);}
   .page{padding:16px 12px;padding-bottom:80px;}
   .nav-links{display:none !important;}
   .hamburger{display:none !important;}
@@ -786,6 +786,7 @@ async function submitSkill() {
 
 async function loadDashboardReviews() {
   if (!currentUser) return;
+  try {
   const { data } = await sb.from('reviews')
     .select('id, rating, comment, created_at, reviewer:profiles!reviews_reviewer_id_fkey(name, avatar_url)')
     .eq('reviewee_id', currentUser.id)
@@ -821,6 +822,7 @@ async function loadDashboardReviews() {
   }).join('');
   if (el) el.innerHTML = html;
   if (profEl) profEl.innerHTML = html;
+  } catch(e) { console.error('loadDashboardReviews error:', e); }
 }
 
 async function loadDashboardHistory() {
@@ -1655,14 +1657,16 @@ function renderModal() {
 }
 
 async function loadHeroStats() {
-  const [skillsRes, bookingsRes] = await Promise.all([
-    sb.from('skills').select('id', { count: 'exact', head: true }),
-    sb.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
-  ]);
-  const tc = document.getElementById('hero-teacher-count');
-  const sc = document.getElementById('hero-session-count');
-  if (tc) tc.textContent = (skillsRes.count || 0) + '名';
-  if (sc) sc.textContent = (bookingsRes.count || 0) + '回';
+  try {
+    const [skillsRes, bookingsRes] = await Promise.all([
+      sb.from('skills').select('id', { count: 'exact', head: true }),
+      sb.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
+    ]);
+    const tc = document.getElementById('hero-teacher-count');
+    const sc = document.getElementById('hero-session-count');
+    if (tc) tc.textContent = (skillsRes.count || 0) + '名';
+    if (sc) sc.textContent = (bookingsRes.count || 0) + '回';
+  } catch(e) { console.error('loadHeroStats error:', e); }
 }
 
 async function editSkill(skillId) {
