@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     );
   } catch (err) {
     console.error('Stripe signature verification failed', err);
-    return new Response(`signature_invalid: ${(err as Error).message}`, { status: 400 });
+    return new Response('signature_invalid', { status: 400 });
   }
 
   try {
@@ -127,6 +127,6 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('webhook handler error', e);
-    return new Response(`handler_error: ${(e as Error).message}`, { status: 500 });
+    return new Response('handler_error', { status: 500 });
   }
 });
