@@ -432,14 +432,20 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 
 <!-- MATCHING -->
 <div class="page" id="matching">
-  <h2 class="section-title">予約・マッチング</h2>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h2 class="section-title" style="margin-bottom:0;">予約・マッチング</h2>
+    <button onclick="renderMatching()" aria-label="更新" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:8px;"><i data-lucide="refresh-cw" style="width:18px;height:18px;"></i></button>
+  </div>
   <div id="matching-list"></div>
   <div style="text-align:center;margin-top:16px;"><button class="btn btn-outline" onclick="showPage('explore')">新しい先生を探す</button></div>
 </div>
 
 <!-- CHAT -->
 <div class="page" id="chat">
-  <h2 class="section-title">チャット</h2>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h2 class="section-title" style="margin-bottom:0;">チャット</h2>
+    <button onclick="loadChatThreads()" aria-label="更新" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:8px;"><i data-lucide="refresh-cw" style="width:18px;height:18px;"></i></button>
+  </div>
   <div class="chat-layout">
     <div class="chat-list">
       <div style="padding:14px 16px;font-weight:700;font-size:13px;border-bottom:1px solid var(--light);">メッセージ</div>
