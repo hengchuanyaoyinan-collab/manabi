@@ -941,7 +941,7 @@ async function loadDashboardReviews() {
           <span style="font-size:11px;color:var(--muted);">${dateStr}</span>
         </div>
         <div style="color:var(--gold);font-size:12px;margin-bottom:4px;">${stars}</div>
-        ${r.comment ? `<p style="font-size:12px;color:#555;line-height:1.6;">${escapeHtml(r.comment)}</p>` : ''}
+        ${r.comment ? `<p style="font-size:12px;color:var(--muted);line-height:1.6;">${escapeHtml(r.comment)}</p>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -1081,9 +1081,9 @@ function makeCard(t) {
         <div style="text-align:right;"><p style="font-size:13px;font-weight:700;">¥${t.price.toLocaleString()}</p><p style="font-size:10px;color:var(--muted);">/50分</p></div>
       </div>
       <div style="display:flex;align-items:center;gap:3px;margin-bottom:8px;"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:12px;font-weight:600;">${t.rating}</span><span style="font-size:11px;color:var(--muted);">(${t.reviews}件)</span></div>
-      <p style="font-size:11px;color:#666;margin-bottom:9px;line-height:1.6;">${escapeHtml(t.bio)}</p>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:9px;line-height:1.6;">${escapeHtml(t.bio)}</p>
       <div style="margin-bottom:8px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>
-      <div style="display:flex;gap:4px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:#666;">${escapeHtml(d)}</span>`).join('')}</div>
+      <div style="display:flex;gap:4px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:var(--muted);">${escapeHtml(d)}</span>`).join('')}</div>
     </div>
   </div>`;
 }
@@ -1572,7 +1572,7 @@ async function renderMatching() {
         <div><p style="font-weight:700;font-size:15px;">${escapeHtml(b.skills?.subject || 'セッション')}</p><p style="font-size:12px;color:var(--muted);margin-top:2px;">${amStudent?'先生':'生徒'}: ${escapeHtml(other?.name || '名前未設定')}</p></div>
         <span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;color:${s.color};background:${s.bg};">${s.label}</span>
       </div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:#555;">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:var(--muted);">
         <span><span style="color:var(--muted);">日時：</span>${dtStr}</span>
         <span><span style="color:var(--muted);">金額：</span><strong>¥${(b.price||0).toLocaleString()}</strong></span>
       </div>
@@ -1831,7 +1831,7 @@ function renderModal() {
       <div style="width:60px;height:60px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;">${safeImgUrl(t.avatar_url) ? `<img src="${escapeHtml(safeImgUrl(t.avatar_url))}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;">` : escapeHtml(t.avatar)}</div>
       <div><h2 style="font-size:20px;margin-bottom:2px;">${escapeHtml(t.name)}</h2><p style="font-size:13px;color:var(--muted);">${escapeHtml(t.subject)}</p><div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div>${verified}</div>
     </div>
-    <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px;">${escapeHtml(t.bio)}</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:16px;">${escapeHtml(t.bio)}</p>
     ${tagsHtml}
     <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:20px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:12px;color:var(--muted);">授業料</span><span style="font-weight:700;font-size:15px;color:var(--accent);">¥${t.price.toLocaleString()} <span style="font-size:11px;color:var(--muted);font-weight:400;">/ 50分</span></span></div>
