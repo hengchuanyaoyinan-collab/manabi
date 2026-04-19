@@ -1204,31 +1204,23 @@ function formatAiResult(matches, query) {
   if (matches.length > 3) html += `<p style="font-size:11px;color:var(--muted);margin-top:4px;">他${matches.length - 3}名の先生も対応可能です</p>`;
   return html;
 }
-function doAi(t) {
+function runAiSearch(query) {
   document.getElementById('ai-loading').style.display = 'flex';
   document.getElementById('ai-result').style.display = 'none';
   setTimeout(() => {
     document.getElementById('ai-loading').style.display = 'none';
-    const matches = aiSearchTeachers(t);
+    const matches = aiSearchTeachers(query);
     const r = document.getElementById('ai-result');
-    r.innerHTML = formatAiResult(matches, t);
+    r.innerHTML = formatAiResult(matches, query);
     r.style.display = 'block';
     refreshIcons();
   }, 600);
 }
+function doAi(t) { runAiSearch(t); }
 function aiChat() {
   const inp = document.getElementById('ai-input');
   const q = inp.value.trim(); if (!q) return; inp.value = '';
-  document.getElementById('ai-loading').style.display = 'flex';
-  document.getElementById('ai-result').style.display = 'none';
-  setTimeout(() => {
-    document.getElementById('ai-loading').style.display = 'none';
-    const matches = aiSearchTeachers(q);
-    const r = document.getElementById('ai-result');
-    r.innerHTML = formatAiResult(matches, q);
-    r.style.display = 'block';
-    refreshIcons();
-  }, 600);
+  runAiSearch(q);
 }
 
 function renderMap() {
