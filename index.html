@@ -1312,13 +1312,10 @@ async function loadChatThreads() {
 
 async function loadMsgsFor(otherId) {
   try {
-    const [a, b] = await Promise.all([
-      sb.from('messages').select('*').eq('sender_id', currentUser.id).eq('receiver_id', otherId),
-      sb.from('messages').select('*').eq('sender_id', otherId).eq('receiver_id', currentUser.id),
-    ]);
-    const merged = [...(a.data || []), ...(b.data || [])].sort((x, y) =>
-      new Date(x.created_at) - new Date(y.created_at));
-    chatMsgs[otherId] = merged;
+    const { data } = await sb.from('messages').select('*')
+      .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${currentUser.id})`)
+      .order('created_at', { ascending: true });
+    chatMsgs[otherId] = data || [];
   } catch(e) { console.error('loadMsgsFor error:', e); }
 }
 
