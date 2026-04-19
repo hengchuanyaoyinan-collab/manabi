@@ -206,7 +206,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
       <label for="signup-email" class="sr-only">メールアドレス</label>
       <input class="auth-input" id="signup-email" type="email" placeholder="メールアドレス" autocomplete="email">
       <label for="signup-pass" class="sr-only">パスワード</label>
-      <div style="position:relative;"><input class="auth-input" id="signup-pass" type="password" placeholder="パスワード（8文字以上）" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()"><button type="button" onclick="togglePass('signup-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
+      <div style="position:relative;"><input class="auth-input" id="signup-pass" type="password" placeholder="パスワード（8文字以上）" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()" oninput="updatePassStrength(this.value)"><button type="button" onclick="togglePass('signup-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
+      <div id="pass-strength" style="display:none;margin:-6px 0 12px;"><div style="display:flex;gap:4px;margin-bottom:4px;"><div id="ps-bar-1" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div><div id="ps-bar-2" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div><div id="ps-bar-3" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div></div><p id="ps-label" style="font-size:10px;color:var(--muted);"></p></div>
       <button class="btn btn-dark" id="btn-signup" style="width:100%;padding:13px;font-size:14px;" onclick="doSignup()">アカウントを作成</button>
     </div>
   </div>
@@ -339,7 +340,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
   </div>
   <div style="background:white;border-radius:16px;padding:16px 18px;border:1px solid var(--light);margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
-      <input type="text" id="explore-search" placeholder="科目・キーワードで検索..." aria-label="科目・キーワードで検索" oninput="renderExplore()" style="flex:1;padding:10px 14px;border:none;font-size:13px;font-family:inherit;outline:none;">
+      <input type="text" id="explore-search" placeholder="科目・キーワードで検索..." aria-label="科目・キーワードで検索" oninput="debouncedExplore()" style="flex:1;padding:10px 14px;border:none;font-size:13px;font-family:inherit;outline:none;">
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="subj-filters"></div>
     <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:11px;color:var(--muted);">曜日：</span><div id="day-filters"></div></div>
@@ -362,7 +363,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
   <div style="background:white;border-radius:20px;border:1px solid var(--light);overflow:hidden;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <div style="padding:14px 16px;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:center;">
       <i data-lucide="map-pin" style="width:16px;height:16px;color:var(--muted);flex-shrink:0;"></i>
-      <input type="text" id="map-search" class="form-input" placeholder="エリアで検索（例：渋谷、新宿）" aria-label="エリアで検索" style="flex:1;" oninput="filterMapTeachers()">
+      <input type="text" id="map-search" class="form-input" placeholder="エリアで検索（例：渋谷、新宿）" aria-label="エリアで検索" style="flex:1;" oninput="debouncedMapFilter()">
     </div>
     <div class="map-area">
       <div id="leaflet-map"></div>
@@ -566,6 +567,7 @@ const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const sb = supabase.createClient(SB_URL, SB_KEY);
 let currentUser = null;
 const FEE_RATE = 0.05;
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 
 // 現在カートに入っている決済対象 (予約モーダルで設定される)
 // teacher_id / skill_id は Supabase 上の uuid。デモデータの数値ID は null にする。
@@ -690,6 +692,22 @@ function showMsg(txt, isError) {
   m.style.display = 'block';
 }
 
+function updatePassStrength(pass) {
+  const el = document.getElementById('pass-strength');
+  if (!pass) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  let score = 0;
+  if (pass.length >= 8) score++;
+  if (/[A-Z]/.test(pass) && /[a-z]/.test(pass)) score++;
+  if (/\d/.test(pass) || /[^A-Za-z0-9]/.test(pass)) score++;
+  const colors = ['var(--red)', 'var(--gold)', 'var(--green)'];
+  const labels = ['弱い', '普通', '強い'];
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('ps-bar-' + i).style.background = i <= score ? colors[score - 1] : 'var(--border)';
+  }
+  document.getElementById('ps-label').textContent = labels[score - 1] || '';
+  document.getElementById('ps-label').style.color = colors[score - 1] || 'var(--muted)';
+}
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pass = document.getElementById('login-pass').value;
@@ -1094,6 +1112,7 @@ function renderFilters() {
   document.getElementById('day-filters').innerHTML = days.map(d =>
     `<button class="pill-sm${curDay===d?' active':''}" onclick="toggleDay('${d}')">${d}</button>`).join('');
 }
+const debouncedExplore = debounce(renderExplore, 150);
 function setSubj(s) { curSubj = s; renderFilters(); renderExplore(); }
 function toggleDay(d) { curDay = curDay === d ? null : d; renderFilters(); renderExplore(); }
 
@@ -1239,6 +1258,7 @@ function filterMapTeachers() {
   refreshIcons();
 }
 
+const debouncedMapFilter = debounce(filterMapTeachers, 150);
 function setRole(r) {
   document.getElementById('role-teach').style.cssText = `flex:1;padding:10px;border:none;background:${r==='teach'?'var(--dark)':'transparent'};color:${r==='teach'?'white':'var(--muted)'};cursor:pointer;font-family:inherit;font-size:13px;font-weight:${r==='teach'?700:400};`;
   document.getElementById('role-learn').style.cssText = `flex:1;padding:10px;border:none;background:${r==='learn'?'var(--dark)':'transparent'};color:${r==='learn'?'white':'var(--muted)'};cursor:pointer;font-family:inherit;font-size:13px;font-weight:${r==='learn'?700:400};`;
