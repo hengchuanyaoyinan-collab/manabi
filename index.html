@@ -383,7 +383,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <div style="margin-bottom:14px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">自己紹介・詳細</label><textarea class="form-input" id="reg-desc" rows="3" placeholder="経験・レベル・対応できる内容などを書いてください" maxlength="500" style="resize:vertical;"></textarea></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
       <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;" id="price-label">希望単価（円/時間）</label>
-        <div style="display:flex;gap:8px;align-items:center;"><input class="form-input" type="number" id="reg-min" placeholder="最低" style="flex:1;"><span style="color:var(--muted);">〜</span><input class="form-input" type="number" id="reg-max" placeholder="最高" style="flex:1;"></div>
+        <div style="display:flex;gap:8px;align-items:center;"><input class="form-input" type="number" id="reg-min" placeholder="最低" min="0" max="1000000" style="flex:1;"><span style="color:var(--muted);">〜</span><input class="form-input" type="number" id="reg-max" placeholder="最高" min="0" max="1000000" style="flex:1;"></div>
       </div>
       <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">活動エリア</label><input class="form-input" id="reg-area" placeholder="例：東京・オンライン可" maxlength="100"></div>
     </div>
@@ -856,7 +856,7 @@ async function loadDashboardReviews() {
     const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
     const safeRevAv = safeImgUrl(r.reviewer?.avatar_url);
     const avInner = safeRevAv
-      ? `<img src="${escapeHtml(safeRevAv)}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+      ? `<img src="${escapeHtml(safeRevAv)}" alt="${escapeHtml(name)}" loading="lazy" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
       : escapeHtml(name.substring(0,2).toUpperCase());
     return `<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--light);">
       <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${avInner}</div>
@@ -956,7 +956,7 @@ let curSubj = "すべて", curDay = null, curChat = null;
 let notifs = [];
 
 // ── UI ──
-function showPage(id) {
+function showPage(id, pushHistory = true) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -979,13 +979,19 @@ function showPage(id) {
   bookStep = 0; selSlot = null;
   document.querySelector('.nav-links')?.classList.remove('open');
   window.scrollTo(0, 0);
+  if (pushHistory && location.hash !== '#' + id) history.pushState({ page: id }, '', '#' + id);
   refreshIcons();
 }
+window.addEventListener('popstate', (e) => {
+  const page = e.state?.page || location.hash.replace('#','') || 'home';
+  const valid = ['home','explore','map','register','matching','chat','payment','dashboard','profile'];
+  if (valid.includes(page)) showPage(page, false);
+});
 
 function makeCard(t) {
   const safeAv = safeImgUrl(t.avatar_url);
   const avInner = safeAv
-    ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" loading="lazy" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
     : escapeHtml(t.avatar);
   const sampleBadge = !t.db_skill_id ? '<span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:white;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">サンプル</span>' : '';
   return `<div class="card" onclick="openModal(${t.id})" style="position:relative;">
@@ -1454,8 +1460,8 @@ async function renderMatching() {
         <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:12px;height:12px;"></i>チャット</button>
         ${b.status === 'pending' && amStudent ? `<button class="btn btn-accent" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="payForBooking('${escapeHtml(b.id)}','${escapeHtml(other?.name||'先生')}',${b.price||0},'${escapeHtml(b.skill_id||'')}')"><i data-lucide="credit-card" style="width:12px;height:12px;"></i>支払う</button>` : ''}
         ${b.status === 'confirmed' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="openReviewModal('${escapeHtml(b.id)}','${escapeHtml(other?.name||'')}','${escapeHtml(amStudent ? (b.teacher_id||'') : (b.student_id||''))}')"><i data-lucide="star" style="width:12px;height:12px;"></i>レビュー</button>` : ''}
-        ${b.status === 'confirmed' && !amStudent ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--green);border-color:var(--green);" onclick="completeBooking('${escapeHtml(b.id)}')"><i data-lucide="check" style="width:12px;height:12px;"></i>完了にする</button>` : ''}
-        ${b.status === 'pending' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--red);border-color:var(--red);" onclick="cancelBooking('${escapeHtml(b.id)}')"><i data-lucide="x" style="width:12px;height:12px;"></i>キャンセル</button>` : ''}
+        ${b.status === 'confirmed' && !amStudent ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--green);border-color:var(--green);" onclick="completeBooking('${escapeHtml(b.id)}',this)"><i data-lucide="check" style="width:12px;height:12px;"></i>完了にする</button>` : ''}
+        ${b.status === 'pending' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--red);border-color:var(--red);" onclick="cancelBooking('${escapeHtml(b.id)}',this)"><i data-lucide="x" style="width:12px;height:12px;"></i>キャンセル</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -1463,24 +1469,26 @@ async function renderMatching() {
   } catch(e) { console.error('renderMatching error:', e); el.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--muted);font-size:13px;">読み込みに失敗しました</div>'; }
 }
 
-async function cancelBooking(bookingId) {
+async function cancelBooking(bookingId, btn) {
   if (!await showConfirm('この予約をキャンセルしますか？')) return;
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>処理中...'; }
   try {
     const { error } = await sb.from('bookings').update({ status: 'cancelled' }).eq('id', bookingId);
-    if (error) { addNotif({ text: 'キャンセルに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+    if (error) { addNotif({ text: 'キャンセルに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="x" style="width:12px;height:12px;"></i>キャンセル'; refreshIcons(); } return; }
     addNotif({ text: '予約をキャンセルしました', time: 'たった今', unread: false, color: 'var(--red)' });
     renderMatching();
-  } catch(e) { console.error('cancelBooking error:', e); addNotif({ text: 'キャンセルに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+  } catch(e) { console.error('cancelBooking error:', e); addNotif({ text: 'キャンセルに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="x" style="width:12px;height:12px;"></i>キャンセル'; refreshIcons(); } }
 }
 
-async function completeBooking(bookingId) {
+async function completeBooking(bookingId, btn) {
   if (!await showConfirm('このセッションを完了にしますか？')) return;
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>処理中...'; }
   try {
     const { error } = await sb.from('bookings').update({ status: 'completed' }).eq('id', bookingId);
-    if (error) { addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+    if (error) { addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="check" style="width:12px;height:12px;"></i>完了にする'; refreshIcons(); } return; }
     addNotif({ text: 'セッションが完了しました', time: 'たった今', unread: false, color: 'var(--green)' });
     renderMatching();
-  } catch(e) { console.error('completeBooking error:', e); addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+  } catch(e) { console.error('completeBooking error:', e); addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="check" style="width:12px;height:12px;"></i>完了にする'; refreshIcons(); } }
 }
 
 function payForBooking(bookingId, teacherName, price, skillId) {
@@ -1770,8 +1778,8 @@ async function editSkill(skillId) {
       <select class="form-input" id="edit-cat">${cats.map(c => `<option ${c===skill.subject?'selected':''}>${c}</option>`).join('')}</select></div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">スキル・提供内容</label><input class="form-input" id="edit-desc" value="${escapeHtml(skill.description||'')}" maxlength="200"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-      <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">最低単価</label><input class="form-input" type="number" id="edit-min" value="${skill.price_min||''}"></div>
-      <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">最高単価</label><input class="form-input" type="number" id="edit-max" value="${skill.price_max||''}"></div>
+      <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">最低単価</label><input class="form-input" type="number" id="edit-min" value="${skill.price_min||''}" min="0" max="1000000"></div>
+      <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">最高単価</label><input class="form-input" type="number" id="edit-max" value="${skill.price_max||''}" min="0" max="1000000"></div>
     </div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">活動エリア</label><input class="form-input" id="edit-area" value="${escapeHtml(skill.area||'')}" maxlength="100"></div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">対応曜日</label>
@@ -1955,6 +1963,11 @@ renderExplore();
 renderAiChips();
 renderNotifs();
 handlePaymentReturn();
+if (location.hash) {
+  const initPage = location.hash.replace('#','');
+  const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile'];
+  if (validPages.includes(initPage)) showPage(initPage, false);
+}
 refreshIcons();
 
 </script>
