@@ -1020,17 +1020,18 @@ function visibleTeachers() {
 }
 
 function renderHome() {
-  const list = visibleTeachers().slice(0, 4);
+  const allVisible = visibleTeachers();
+  const list = allVisible.slice(0, 4);
   document.getElementById('home-cards').innerHTML = list.length
     ? list.map(makeCard).join('')
     : '<div style="text-align:center;padding:40px 0;color:var(--muted);grid-column:1/-1;"><div style="display:flex;justify-content:center;margin-bottom:10px;"><i data-lucide="graduation-cap" style="width:32px;height:32px;"></i></div><p style="font-size:13px;">まだ先生がいません。<br>一番乗りでスキルを出品しませんか？</p></div>';
   const catIcons = {'英語':'languages','数学':'calculator','プログラミング':'code','音楽':'music','美術':'palette','スポーツ':'dumbbell','ピアノ':'music','日本語':'languages','ヨガ':'heart','サッカー':'trophy','その他':'grid-3x3'};
-  const allSubjects = [...new Set(visibleTeachers().map(t => t.subject))];
+  const allSubjects = [...new Set(allVisible.map(t => t.subject))];
   const catEl = document.getElementById('home-categories');
   if (catEl) {
     catEl.innerHTML = allSubjects.map(s => {
       const icon = catIcons[s] || 'book-open';
-      const count = visibleTeachers().filter(t => t.subject === s).length;
+      const count = allVisible.filter(t => t.subject === s).length;
       return `<button onclick="curSubj='${s}';showPage('explore');renderFilters();renderExplore();" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="${icon}" style="width:16px;height:16px;color:var(--accent);"></i>${s}<span style="font-size:11px;color:var(--muted);">(${count})</span></button>`;
     }).join('');
   }
