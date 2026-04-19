@@ -264,8 +264,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <p style="color:#C8C4BC;font-size:12px;letter-spacing:.1em;margin-bottom:10px;">あなたにぴったりの先生を見つけよう</p>
     <h1 style="color:white;font-size:32px;line-height:1.2;margin-bottom:20px;">学びを、もっと<br>パーソナルに。</h1>
     <div style="display:flex;max-width:460px;margin:0 auto;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.2);">
-      <input type="text" id="hero-search" placeholder="科目・キーワードで検索..." aria-label="科目・キーワードで検索" style="flex:1;padding:13px 16px;border:none;font-size:13px;font-family:inherit;outline:none;" onkeydown="if(event.key==='Enter'){document.getElementById('explore-search').value=this.value;showPage('explore');renderExplore();}">
-      <button class="btn btn-dark" style="border-radius:0;padding:13px 18px;display:flex;align-items:center;" onclick="document.getElementById('explore-search').value=document.getElementById('hero-search').value;showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
+      <input type="text" id="hero-search" placeholder="科目・キーワードで検索..." aria-label="科目・キーワードで検索" style="flex:1;padding:13px 16px;border:none;font-size:13px;font-family:inherit;outline:none;" onkeydown="if(event.key==='Enter'){const es=document.getElementById('explore-search');es.value=this.value;es.nextElementSibling.style.display=this.value?'flex':'none';showPage('explore');renderExplore();}">
+      <button class="btn btn-dark" style="border-radius:0;padding:13px 18px;display:flex;align-items:center;" onclick="const es=document.getElementById('explore-search');es.value=document.getElementById('hero-search').value;es.nextElementSibling.style.display=es.value?'flex':'none';showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
     </div>
     <p style="color:#9A9690;font-size:11px;margin-top:12px;">登録教師数 <strong style="color:#C8C4BC;" id="hero-teacher-count">--</strong>　·　累計授業数 <strong style="color:#C8C4BC;" id="hero-session-count">--</strong></p>
   </section>
@@ -1289,10 +1289,19 @@ function renderMap() {
 function filterMapTeachers() {
   const q = (document.getElementById('map-search')?.value || '').toLowerCase();
   if (!q) { renderMap(); return; }
-  const list = visibleTeachers().filter(t =>
+  const all = visibleTeachers();
+  const matchIds = new Set(all.filter(t =>
     t.name.toLowerCase().includes(q) || t.subject.toLowerCase().includes(q) ||
     (t.dist && t.dist.toLowerCase().includes(q)) || t.tags.some(g => g.toLowerCase().includes(q))
-  );
+  ).map(t => t.id));
+  mapMarkers.forEach((m, i) => {
+    const t = all[i];
+    if (t && m.getElement) {
+      const el = m.getElement();
+      if (el) el.style.opacity = matchIds.has(t.id) ? '1' : '0.25';
+    }
+  });
+  const list = all.filter(t => matchIds.has(t.id));
   document.getElementById('map-cards').innerHTML = list.length
     ? list.slice(0,6).map(makeCard).join('')
     : '<div style="text-align:center;padding:40px 0;color:var(--muted);grid-column:1/-1;font-size:13px;">該当する先生が見つかりませんでした</div>';
