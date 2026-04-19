@@ -704,6 +704,7 @@ async function doSignup() {
   const email = document.getElementById('signup-email').value.trim();
   const pass = document.getElementById('signup-pass').value;
   if (!name || !email || !pass) { showMsg('すべての項目を入力してください', true); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showMsg('有効なメールアドレスを入力してください', true); return; }
   if (pass.length < 8) { showMsg('パスワードは8文字以上にしてください', true); return; }
   const btn = document.getElementById('btn-signup');
   btn.innerHTML = '<span class="spinner"></span>登録中...'; btn.disabled = true;
@@ -1338,12 +1339,13 @@ function renderChatList() {
     const o = t.other;
     const last = (chatMsgs[o.id] || []).slice(-1)[0];
     const preview = last ? last.content : 'メッセージはまだありません';
+    const lastTime = last ? formatRelativeTime(new Date(last.created_at)) : '';
     const safeChatAv = safeImgUrl(o.avatar_url);
     const av = safeChatAv ? `<img src="${escapeHtml(safeChatAv)}" alt="${escapeHtml(o.name||'')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : escapeHtml((o.name || '?').substring(0,2).toUpperCase());
     return `<div class="chat-item${i===curChat?' active':''}" onclick="renderChat(${i})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')renderChat(${i})">
       <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;">${av}</div>
       <div style="flex:1;min-width:0;">
-        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${escapeHtml(o.name || '名前未設定')}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:13px;">${escapeHtml(o.name || '名前未設定')}</span>${lastTime ? `<span style="font-size:10px;color:var(--muted);flex-shrink:0;">${lastTime}</span>` : ''}</div>
         <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(preview)}</p>
       </div>
     </div>`;
@@ -1370,22 +1372,44 @@ function renderChat(idx) {
   document.getElementById('chat-status').style.color = 'var(--muted)';
   const msgs = document.getElementById('chat-msgs');
   const list = chatMsgs[o.id] || [];
-  msgs.innerHTML = list.length
-    ? list.map(m => {
+  if (list.length) {
+    let lastDateStr = '';
+    msgs.innerHTML = list.map(m => {
         const d = new Date(m.created_at);
+        const dateStr = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
         const ts = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
-        return `<div style="display:flex;flex-direction:column;align-items:${m.sender_id===currentUser.id?'flex-end':'flex-start'};">
+        let sep = '';
+        if (dateStr !== lastDateStr) {
+          const today = new Date(); const yesterday = new Date(); yesterday.setDate(today.getDate()-1);
+          const label = dateStr === `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()}` ? '今日'
+            : dateStr === `${yesterday.getFullYear()}/${yesterday.getMonth()+1}/${yesterday.getDate()}` ? '昨日'
+            : `${d.getMonth()+1}月${d.getDate()}日`;
+          sep = `<div style="text-align:center;margin:12px 0 8px;"><span style="font-size:10px;color:var(--muted);background:var(--lighter);padding:3px 12px;border-radius:10px;">${label}</span></div>`;
+          lastDateStr = dateStr;
+        }
+        return `${sep}<div style="display:flex;flex-direction:column;align-items:${m.sender_id===currentUser.id?'flex-end':'flex-start'};">
           <div class="${m.sender_id===currentUser.id?'msg-me':'msg-them'}">${escapeHtml(m.content)}</div>
           <span style="font-size:10px;color:var(--muted);margin-top:2px;">${ts}</span>
         </div>`;
-      }).join('')
-    : '<div style="margin:auto;color:var(--muted);font-size:12px;">まだメッセージはありません</div>';
+      }).join('');
+  } else {
+    msgs.innerHTML = '<div style="margin:auto;color:var(--muted);font-size:12px;">まだメッセージはありません</div>';
+  }
   msgs.scrollTop = msgs.scrollHeight;
   renderChatList();
 }
 
 function escapeHtml(s) {
   return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatRelativeTime(date) {
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000);
+  if (diff < 60) return 'たった今';
+  if (diff < 3600) return Math.floor(diff / 60) + '分前';
+  if (diff < 86400) return Math.floor(diff / 3600) + '時間前';
+  if (diff < 604800) return Math.floor(diff / 86400) + '日前';
+  return `${date.getMonth()+1}/${date.getDate()}`;
 }
 function safeImgUrl(url) {
   if (!url) return '';
@@ -1493,7 +1517,7 @@ async function renderMatching() {
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:12px;height:12px;"></i>チャット</button>
         ${b.status === 'pending' && amStudent ? `<button class="btn btn-accent" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="payForBooking('${escapeHtml(b.id)}','${escapeHtml(other?.name||'先生')}',${b.price||0},'${escapeHtml(b.skill_id||'')}')"><i data-lucide="credit-card" style="width:12px;height:12px;"></i>支払う</button>` : ''}
-        ${b.status === 'confirmed' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="openReviewModal('${escapeHtml(b.id)}','${escapeHtml(other?.name||'')}','${escapeHtml(amStudent ? (b.teacher_id||'') : (b.student_id||''))}')"><i data-lucide="star" style="width:12px;height:12px;"></i>レビュー</button>` : ''}
+        ${b.status === 'completed' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="openReviewModal('${escapeHtml(b.id)}','${escapeHtml(other?.name||'')}','${escapeHtml(amStudent ? (b.teacher_id||'') : (b.student_id||''))}')"><i data-lucide="star" style="width:12px;height:12px;"></i>レビュー</button>` : ''}
         ${b.status === 'confirmed' && !amStudent ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--green);border-color:var(--green);" onclick="completeBooking('${escapeHtml(b.id)}',this)"><i data-lucide="check" style="width:12px;height:12px;"></i>完了にする</button>` : ''}
         ${b.status === 'pending' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--red);border-color:var(--red);" onclick="cancelBooking('${escapeHtml(b.id)}',this)"><i data-lucide="x" style="width:12px;height:12px;"></i>キャンセル</button>` : ''}
       </div>
