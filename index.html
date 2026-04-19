@@ -973,7 +973,8 @@ async function loadDashboardHistory() {
   const statusColors = { pending:'var(--gold)', paid:'var(--green)', failed:'var(--red)', refunded:'var(--muted)', disputed:'var(--red)' };
   el.innerHTML = filtered.map(p => {
     const b = p.bookings;
-    const other = b?.teacher?.name || b?.student?.name || '';
+    const isStudent = b?.student_id === currentUser.id;
+    const other = isStudent ? (b?.teacher?.name || '') : (b?.student?.name || '');
     const subject = b?.skills?.subject || 'セッション';
     const date = new Date(p.created_at);
     const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
