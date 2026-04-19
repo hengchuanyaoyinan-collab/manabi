@@ -872,6 +872,7 @@ async function loadDashboardReviews() {
   }).join('');
   if (el) el.innerHTML = html;
   if (profEl) profEl.innerHTML = html;
+  refreshIcons();
   } catch(e) { console.error('loadDashboardReviews error:', e); }
 }
 
@@ -921,7 +922,7 @@ async function loadMySkills() {
       <div style="text-align:right;flex-shrink:0;"><p style="font-weight:700;font-size:13px;color:var(--accent);">¥${(s.price_min||0).toLocaleString()}〜</p>
         <div style="display:flex;gap:8px;margin-top:4px;">
           <button onclick="editSkill('${s.id}')" style="font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;">編集</button>
-          <button onclick="deleteSkill('${s.id}')" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;">削除</button>
+          <button onclick="deleteSkill('${s.id}',this)" style="font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;">削除</button>
         </div>
       </div>
     </div>`).join('');
@@ -1117,6 +1118,7 @@ function doAi(t) {
     const r = document.getElementById('ai-result');
     r.innerHTML = formatAiResult(matches, t);
     r.style.display = 'block';
+    refreshIcons();
   }, 600);
 }
 function aiChat() {
@@ -1130,6 +1132,7 @@ function aiChat() {
     const r = document.getElementById('ai-result');
     r.innerHTML = formatAiResult(matches, q);
     r.style.display = 'block';
+    refreshIcons();
   }, 600);
 }
 
@@ -1179,6 +1182,7 @@ function renderMap() {
       <button class="btn btn-dark" style="width:100%;padding:8px;font-size:12px;" onclick="openModal(${t.id})">詳しく見る</button>
     </div>`;
     marker.bindPopup(popupContent, { maxWidth: 200 });
+    marker.on('popupopen', () => refreshIcons());
     mapMarkers.push(marker);
   });
   const legendEl = document.getElementById('map-legend');
@@ -1819,15 +1823,16 @@ async function saveEditedSkill(skillId) {
   } catch(e) { console.error('saveEditedSkill error:', e); btn.innerHTML = '保存する'; btn.disabled = false; addNotif({ text: '更新に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
-async function deleteSkill(skillId) {
+async function deleteSkill(skillId, btn) {
   if (!await showConfirm('このスキルを削除しますか？')) return;
+  if (btn) { btn.disabled = true; btn.textContent = '削除中...'; }
   try {
     const { error } = await sb.from('skills').delete().eq('id', skillId).eq('user_id', currentUser.id);
-    if (error) { addNotif({ text: '削除に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+    if (error) { addNotif({ text: '削除に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (btn) { btn.disabled = false; btn.textContent = '削除'; } return; }
     addNotif({ text: 'スキルを削除しました', time: 'たった今', unread: false, color: 'var(--green)' });
     loadMySkills();
     loadSkillsFromDB();
-  } catch(e) { console.error('deleteSkill error:', e); addNotif({ text: '削除に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+  } catch(e) { console.error('deleteSkill error:', e); if (btn) { btn.disabled = false; btn.textContent = '削除'; } addNotif({ text: '削除に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 // ── LOAD SKILLS FROM SUPABASE ──
