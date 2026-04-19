@@ -1252,7 +1252,12 @@ function renderNotifs() {
 function toggleNotif() { document.getElementById('notif-panel').classList.toggle('open'); renderNotifs(); }
 function readNotif(i) { notifs[i].unread = false; renderNotifs(); }
 function clearNotifs() { notifs.forEach(n => n.unread = false); renderNotifs(); }
-function addNotif(n) { notifs.unshift(n); renderNotifs(); }
+function addNotif(n) {
+  notifs.unshift(n); renderNotifs();
+  let sr = document.getElementById('sr-announce');
+  if (!sr) { sr = document.createElement('div'); sr.id = 'sr-announce'; sr.className = 'sr-only'; sr.setAttribute('aria-live','polite'); sr.setAttribute('role','status'); document.body.appendChild(sr); }
+  sr.textContent = n.text;
+}
 let notifsLoadedFromDB = false;
 async function loadNotificationsFromDB() {
   if (!currentUser || notifsLoadedFromDB) return;
@@ -1281,14 +1286,7 @@ async function loadNotificationsFromDB() {
   } catch(e) { console.error('loadNotificationsFromDB error:', e); }
 }
 function formatTimeAgo(dateStr) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'たった今';
-  if (mins < 60) return `${mins}分前`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}時間前`;
-  const days = Math.floor(hours / 24);
-  return `${days}日前`;
+  return formatRelativeTime(new Date(dateStr));
 }
 document.addEventListener('click', e => {
   if (!e.target.closest('.notif-panel') && !e.target.closest('[onclick="toggleNotif()"]'))
@@ -1676,10 +1674,12 @@ function openModal(id) {
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function trapFocus(e) {
-  const modal = document.getElementById('modal');
-  if (!modal.classList.contains('open')) return;
+  const editModal = document.getElementById('edit-skill-modal');
+  const mainModal = document.getElementById('modal');
+  const active = editModal || (mainModal.classList.contains('open') ? mainModal : null);
+  if (!active) return;
   if (e.key === 'Tab') {
-    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const focusable = active.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
     if (!focusable.length) return;
     const first = focusable[0], last = focusable[focusable.length - 1];
     if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
@@ -1754,7 +1754,7 @@ async function createBookingInDB(t) {
     price: t.price || 0,
     status: 'pending',
   }).select().single();
-  if (error) throw new Error(error.message);
+  if (error) throw new Error('予約の作成に失敗しました');
   payCart.booking_id = data.id;
 }
 function renderModal() {
