@@ -752,10 +752,12 @@ async function submitSkill() {
   btn.innerHTML = '<span class="spinner"></span>登録中...'; btn.disabled = true;
   const selDays = Array.from(document.querySelectorAll('#reg-days .pill-sm.active')).map(b => b.textContent);
   const desc = document.getElementById('reg-desc').value.trim();
+  const priceMin = Math.max(0, parseInt(document.getElementById('reg-min').value) || 0);
+  const priceMax = Math.max(priceMin, parseInt(document.getElementById('reg-max').value) || 0);
   const { error } = await sb.from('skills').insert({
     user_id: currentUser.id, subject: cat, description: desc || skill,
-    price_min: parseInt(document.getElementById('reg-min').value) || 0,
-    price_max: parseInt(document.getElementById('reg-max').value) || 0,
+    price_min: priceMin,
+    price_max: priceMax,
     area: document.getElementById('reg-area').value,
     available_days: selDays.length ? selDays : null,
     tags: document.getElementById('reg-tags').value.split(',').map(t => t.trim()).filter(Boolean),
