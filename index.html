@@ -137,7 +137,12 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 .skill-bar-bg{height:4px;background:var(--lighter);border-radius:2px;overflow:hidden;}
 .skill-bar{height:100%;border-radius:2px;}
 .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top:2px solid white;border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px;}
+.skeleton{background:linear-gradient(90deg,var(--lighter) 25%,#E8E5E0 50%,var(--lighter) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
+@keyframes shimmer{to{background-position:-200% 0;}}
+.back-top{position:fixed;bottom:80px;right:16px;width:40px;height:40px;border-radius:50%;background:var(--dark);color:white;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:90;transition:opacity .2s;}
+.back-top.show{display:flex;}
+@media(max-width:640px){.back-top{bottom:72px;}}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#DDD;border-radius:2px;}
 @media(max-width:768px){
   .cards-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
@@ -552,6 +557,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">取引履歴はまだありません</p>
   </div>
 </div>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="ページの先頭へ"><i data-lucide="chevron-up" style="width:20px;height:20px;"></i></button>
 
 <!-- MODAL -->
 <div class="overlay" id="modal" onclick="if(event.target===this)closeModal()" role="dialog" aria-modal="true">
@@ -2084,6 +2092,10 @@ if (location.hash) {
   if (validPages.includes(initPage)) showPage(initPage, false);
 }
 refreshIcons();
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('back-top');
+  if (btn) btn.classList.toggle('show', window.scrollY > 400);
+}, { passive: true });
 
 </script>
 </body>
