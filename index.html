@@ -123,6 +123,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top:2px solid white;border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#DDD;border-radius:2px;}
+@media(max-width:768px){
+  .cards-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}
+  .chat-layout{grid-template-columns:200px 1fr;}
+}
 @media(max-width:640px){
   .chat-layout{grid-template-columns:1fr;height:calc(100vh - 180px);}
   .chat-list{height:140px;border-right:none;border-bottom:1px solid var(--border);}
@@ -144,6 +148,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
 }
 @media(max-width:380px){
   .cards-grid{grid-template-columns:1fr;}
+}
+@media(max-height:500px) and (orientation:landscape){
+  .chat-layout{height:calc(100vh - 120px);}
+  .map-area{height:200px;}
+  .modal{max-height:100vh;}
 }
 </style>
 </head>
