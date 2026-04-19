@@ -344,8 +344,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 20px;height
     </div>
   </div>
   <div style="background:white;border-radius:16px;padding:16px 18px;border:1px solid var(--light);margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
-    <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;">
-      <input type="text" id="explore-search" placeholder="科目・キーワードで検索..." aria-label="科目・キーワードで検索" oninput="debouncedExplore()" style="flex:1;padding:10px 14px;border:none;font-size:13px;font-family:inherit;outline:none;">
+    <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;position:relative;">
+      <input type="text" id="explore-search" placeholder="科目・キーワードで検索..." aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.nextElementSibling.style.display=this.value?'flex':'none'" style="flex:1;padding:10px 14px;border:none;font-size:13px;font-family:inherit;outline:none;">
+      <button onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="subj-filters"></div>
     <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:11px;color:var(--muted);">曜日：</span><div id="day-filters"></div></div>
