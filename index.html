@@ -888,7 +888,7 @@ async function loadDashboardStats() {
 
 // AUTH
 function switchTab(t) {
-  document.querySelectorAll('.auth-tab').forEach((b, i) => b.classList.toggle('active', i === (t === 'login' ? 0 : 1)));
+  document.querySelectorAll('#auth-screen .auth-tab').forEach((b, i) => b.classList.toggle('active', i === (t === 'login' ? 0 : 1)));
   document.getElementById('tab-login').style.display = t === 'login' ? 'block' : 'none';
   document.getElementById('tab-signup').style.display = t === 'signup' ? 'block' : 'none';
   const m = document.getElementById('auth-msg');
