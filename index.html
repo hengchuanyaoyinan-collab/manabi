@@ -637,7 +637,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div class="map-area">
       <div id="leaflet-map"></div>
     </div>
-    <div style="padding:10px 16px;display:flex;gap:14px;flex-wrap:wrap;border-top:1px solid var(--light);" id="map-legend"></div>
+    <div style="padding:10px 16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--light);">
+      <div id="map-legend" style="display:flex;gap:14px;flex-wrap:wrap;flex:1;"></div>
+      <a id="map-glink" href="https://www.google.com/maps/@35.6620,139.7038,15z" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#4285F4;text-decoration:none;white-space:nowrap;padding:4px 10px;border:1px solid #dadce0;border-radius:8px;background:white;transition:background .15s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'"><img src="https://maps.google.com/mapfiles/api-3/images/google_gray.svg" alt="Google" style="height:12px;">Mapsで開く</a>
+    </div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
     <h3 style="font-weight:700;font-size:15px;margin:0;">近くの先生</h3>
@@ -1977,6 +1980,13 @@ function aiChat() {
   runAiSearch(q);
 }
 
+function updateGmapLink() {
+  if (!leafletMap) return;
+  const c = leafletMap.getCenter();
+  const z = leafletMap.getZoom();
+  const el = document.getElementById('map-glink');
+  if (el) el.href = `https://www.google.com/maps/@${c.lat.toFixed(5)},${c.lng.toFixed(5)},${z}z`;
+}
 function renderMap() {
   const container = document.getElementById('leaflet-map');
   if (!container) return;
@@ -1987,6 +1997,7 @@ function renderMap() {
       subdomains: 'abcd',
       maxZoom: 20,
     }).addTo(leafletMap);
+    leafletMap.on('moveend zoomend', updateGmapLink);
     setTimeout(() => leafletMap.invalidateSize(), 200);
   } else {
     leafletMap.invalidateSize();
@@ -2014,6 +2025,7 @@ function renderMap() {
       : `<div style="width:40px;height:46px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));"><div style="width:38px;height:38px;border-radius:50%;border:3px solid white;background:${color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;">${initials}</div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${color};margin-top:-1px;"></div></div>`;
     const icon = L.divIcon({ html: iconHtml, className: '', iconSize: [40,46], iconAnchor: [20,46] });
     const marker = L.marker([lat, lng], { icon }).addTo(leafletMap);
+    const gmapUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
     const popupContent = `<div class="map-popup-inner">
       <div class="popup-name">${escapeHtml(t.name)}</div>
       <div class="popup-subject">${escapeHtml(t.subject)}</div>
@@ -2021,7 +2033,8 @@ function renderMap() {
         <span class="popup-price">¥${t.price.toLocaleString()}〜</span>
         <span class="popup-rating"><i data-lucide="star" style="width:12px;height:12px;fill:var(--gold);color:var(--gold);"></i> ${t.rating}</span>
       </div>
-      <button class="btn btn-dark" style="width:100%;padding:8px;font-size:12px;" onclick="openModal(${t.id})">詳しく見る</button>
+      <button class="btn btn-dark" style="width:100%;padding:8px;font-size:12px;margin-bottom:6px;" onclick="openModal(${t.id})">詳しく見る</button>
+      <a href="${gmapUrl}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#4285F4;text-decoration:none;padding:6px;border:1px solid #dadce0;border-radius:8px;font-weight:600;transition:background .15s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'"><i data-lucide="external-link" style="width:11px;height:11px;"></i>Google Mapsで見る</a>
     </div>`;
     marker.bindPopup(popupContent, { maxWidth: 200 });
     marker.on('popupopen', () => refreshIcons());
