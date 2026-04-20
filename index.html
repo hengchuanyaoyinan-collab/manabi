@@ -639,7 +639,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div style="flex:1;"><p style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">AIに先生を探してもらう</p><p style="font-size:11px;color:rgba(255,255,255,.5);">学びたいことを入力するだけで最適な先生を自動推薦</p></div>
     <i data-lucide="chevron-right" style="width:16px;height:16px;color:rgba(255,255,255,.4);flex-shrink:0;"></i>
   </div>
-  <div id="ai-panel" style="display:none;background:white;border-radius:16px;padding:16px;border:1px solid var(--light);margin-bottom:12px;">
+  <div id="ai-panel" style="display:none;background:var(--white);border-radius:16px;padding:16px;border:1px solid var(--light);margin-bottom:12px;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
       <div style="width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;"><i data-lucide="sparkles" style="width:13px;height:13px;"></i></div>
       <span style="font-weight:700;font-size:13px;flex:1;">AI検索</span>
@@ -657,9 +657,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
       <p id="result-count" style="font-size:12px;color:var(--muted);white-space:nowrap;"></p>
       <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button onclick="showPage('map')" style="font-size:11px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px;color:var(--muted);white-space:nowrap;"><i data-lucide="map-pin" style="width:12px;height:12px;"></i>地図</button>
+        <button onclick="showPage('map')" style="font-size:11px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px;color:var(--muted);white-space:nowrap;"><i data-lucide="map-pin" style="width:12px;height:12px;"></i>地図</button>
         <select id="explore-sort" class="form-input" onchange="renderExplore()" style="width:auto;padding:5px 10px;font-size:11px;border-radius:8px;">
           <option value="rating">評価順</option>
+          <option value="newest">新着順</option>
           <option value="price-asc">安い順</option>
           <option value="price-desc">高い順</option>
           <option value="reviews">レビュー数</option>
@@ -670,6 +671,13 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <span style="font-size:11px;color:var(--muted);font-weight:500;flex-shrink:0;">曜日</span>
       <div style="display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex:1;" id="day-filters"></div>
     </div>
+    <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-top:8px;padding-bottom:2px;" id="quick-filters">
+      <button class="pill-sm" onclick="applyQuickFilter('cheap')" style="white-space:nowrap;">💰 1000円以下</button>
+      <button class="pill-sm" onclick="applyQuickFilter('top')" style="white-space:nowrap;">⭐ 高評価</button>
+      <button class="pill-sm" onclick="applyQuickFilter('online')" style="white-space:nowrap;">🌐 オンライン</button>
+      <button class="pill-sm" onclick="applyQuickFilter('new')" style="white-space:nowrap;">🆕 新着</button>
+      <button class="pill-sm" onclick="applyQuickFilter('weekend')" style="white-space:nowrap;">📅 土日OK</button>
+    </div>
   </div>
   <div class="cards-grid" id="explore-cards"></div>
 </div>
@@ -677,7 +685,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- MAP -->
 <div class="page" id="map">
   <h2 style="font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px;margin-bottom:16px;"><i data-lucide="map" style="width:22px;height:22px;color:var(--accent);"></i>地図で探す</h2>
-  <div style="background:white;border-radius:20px;border:1px solid var(--light);overflow:hidden;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
+  <div style="background:var(--white);border-radius:20px;border:1px solid var(--light);overflow:hidden;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <div style="padding:14px 16px;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:center;">
       <i data-lucide="map-pin" style="width:16px;height:16px;color:var(--muted);flex-shrink:0;"></i>
       <input type="text" id="map-search" class="form-input" placeholder="エリアで検索（例：渋谷、新宿）" aria-label="エリアで検索" style="flex:1;" oninput="debouncedMapFilter()">
@@ -2138,6 +2146,7 @@ function renderExplore() {
   if (sortBy === 'price-asc') list.sort((a,b) => a.price - b.price);
   else if (sortBy === 'price-desc') list.sort((a,b) => b.price - a.price);
   else if (sortBy === 'reviews') list.sort((a,b) => b.reviews - a.reviews);
+  else if (sortBy === 'newest') list.sort((a,b) => (b.created_at||'') > (a.created_at||'') ? 1 : -1);
   else list.sort((a,b) => b.rating - a.rating);
   document.getElementById('explore-cards').innerHTML = list.length
     ? list.map(makeCard).join('')
@@ -2171,6 +2180,18 @@ function setSubj(s) {
   setTimeout(() => { cards.style.transition = ''; }, 350);
 }
 function toggleDay(d) { curDay = curDay === d ? null : d; renderFilters(); renderExplore(); }
+
+function applyQuickFilter(type) {
+  document.getElementById('explore-search').value = '';
+  curSubj = 'すべて'; curDay = null;
+  if (type === 'cheap') { document.getElementById('explore-sort').value = 'price-asc'; }
+  else if (type === 'top') { document.getElementById('explore-sort').value = 'rating'; }
+  else if (type === 'online') { document.getElementById('explore-search').value = 'オンライン'; }
+  else if (type === 'new') { document.getElementById('explore-sort').value = 'newest'; }
+  else if (type === 'weekend') { curDay = '土'; }
+  renderFilters();
+  renderExplore();
+}
 
 function renderAiChips() {
   const allSubjects = [...new Set(visibleTeachers().map(t => t.subject))];
