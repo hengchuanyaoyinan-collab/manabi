@@ -444,7 +444,14 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;" id="price-label">希望単価（円/時間）</label>
         <div style="display:flex;gap:8px;align-items:center;"><input class="form-input" type="number" id="reg-min" placeholder="最低" min="0" max="1000000" aria-label="最低単価" style="flex:1;"><span style="color:var(--muted);">〜</span><input class="form-input" type="number" id="reg-max" placeholder="最高" min="0" max="1000000" aria-label="最高単価" style="flex:1;"></div>
       </div>
-      <div><label for="reg-area" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">活動エリア</label><input class="form-input" id="reg-area" placeholder="例：東京・オンライン可" maxlength="100"></div>
+      <div><label for="reg-area" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">レッスン場所</label><input class="form-input" id="reg-area" placeholder="例：渋谷駅周辺のカフェ" maxlength="100"></div>
+    </div>
+    <div style="margin-bottom:14px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">レッスン形式</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-online"><input type="checkbox" id="reg-fmt-online" style="accent-color:var(--dark);">オンライン</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-inperson"><input type="checkbox" id="reg-fmt-inperson" style="accent-color:var(--dark);">対面</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-cafe"><input type="checkbox" id="reg-fmt-cafe" style="accent-color:var(--dark);">カフェ</label>
+      </div>
     </div>
     <div style="margin-bottom:14px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">対応曜日</label>
       <div id="reg-days" style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -470,7 +477,26 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <h2 class="section-title" style="margin-bottom:0;">予約・マッチング</h2>
     <button onclick="renderMatching()" aria-label="更新" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:8px;"><i data-lucide="refresh-cw" style="width:18px;height:18px;"></i></button>
   </div>
+  <div style="display:flex;gap:4px;margin-bottom:16px;background:var(--lighter);border-radius:10px;padding:3px;">
+    <button class="auth-tab active" id="match-tab-bookings" onclick="switchMatchTab('bookings')">予約一覧</button>
+    <button class="auth-tab" id="match-tab-requests" onclick="switchMatchTab('requests')">学びたいリクエスト</button>
+  </div>
   <div id="matching-list"></div>
+  <div id="matching-requests" style="display:none;">
+    <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
+      <p style="font-weight:700;font-size:14px;margin-bottom:14px;">学びたいことをリクエスト</p>
+      <input class="form-input" id="req-subject" placeholder="学びたい科目（例：英会話、ギター）" maxlength="100" style="margin-bottom:10px;">
+      <textarea class="form-input" id="req-detail" rows="3" placeholder="詳細（レベル、目標、希望する頻度など）" maxlength="500" style="resize:vertical;margin-bottom:10px;"></textarea>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <div style="flex:1;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">希望予算</label><input class="form-input" id="req-budget" type="number" placeholder="¥3000" min="0"></div>
+        <div style="flex:1;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">形式</label>
+          <select class="form-input" id="req-format"><option value="any">こだわらない</option><option value="online">オンライン</option><option value="inperson">対面</option></select>
+        </div>
+      </div>
+      <button class="btn btn-dark" style="width:100%;padding:13px;" id="btn-post-request" onclick="postLearningRequest()">リクエストを投稿</button>
+    </div>
+    <div id="request-list"></div>
+  </div>
   <div style="text-align:center;margin-top:16px;"><button class="btn btn-outline" onclick="showPage('explore')">新しい先生を探す</button></div>
 </div>
 
@@ -561,6 +587,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <p style="font-weight:700;font-size:14px;margin-bottom:16px;">プロフィールを編集</p>
     <div style="margin-bottom:14px;"><label for="edit-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="edit-name" placeholder="山田 花子" maxlength="50"></div>
     <div style="margin-bottom:14px;"><label for="edit-bio" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">自己紹介</label><textarea class="form-input" id="edit-bio" rows="3" placeholder="あなたのことを教えてください" maxlength="500" style="resize:vertical;" oninput="this.nextElementSibling.textContent=this.value.length+'/500'"></textarea><span style="font-size:10px;color:var(--muted);float:right;margin-top:4px;">0/500</span></div>
+    <div style="margin-bottom:14px;"><label for="edit-career" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">経歴・職業</label><input class="form-input" id="edit-career" placeholder="例：ソフトウェアエンジニア歴10年 / 音大卒" maxlength="200"></div>
+    <div style="margin-bottom:14px;"><label for="edit-achievements" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">実績・資格</label><textarea class="form-input" id="edit-achievements" rows="2" placeholder="例：TOEIC 950点、英検1級、海外在住5年" maxlength="500" style="resize:vertical;"></textarea></div>
+    <div style="margin-bottom:14px;"><label for="edit-style" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">教え方のスタイル</label>
+      <select class="form-input" id="edit-style"><option value="">未選択</option><option value="friendly">フレンドリー・楽しく</option><option value="structured">体系的・カリキュラム重視</option><option value="practical">実践的・ハンズオン</option><option value="patient">じっくり丁寧</option><option value="intensive">集中・短期上達</option></select>
+    </div>
     <div style="margin-bottom:20px;"><label for="edit-role" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">役割</label>
       <select class="form-input" id="edit-role"><option value="student">生徒</option><option value="teacher">先生</option><option value="both">両方</option></select>
     </div>
@@ -774,6 +805,9 @@ async function loadProfile() {
         if (bioEl.nextElementSibling) bioEl.nextElementSibling.textContent = data.bio.length + '/500';
       }
       if (data.role) document.getElementById('edit-role').value = data.role;
+      if (data.career) document.getElementById('edit-career').value = data.career;
+      if (data.achievements) document.getElementById('edit-achievements').value = data.achievements;
+      if (data.teaching_style) document.getElementById('edit-style').value = data.teaching_style;
     } else {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
@@ -971,11 +1005,14 @@ async function saveProfile() {
   if (!currentUser) return;
   const name = document.getElementById('edit-name').value.trim();
   const bio = document.getElementById('edit-bio').value.trim();
+  const career = document.getElementById('edit-career').value.trim();
+  const achievements = document.getElementById('edit-achievements').value.trim();
+  const teaching_style = document.getElementById('edit-style').value;
   const role = document.getElementById('edit-role').value;
   const btn = document.getElementById('btn-save-prof');
   btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
   try {
-    const { error } = await sb.from('profiles').upsert({ id: currentUser.id, name, bio, role });
+    const { error } = await sb.from('profiles').upsert({ id: currentUser.id, name, bio, role, career, achievements, teaching_style });
     btn.innerHTML = '保存する'; btn.disabled = false;
     if (!error) {
       document.getElementById('prof-saved').style.display = 'block';
@@ -1004,6 +1041,10 @@ async function submitSkill() {
     const priceMin = Math.max(0, parseInt(document.getElementById('reg-min').value) || 0);
     const priceMax = Math.max(priceMin, parseInt(document.getElementById('reg-max').value) || 0);
     if (priceMin <= 0) { addNotif({ text: '最低単価を1円以上で設定してください', time: 'たった今', unread: true, color: 'var(--red)' }); btn.innerHTML = '登録する'; btn.disabled = false; return; }
+    const lessonFormats = [];
+    if (document.getElementById('reg-fmt-online').checked) lessonFormats.push('online');
+    if (document.getElementById('reg-fmt-inperson').checked) lessonFormats.push('inperson');
+    if (document.getElementById('reg-fmt-cafe').checked) lessonFormats.push('cafe');
     const { error } = await sb.from('skills').insert({
       user_id: currentUser.id, subject: cat, description: desc || skill,
       price_min: priceMin,
@@ -1011,6 +1052,7 @@ async function submitSkill() {
       area: document.getElementById('reg-area').value,
       available_days: selDays.length ? selDays : null,
       tags: document.getElementById('reg-tags').value.split(',').map(t => t.trim()).filter(Boolean).slice(0, 10),
+      lesson_formats: lessonFormats.length ? lessonFormats : null,
     });
     btn.innerHTML = '登録する'; btn.disabled = false;
     if (!error) {
@@ -1030,6 +1072,9 @@ async function submitSkill() {
       document.getElementById('reg-area').value = '';
       document.getElementById('reg-tags').value = '';
       document.querySelectorAll('#reg-days .pill-sm.active').forEach(b => b.classList.remove('active'));
+      document.getElementById('reg-fmt-online').checked = false;
+      document.getElementById('reg-fmt-inperson').checked = false;
+      document.getElementById('reg-fmt-cafe').checked = false;
       loadMySkills();
       loadSkillsFromDB();
     } else {
@@ -1231,7 +1276,7 @@ function makeCard(t) {
       </div>
       <div style="display:flex;align-items:center;gap:3px;margin-bottom:8px;"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:12px;font-weight:600;">${t.rating}</span><span style="font-size:11px;color:var(--muted);">(${t.reviews}件)</span></div>
       <p style="font-size:11px;color:var(--muted);margin-bottom:9px;line-height:1.6;">${escapeHtml(t.bio)}</p>
-      <div style="margin-bottom:8px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>
+      <div style="margin-bottom:8px;">${t.tags.map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}${(t.lesson_formats||[]).map(f=>({online:'オンライン',inperson:'対面',cafe:'カフェ'}[f]||f)).map(f=>`<span class="tag" style="background:var(--accent-light);color:var(--accent);">${escapeHtml(f)}</span>`).join('')}</div>
       <div style="display:flex;gap:4px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:var(--muted);">${escapeHtml(d)}</span>`).join('')}</div>
     </div>
   </div>`;
@@ -1739,6 +1784,93 @@ async function renderMatching() {
   } catch(e) { console.error('renderMatching error:', e); el.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--muted);font-size:13px;">読み込みに失敗しました</div>'; }
 }
 
+function switchMatchTab(tab) {
+  const isBookings = tab === 'bookings';
+  document.getElementById('matching-list').style.display = isBookings ? '' : 'none';
+  document.getElementById('matching-requests').style.display = isBookings ? 'none' : '';
+  document.getElementById('match-tab-bookings').classList.toggle('active', isBookings);
+  document.getElementById('match-tab-requests').classList.toggle('active', !isBookings);
+  if (!isBookings) loadLearningRequests();
+}
+
+async function postLearningRequest() {
+  if (!currentUser) return;
+  const subject = document.getElementById('req-subject').value.trim();
+  const detail = document.getElementById('req-detail').value.trim();
+  const budget = parseInt(document.getElementById('req-budget').value) || 0;
+  const format = document.getElementById('req-format').value;
+  if (!subject) { showToast('科目を入力してください', 'var(--red)'); return; }
+  const btn = document.getElementById('btn-post-request');
+  btn.innerHTML = '<span class="spinner"></span>投稿中...'; btn.disabled = true;
+  try {
+    const { error } = await sb.from('learning_requests').insert({
+      user_id: currentUser.id, subject, detail, budget: budget || null, format, status: 'open'
+    });
+    if (error) throw error;
+    document.getElementById('req-subject').value = '';
+    document.getElementById('req-detail').value = '';
+    document.getElementById('req-budget').value = '';
+    document.getElementById('req-format').value = 'any';
+    showToast('リクエストを投稿しました', 'var(--green)');
+    loadLearningRequests();
+  } catch(e) { console.error('postLearningRequest error:', e); showToast('投稿に失敗しました', 'var(--red)'); }
+  btn.innerHTML = 'リクエストを投稿'; btn.disabled = false;
+}
+
+async function loadLearningRequests() {
+  const el = document.getElementById('request-list');
+  el.innerHTML = '<div style="text-align:center;padding:20px;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:20px;height:20px;"></span></div>';
+  try {
+    const { data } = await sb.from('learning_requests')
+      .select('*, profiles(name,avatar_url)')
+      .eq('status', 'open')
+      .order('created_at', { ascending: false }).limit(20);
+    if (!data || !data.length) {
+      el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">リクエストはまだありません。最初の一人になりましょう！</div>';
+      return;
+    }
+    const formatMap = { any: 'こだわらない', online: 'オンライン', inperson: '対面' };
+    el.innerHTML = data.map(r => {
+      const isMine = r.user_id === currentUser?.id;
+      const name = r.profiles?.name || '匿名';
+      const dt = new Date(r.created_at);
+      const ago = getTimeAgo(dt);
+      return `<div style="background:white;border-radius:16px;padding:18px;margin-bottom:10px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div><p style="font-weight:700;font-size:15px;margin-bottom:2px;">${escapeHtml(r.subject)}</p>
+          <p style="font-size:11px;color:var(--muted);">${escapeHtml(name)} · ${ago}</p></div>
+          ${r.budget ? `<span style="font-weight:700;font-size:14px;color:var(--accent);">〜¥${r.budget.toLocaleString()}</span>` : ''}
+        </div>
+        ${r.detail ? `<p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:10px;">${escapeHtml(r.detail)}</p>` : ''}
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="tag">${formatMap[r.format] || r.format}</span>
+          ${!isMine ? `<button class="btn btn-dark" style="font-size:12px;padding:6px 14px;margin-left:auto;" onclick="showPage('chat')">メッセージを送る</button>` : `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;margin-left:auto;color:var(--red);border-color:var(--red);" onclick="closeLearningRequest('${r.id}',this)">取り下げ</button>`}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { console.error('loadLearningRequests error:', e); el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">読み込みに失敗しました</div>'; }
+}
+
+function getTimeAgo(date) {
+  const diff = Date.now() - date.getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'たった今';
+  if (mins < 60) return `${mins}分前`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}時間前`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}日前`;
+  return `${date.getMonth()+1}/${date.getDate()}`;
+}
+
+async function closeLearningRequest(id, btn) {
+  btn.disabled = true; btn.innerHTML = '処理中...';
+  try {
+    await sb.from('learning_requests').update({ status: 'closed' }).eq('id', id).eq('user_id', currentUser.id);
+    loadLearningRequests();
+  } catch(e) { console.error(e); btn.disabled = false; btn.innerHTML = '取り下げ'; }
+}
+
 async function cancelBooking(bookingId, btn) {
   if (!await showConfirm('この予約をキャンセルしますか？')) return;
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>処理中...'; }
@@ -2162,6 +2294,7 @@ async function loadSkillsFromDB() {
         dist: s.area || '近く',
         db_user_id: s.user_id,
         db_skill_id: s.id,
+        lesson_formats: s.lesson_formats || [],
       };
     });
     teachers = teachers.filter(t => !t.db_skill_id);
