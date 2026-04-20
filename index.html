@@ -809,6 +809,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">学んだ回数</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-learned">0</div></div>
     <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:#AB47BC;"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">信用スコア</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-score">0</div></div>
   </div>
+  <div style="display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;">
+    <button class="btn btn-outline" style="flex:1;min-width:120px;padding:12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="showPage('register')"><i data-lucide="plus" style="width:14px;height:14px;"></i>スキル追加</button>
+    <button class="btn btn-outline" style="flex:1;min-width:120px;padding:12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="showPage('matching')"><i data-lucide="calendar" style="width:14px;height:14px;"></i>予約管理</button>
+    <button class="btn btn-outline" style="flex:1;min-width:120px;padding:12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージ</button>
+  </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="layers" style="width:18px;height:18px;color:var(--accent);"></i>登録済みスキル</h3>
   <div id="my-skills" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="event.preventDefault();showPage('register')" style="color:var(--accent);">スキルを登録する →</a></p>
@@ -1047,9 +1052,18 @@ async function loadDashboardStats() {
     const taught = document.getElementById('dash-taught');
     const learned = document.getElementById('dash-learned');
     const earnedEl = document.getElementById('dash-earned');
-    if (taught) taught.textContent = taughtRes.count || 0;
-    if (learned) learned.textContent = learnedRes.count || 0;
-    if (earnedEl) earnedEl.textContent = '¥' + earned.toLocaleString();
+    animateCount(taught, taughtRes.count || 0, '', 600);
+    animateCount(learned, learnedRes.count || 0, '', 600);
+    if (earnedEl) {
+      const start = performance.now();
+      const dur = 800;
+      (function step(now) {
+        const t = Math.min((now - start) / dur, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+        earnedEl.textContent = '¥' + Math.round(ease * earned).toLocaleString();
+        if (t < 1) requestAnimationFrame(step);
+      })(start);
+    }
   } catch(e) { console.error('loadDashboardStats error:', e); }
 }
 
