@@ -408,9 +408,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <div class="page active" id="home">
   <section style="background:linear-gradient(145deg,#1a1a2e,#2D2D2D 50%,#3d3d5c);padding:56px 24px 48px;text-align:center;margin:-24px -24px 36px;border-radius:0 0 28px 28px;position:relative;overflow:hidden;">
     <div style="position:absolute;top:-40%;left:-20%;width:140%;height:200%;background:radial-gradient(circle at 30% 40%,rgba(92,107,192,.1),transparent 50%);pointer-events:none;"></div>
-    <p style="color:rgba(200,196,188,.7);font-size:11px;letter-spacing:.2em;margin-bottom:14px;font-weight:500;position:relative;">SKILL MATCHING MARKETPLACE</p>
+    <p style="color:rgba(200,196,188,.7);font-size:11px;letter-spacing:.2em;margin-bottom:14px;font-weight:500;position:relative;">AI-POWERED SKILL MARKETPLACE</p>
     <h1 style="color:white;font-size:34px;line-height:1.25;margin-bottom:8px;font-weight:800;letter-spacing:-.5px;position:relative;">学びを、もっと<br>パーソナルに。</h1>
-    <p style="color:rgba(200,196,188,.6);font-size:14px;margin-bottom:26px;line-height:1.6;position:relative;">勉強・スポーツ・音楽・趣味 — 誰でも教え、誰でも学べる</p>
+    <p style="color:rgba(200,196,188,.6);font-size:14px;margin-bottom:26px;line-height:1.6;position:relative;">AIが最適な先生を見つける。誰でも教え、誰でも学べるプラットフォーム</p>
     <div style="display:flex;max-width:480px;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.25);position:relative;">
       <input type="text" id="hero-search" placeholder="何を学びたいですか？" aria-label="科目・キーワードで検索" style="flex:1;padding:15px 18px;border:none;font-size:14px;font-family:inherit;outline:none;" onkeydown="if(event.key==='Enter'){const es=document.getElementById('explore-search');es.value=this.value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=this.value?'flex':'none';showPage('explore');renderExplore();}">
       <button class="btn btn-dark" style="border-radius:0;padding:15px 20px;display:flex;align-items:center;" onclick="const es=document.getElementById('explore-search');es.value=document.getElementById('hero-search').value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=es.value?'flex':'none';showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
@@ -428,35 +428,39 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <span style="color:rgba(200,196,188,.5);font-size:12px;">マッチング <strong style="color:rgba(200,196,188,.8);" id="hero-session-count">--</strong></span>
     </div>
   </section>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:32px;" class="fade-up">
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);text-align:center;"><div style="color:var(--accent);margin-bottom:7px;display:flex;justify-content:center;"><i data-lucide="target" style="width:24px;height:24px;"></i></div><div style="font-weight:700;font-size:13px;margin-bottom:3px;">即時マッチング</div><div style="font-size:11px;color:var(--muted);line-height:1.5;">登録不要で今すぐ探せる</div></div>
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);text-align:center;"><div style="color:var(--accent);margin-bottom:7px;display:flex;justify-content:center;"><i data-lucide="shield-check" style="width:24px;height:24px;"></i></div><div style="font-weight:700;font-size:13px;margin-bottom:3px;">信用スコア</div><div style="font-size:11px;color:var(--muted);line-height:1.5;">レビューで信頼を可視化</div></div>
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);text-align:center;"><div style="color:var(--accent);margin-bottom:7px;display:flex;justify-content:center;"><i data-lucide="lock" style="width:24px;height:24px;"></i></div><div style="font-weight:700;font-size:13px;margin-bottom:3px;">安心決済</div><div style="font-size:11px;color:var(--muted);line-height:1.5;">Stripe決済で安全取引</div></div>
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);text-align:center;"><div style="color:var(--accent);margin-bottom:7px;display:flex;justify-content:center;"><i data-lucide="map-pin" style="width:24px;height:24px;"></i></div><div style="font-weight:700;font-size:13px;margin-bottom:3px;">地図で検索</div><div style="font-size:11px;color:var(--muted);line-height:1.5;">近くの先生をマップで発見</div></div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:32px;" class="fade-up">
+    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="sparkles" style="width:18px;height:18px;"></i></div><div><div style="font-weight:700;font-size:12px;margin-bottom:2px;">AIマッチング</div><div style="font-size:10px;color:var(--muted);line-height:1.4;">最適な先生を自動推薦</div></div></div>
+    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="shield-check" style="width:18px;height:18px;"></i></div><div><div style="font-weight:700;font-size:12px;margin-bottom:2px;">安心・安全</div><div style="font-size:10px;color:var(--muted);line-height:1.4;">Stripe決済 + 信用スコア</div></div></div>
+    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:12px;background:#FFF3E0;color:#FF9800;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="map-pin" style="width:18px;height:18px;"></i></div><div><div style="font-weight:700;font-size:12px;margin-bottom:2px;">近くで見つかる</div><div style="font-size:10px;color:var(--muted);line-height:1.4;">マップで近所の先生を発見</div></div></div>
+    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:12px;background:#F3E5F5;color:#AB47BC;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="repeat" style="width:18px;height:18px;"></i></div><div><div style="font-weight:700;font-size:12px;margin-bottom:2px;">教える＝学ぶ</div><div style="font-size:10px;color:var(--muted);line-height:1.4;">先生にも生徒にもなれる</div></div></div>
   </div>
   <!-- How it works -->
   <div style="background:white;border-radius:20px;padding:28px 24px;border:1px solid var(--light);margin-bottom:32px;" class="fade-up">
-    <p style="font-weight:700;font-size:16px;margin-bottom:24px;text-align:center;">はじめての方へ</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;">
-      <div style="text-align:center;position:relative;">
-        <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:16px;font-weight:800;">1</div>
-        <p style="font-weight:600;font-size:13px;margin-bottom:4px;">探す</p>
-        <p style="font-size:11px;color:var(--muted);line-height:1.5;">キーワード・地図で<br>先生を検索</p>
+    <p style="font-weight:700;font-size:16px;margin-bottom:6px;text-align:center;">はじめての方へ</p>
+    <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:24px;">4ステップで学習スタート</p>
+    <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+      <div style="flex:1;min-width:100px;text-align:center;position:relative;">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:15px;font-weight:800;box-shadow:0 2px 8px rgba(92,107,192,.3);">1</div>
+        <p style="font-weight:700;font-size:12px;margin-bottom:3px;">探す</p>
+        <p style="font-size:10px;color:var(--muted);line-height:1.5;">キーワード・地図<br>AIで検索</p>
       </div>
-      <div style="text-align:center;">
-        <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:16px;font-weight:800;">2</div>
-        <p style="font-weight:600;font-size:13px;margin-bottom:4px;">比較する</p>
-        <p style="font-size:11px;color:var(--muted);line-height:1.5;">プロフィール・評価<br>料金を確認</p>
+      <div style="display:flex;align-items:flex-start;padding-top:22px;color:var(--border);"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></div>
+      <div style="flex:1;min-width:100px;text-align:center;">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:15px;font-weight:800;box-shadow:0 2px 8px rgba(92,107,192,.3);">2</div>
+        <p style="font-weight:700;font-size:12px;margin-bottom:3px;">比較する</p>
+        <p style="font-size:10px;color:var(--muted);line-height:1.5;">プロフィール<br>評価を確認</p>
       </div>
-      <div style="text-align:center;">
-        <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:16px;font-weight:800;">3</div>
-        <p style="font-weight:600;font-size:13px;margin-bottom:4px;">予約する</p>
-        <p style="font-size:11px;color:var(--muted);line-height:1.5;">日程を選んで<br>安全に決済</p>
+      <div style="display:flex;align-items:flex-start;padding-top:22px;color:var(--border);"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></div>
+      <div style="flex:1;min-width:100px;text-align:center;">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:15px;font-weight:800;box-shadow:0 2px 8px rgba(92,107,192,.3);">3</div>
+        <p style="font-weight:700;font-size:12px;margin-bottom:3px;">予約する</p>
+        <p style="font-size:10px;color:var(--muted);line-height:1.5;">日程を選び<br>安全に決済</p>
       </div>
-      <div style="text-align:center;">
-        <div style="width:40px;height:40px;border-radius:12px;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:16px;font-weight:800;">4</div>
-        <p style="font-weight:600;font-size:13px;margin-bottom:4px;">学ぶ</p>
-        <p style="font-size:11px;color:var(--muted);line-height:1.5;">チャットで相談<br>セッション開始</p>
+      <div style="display:flex;align-items:flex-start;padding-top:22px;color:var(--border);"><i data-lucide="chevron-right" style="width:14px;height:14px;"></i></div>
+      <div style="flex:1;min-width:100px;text-align:center;">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:15px;font-weight:800;box-shadow:0 2px 8px rgba(76,175,80,.3);">4</div>
+        <p style="font-weight:700;font-size:12px;margin-bottom:3px;">学ぶ</p>
+        <p style="font-size:10px;color:var(--muted);line-height:1.5;">チャットで相談<br>学習スタート</p>
       </div>
     </div>
   </div>
@@ -544,13 +548,15 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
         <div>
           <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">サービス</p>
           <a href="#explore" onclick="event.preventDefault();showPage('explore')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">先生を探す</a>
+          <a href="#matching" onclick="event.preventDefault();showPage('matching')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">AIマッチング</a>
           <a href="#register" onclick="event.preventDefault();showPage('register')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">スキルを出品</a>
           <a href="#map" onclick="event.preventDefault();showPage('map')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">地図で探す</a>
         </div>
         <div>
-          <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">サポート</p>
-          <a href="#matching" onclick="event.preventDefault();showPage('matching')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">予約管理</a>
-          <a href="#chat" onclick="event.preventDefault();showPage('chat')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">メッセージ</a>
+          <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">アカウント</p>
+          <a href="#profile" onclick="event.preventDefault();showPage('profile')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">マイページ</a>
+          <a href="#chat" onclick="event.preventDefault();showPage('chat')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">メッセージ</a>
+          <a href="#dashboard" onclick="event.preventDefault();showPage('dashboard')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">ダッシュボード</a>
         </div>
         <div>
           <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">法的情報</p>
@@ -990,6 +996,16 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <p id="prof-style-text" style="font-size:14px;color:var(--mid);"></p>
     </div>
   </div>
+  <div id="ai-profile-badge" style="display:none;background:linear-gradient(135deg,#1a1a2e,#2D2D2D);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,.08);margin-bottom:16px;color:white;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="sparkles" style="width:16px;height:16px;color:white;"></i></div>
+      <div style="flex:1;"><p style="font-size:13px;font-weight:700;">AI プロフィール分析</p><p style="font-size:10px;color:rgba(255,255,255,.5);" id="ai-profile-date"></p></div>
+      <div id="ai-profile-level" style="padding:4px 10px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(92,107,192,.3);color:#B3C0FF;"></div>
+    </div>
+    <p id="ai-profile-summary" style="font-size:13px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:14px;"></p>
+    <div id="ai-profile-strengths" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;"></div>
+    <div id="ai-profile-tags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
   <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);">
     <p style="font-weight:700;font-size:14px;margin-bottom:16px;">プロフィールを編集</p>
     <div style="margin-bottom:14px;"><label for="edit-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="edit-name" placeholder="山田 花子" maxlength="50"></div>
@@ -1250,7 +1266,7 @@ async function loadProfile() {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
   } catch(e) { console.error('loadProfile error:', e); addNotif({ text: 'プロフィールの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
-  await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory()]);
+  await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory(), loadAIProfileBadge()]);
 }
 
 async function loadDashboardStats() {
@@ -1280,6 +1296,34 @@ async function loadDashboardStats() {
       })(start);
     }
   } catch(e) { console.error('loadDashboardStats error:', e); }
+}
+
+async function loadAIProfileBadge() {
+  if (!currentUser) return;
+  try {
+    const { data } = await sb.from('ai_profiles').select('skills_summary, teaching_strengths, experience_level, personality_tags, analyzed_at').eq('user_id', currentUser.id).single();
+    const badge = document.getElementById('ai-profile-badge');
+    if (!data || !data.skills_summary) { if (badge) badge.style.display = 'none'; return; }
+    if (badge) {
+      badge.style.display = '';
+      const levelLabels = { beginner:'初心者', intermediate:'中級', advanced:'上級', expert:'エキスパート' };
+      document.getElementById('ai-profile-level').textContent = levelLabels[data.experience_level] || '中級';
+      document.getElementById('ai-profile-summary').textContent = data.skills_summary;
+      if (data.analyzed_at) {
+        const d = new Date(data.analyzed_at);
+        document.getElementById('ai-profile-date').textContent = `分析日: ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+      }
+      const strengthsEl = document.getElementById('ai-profile-strengths');
+      strengthsEl.innerHTML = (data.teaching_strengths || []).map(s =>
+        `<span style="padding:4px 10px;border-radius:8px;font-size:11px;background:rgba(76,175,80,.15);color:#81C784;font-weight:600;">${escapeHtml(s)}</span>`
+      ).join('');
+      const tagsEl = document.getElementById('ai-profile-tags');
+      tagsEl.innerHTML = (data.personality_tags || []).map(t =>
+        `<span style="padding:4px 10px;border-radius:8px;font-size:11px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);font-weight:500;">${escapeHtml(t)}</span>`
+      ).join('');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  } catch(e) { console.error('loadAIProfileBadge:', e); }
 }
 
 // AUTH
