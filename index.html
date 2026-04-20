@@ -86,7 +86,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
 .card:active{transform:translateY(0);box-shadow:var(--shadow);}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-.tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;background:var(--lighter);color:var(--mid);margin:2px;font-weight:500;}
+.tag{display:inline-block;padding:4px 10px;border-radius:8px;font-size:11px;background:var(--lighter);color:var(--mid);margin:2px;font-weight:500;transition:background .15s;}
 .pill{padding:8px 18px;border-radius:24px;font-size:13px;cursor:pointer;border:1.5px solid var(--border);background:white;font-family:inherit;font-weight:500;transition:all .15s;}
 .pill:hover,.pill.active{background:var(--primary);color:white;border-color:var(--primary);}
 .pill-sm{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:white;font-family:inherit;font-weight:500;transition:all .15s;}
@@ -177,6 +177,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   .map-area{height:280px;}
   .pay-steps{font-size:11px;}
   .notif-panel{width:calc(100% - 24px);right:12px;left:12px;}
+  #home>section:first-child{padding:40px 16px 36px !important;margin:-16px -12px 28px !important;}
+  #home>section:first-child h1{font-size:26px !important;}
+  #home>section:first-child p:first-of-type{font-size:10px !important;}
 }
 @media(max-width:380px){
   .cards-grid{grid-template-columns:1fr;}
@@ -653,13 +656,17 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
         <p style="font-size:12px;color:var(--muted);" id="prof-email"></p>
       </div>
     </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:8px;background:var(--green-light);padding:8px 14px;border-radius:12px;border:1px solid #A5D6A7;">
         <span style="font-size:22px;font-weight:900;color:var(--green);" id="prof-score">0</span>
         <div><p style="font-size:10px;font-weight:700;color:var(--green);">信用スコア</p></div>
       </div>
-      <button onclick="showPage('matching')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);"><i data-lucide="calendar-check" style="width:14px;height:14px;"></i>予約管理</button>
-      <button onclick="showPage('dashboard')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);"><i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>ダッシュボード</button>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--accent-light);padding:8px 14px;border-radius:12px;border:1px solid #C5CAE9;">
+        <span style="font-size:22px;font-weight:900;color:var(--accent);" id="prof-skills-count">0</span>
+        <div><p style="font-size:10px;font-weight:700;color:var(--accent);">出品中</p></div>
+      </div>
+      <button onclick="showPage('matching')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="calendar-check" style="width:14px;height:14px;"></i>予約管理</button>
+      <button onclick="showPage('dashboard')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>ダッシュボード</button>
     </div>
   </div>
   <div id="prof-display" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;display:none;">
@@ -1308,6 +1315,8 @@ async function loadMySkills() {
   try {
   const { data } = await sb.from('skills').select('*').eq('user_id', currentUser.id);
   const el = document.getElementById('my-skills');
+  const countEl = document.getElementById('prof-skills-count');
+  if (countEl) countEl.textContent = (data || []).length;
   if (!data || !data.length) {
     el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="event.preventDefault();showPage(\'register\')" style="color:var(--accent);">スキルを登録する →</a></p>';
   } else {
@@ -2280,6 +2289,7 @@ function trapFocus(e) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (document.getElementById('modal').classList.contains('open')) closeModal();
+    if (document.getElementById('auth-screen').style.display === 'flex') closeAuthModal();
     document.getElementById('notif-panel').classList.remove('open');
     const editModal = document.getElementById('edit-skill-modal');
     if (editModal) editModal.remove();
