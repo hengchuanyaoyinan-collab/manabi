@@ -375,16 +375,32 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   </div>
 
   <!-- Footer -->
-  <footer style="margin-top:40px;padding:24px 0;border-top:1px solid var(--border);text-align:center;">
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;">
-      <div class="logo-icon" style="width:24px;height:24px;"><i data-lucide="sparkles" style="width:12px;height:12px;"></i></div>
-      <span style="font-weight:700;font-size:14px;color:var(--primary);">manabi</span>
+  <footer style="margin-top:48px;padding:28px 0 16px;border-top:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;margin-bottom:24px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div class="logo-icon" style="width:24px;height:24px;"><i data-lucide="sparkles" style="width:12px;height:12px;"></i></div>
+          <span style="font-weight:700;font-size:14px;color:var(--primary);">manabi</span>
+        </div>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;">スキルをシェアするマーケットプレイス</p>
+      </div>
+      <div style="display:flex;gap:20px;">
+        <div>
+          <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">サービス</p>
+          <a href="#explore" onclick="event.preventDefault();showPage('explore')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;">先生を探す</a>
+          <a href="#register" onclick="event.preventDefault();showPage('register')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;">スキルを出品</a>
+          <a href="#map" onclick="event.preventDefault();showPage('map')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;">地図で探す</a>
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">法的情報</p>
+          <a href="#terms" onclick="event.preventDefault();showPage('terms')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;">利用規約</a>
+          <a href="#privacy" onclick="event.preventDefault();showPage('privacy')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;">プライバシーポリシー</a>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:10px;">
-      <a href="#terms" onclick="event.preventDefault();showPage('terms')" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:500;">利用規約</a>
-      <a href="#privacy" onclick="event.preventDefault();showPage('privacy')" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:500;">プライバシーポリシー</a>
+    <div style="border-top:1px solid var(--light);padding-top:16px;text-align:center;">
+      <p style="font-size:10px;color:var(--muted);">&copy; 2026 manabi. All rights reserved.</p>
     </div>
-    <p style="font-size:11px;color:var(--muted);line-height:1.8;">学びをシェアするマーケットプレイス<br>&copy; 2026 manabi. All rights reserved.</p>
   </footer>
 </div>
 
@@ -1597,8 +1613,8 @@ function setRole(r) {
     setTimeout(() => switchMatchTab('requests'), 50);
     return;
   }
-  document.getElementById('role-teach').style.cssText = `flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;`;
-  document.getElementById('role-learn').style.cssText = `flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;`;
+  document.getElementById('role-teach').style.cssText = `flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;`;
+  document.getElementById('role-learn').style.cssText = `flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;`;
 }
 
 function renderNotifs() {
