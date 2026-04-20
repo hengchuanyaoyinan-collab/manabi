@@ -217,6 +217,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   .map-area{height:200px;}
   .modal{max-height:100vh;}
 }
+@media(hover:hover){.search-kbd{display:flex !important;}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
 }
@@ -595,6 +596,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
         <span style="display:flex;align-items:center;padding:0 10px;color:var(--muted);"><i data-lucide="search" style="width:15px;height:15px;"></i></span>
         <input type="text" id="explore-search" placeholder="何を学びたい？" aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.closest('div').querySelector('.clear-btn').style.display=this.value?'flex':'none'" style="flex:1;padding:10px 0;border:none;font-size:13px;font-family:inherit;outline:none;">
         <button class="clear-btn" onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;align-items:center;padding:0 10px;background:none;border:none;cursor:pointer;color:var(--muted);"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+        <kbd class="search-kbd" style="display:none;align-items:center;padding:2px 6px;margin-right:8px;border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--muted);font-family:monospace;background:var(--lighter);flex-shrink:0;">/</kbd>
       </div>
       <button onclick="document.getElementById('ai-panel').style.display=document.getElementById('ai-panel').style.display==='none'?'':'none'" style="width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;transition:all .15s;" title="AI検索"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></button>
     </div>
@@ -3119,6 +3121,13 @@ document.addEventListener('keydown', e => {
     if (editModal) editModal.remove();
   }
   if (e.key === 'Tab') trapFocus(e);
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) {
+    e.preventDefault();
+    const curPage = document.querySelector('.page.active')?.id;
+    if (curPage === 'explore') { document.getElementById('explore-search')?.focus(); }
+    else if (curPage === 'home') { document.getElementById('hero-search')?.focus(); }
+    else { showPage('explore'); setTimeout(() => document.getElementById('explore-search')?.focus(), 100); }
+  }
 });
 
 function renderPaySummary() {
