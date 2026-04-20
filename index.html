@@ -63,6 +63,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .btm-tab .btm-label{font-size:10px;font-weight:500;}
 .btm-tab.active{color:var(--primary);}
 .btm-tab.active .btm-label{font-weight:700;}
+.btm-tab.active .btm-icon{position:relative;}
+.btm-tab.active .btm-icon::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent);}
 /* PAGES */
 .page{display:none;padding:20px 16px;max-width:960px;margin:0 auto;}
 .page.active{display:block;animation:fadeIn .2s ease-out;}
@@ -214,15 +216,17 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .testimonial-scroll::-webkit-scrollbar{display:none;}
 /* CARD ENHANCED */
 .card:hover .card-photo img{transform:scale(1.04);}
-.card-photo{aspect-ratio:4/3;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;}
-.card-photo img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
-.card-badge{position:absolute;bottom:8px;left:8px;display:flex;gap:4px;}
+.card-photo{aspect-ratio:4/3;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;background:var(--lighter);}
+.card-photo img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease,opacity .3s ease;opacity:0;}
+.card-photo img.loaded{opacity:1;}
+.card-photo::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.12));pointer-events:none;z-index:1;}
+.card-badge{position:absolute;bottom:8px;left:8px;display:flex;gap:4px;z-index:2;}
 .card-badge span{font-size:10px;padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.92);color:var(--dark);font-weight:600;backdrop-filter:blur(4px);}
 /* CATEGORY GRID */
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
 .cat-card{background:white;border-radius:16px;padding:20px 14px;border:1px solid var(--light);text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .cat-card:hover{border-color:var(--dark);box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-2px);}
-.cat-card:active{transform:scale(.97);}
+.cat-card:active{transform:scale(.95);transition-duration:.1s;}
 .cat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
 @media(max-width:640px){
   .cat-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.cat-card{padding:16px 10px;}.cat-icon{width:40px;height:40px;border-radius:12px;margin-bottom:8px;}
@@ -555,7 +559,14 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <span style="font-size:12px;font-weight:600;color:var(--dark);">出品の完成度</span>
       <span style="font-size:12px;font-weight:700;color:var(--accent);" id="reg-progress-pct">0%</span>
     </div>
-    <div style="height:4px;background:var(--lighter);border-radius:2px;overflow:hidden;"><div id="reg-progress-bar" style="height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .3s ease;"></div></div>
+    <div style="height:6px;background:var(--lighter);border-radius:3px;overflow:hidden;margin-bottom:10px;"><div id="reg-progress-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),#9575CD);border-radius:3px;width:0%;transition:width .4s cubic-bezier(.4,0,.2,1);"></div></div>
+    <div style="display:flex;justify-content:space-between;gap:4px;" id="reg-steps">
+      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="cat">カテゴリ</span>
+      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="skill">スキル</span>
+      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="price">料金</span>
+      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="area">場所</span>
+      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="days">曜日</span>
+    </div>
   </div>
   <div style="background:white;border-radius:18px;padding:28px;border:1px solid var(--light);">
     <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:22px;padding:3px;">
@@ -1253,7 +1264,14 @@ function updateRegProgress() {
     el.style.display = filled > 0 ? '' : 'none';
     document.getElementById('reg-progress-pct').textContent = pct + '%';
     document.getElementById('reg-progress-bar').style.width = pct + '%';
-    document.getElementById('reg-progress-bar').style.background = pct === 100 ? 'var(--green)' : 'var(--accent)';
+    document.getElementById('reg-progress-bar').style.background = pct === 100 ? 'var(--green)' : '';
+    const steps = document.querySelectorAll('#reg-steps span');
+    const stepMap = { cat: fields[0], skill: fields[1], price: fields[2], area: fields[4], days: fields[5] };
+    steps.forEach(s => {
+      const done = stepMap[s.dataset.step];
+      s.style.color = done ? 'var(--accent)' : 'var(--muted)';
+      s.style.fontWeight = done ? '700' : '400';
+    });
   }
 }
 
@@ -1517,7 +1535,7 @@ function makeCard(t) {
   const safeAv = safeImgUrl(t.avatar_url);
   const fallbackDiv = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:28px;font-weight:800;color:white;position:absolute;inset:0;">${escapeHtml(t.avatar)}</div>`;
   const avInner = safeAv
-    ? `${fallbackDiv}<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" loading="lazy" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;position:relative;z-index:1;">`
+    ? `${fallbackDiv}<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" loading="lazy" onload="this.classList.add('loaded')" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;position:relative;z-index:1;">`
     : fallbackDiv;
   const sampleBadge = !t.db_skill_id ? '<span style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:600;backdrop-filter:blur(4px);">サンプル</span>' : '';
   const popularBadge = t.reviews >= 100 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#FF6B35,#FF8F00);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">人気</span>' : t.rating >= 4.8 && t.reviews >= 20 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--accent),#7C4DFF);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">高評価</span>' : '';
@@ -2580,16 +2598,25 @@ function renderModal() {
   refreshIcons();
 }
 
+function animateCount(el, target, suffix, duration = 800) {
+  if (!el || target <= 0) { if (el) el.textContent = '0' + suffix; return; }
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(ease * target) + suffix;
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 async function loadHeroStats() {
   try {
     const [skillsRes, bookingsRes] = await Promise.all([
       sb.from('skills').select('id', { count: 'exact', head: true }),
       sb.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
     ]);
-    const tc = document.getElementById('hero-teacher-count');
-    const sc = document.getElementById('hero-session-count');
-    if (tc) tc.textContent = (skillsRes.count || 0) + '名';
-    if (sc) sc.textContent = (bookingsRes.count || 0) + '回';
+    animateCount(document.getElementById('hero-teacher-count'), skillsRes.count || 0, '名');
+    animateCount(document.getElementById('hero-session-count'), bookingsRes.count || 0, '回');
   } catch(e) { console.error('loadHeroStats error:', e); }
 }
 
