@@ -754,6 +754,7 @@ let payCart = {
 
 // AUTH STATE
 let authLoading = false;
+let pendingPageAfterAuth = null;
 function updateNavAuth() {
   const loggedIn = document.getElementById('nav-logged-in');
   const loggedOut = document.getElementById('nav-logged-out');
@@ -775,8 +776,9 @@ function openAuthModal(tab) {
 function closeAuthModal() {
   document.getElementById('auth-screen').style.display = 'none';
 }
-function requireAuth() {
+function requireAuth(desiredPage) {
   if (currentUser) return true;
+  if (desiredPage) pendingPageAfterAuth = desiredPage;
   openAuthModal('login');
   return false;
 }
@@ -787,6 +789,11 @@ sb.auth.onAuthStateChange(async (event, session) => {
     updateNavAuth();
     updateNavUser();
     if (event === 'TOKEN_REFRESHED') return;
+    if (pendingPageAfterAuth) {
+      const target = pendingPageAfterAuth;
+      pendingPageAfterAuth = null;
+      setTimeout(() => showPage(target), 50);
+    }
     if (authLoading) return;
     authLoading = true;
     try {
@@ -1254,7 +1261,7 @@ let notifs = [];
 // ── UI ──
 function showPage(id, pushHistory = true) {
   const protectedPages = ['register','matching','chat','payment','dashboard','profile'];
-  if (protectedPages.includes(id) && !requireAuth()) return;
+  if (protectedPages.includes(id) && !requireAuth(id)) return;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const el = document.getElementById(id);
