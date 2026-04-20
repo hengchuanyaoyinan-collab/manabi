@@ -444,8 +444,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <h1 style="color:white;font-size:34px;line-height:1.25;margin-bottom:8px;font-weight:800;letter-spacing:-.5px;position:relative;">学びを、もっと<br>パーソナルに。</h1>
     <p style="color:rgba(200,196,188,.6);font-size:14px;margin-bottom:26px;line-height:1.6;position:relative;">AIが最適な先生を見つける。誰でも教え、誰でも学べるプラットフォーム</p>
     <div style="display:flex;max-width:480px;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.25);position:relative;">
-      <input type="text" id="hero-search" placeholder="何を学びたいですか？" aria-label="科目・キーワードで検索" style="flex:1;padding:15px 18px;border:none;font-size:14px;font-family:inherit;outline:none;" onkeydown="if(event.key==='Enter'){const es=document.getElementById('explore-search');es.value=this.value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=this.value?'flex':'none';showPage('explore');renderExplore();}">
-      <button class="btn btn-dark" style="border-radius:0;padding:15px 20px;display:flex;align-items:center;" onclick="const es=document.getElementById('explore-search');es.value=document.getElementById('hero-search').value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=es.value?'flex':'none';showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
+      <input type="text" id="hero-search" placeholder="何を学びたいですか？" aria-label="科目・キーワードで検索" autocomplete="off" style="flex:1;padding:15px 18px;border:none;font-size:14px;font-family:inherit;outline:none;" oninput="showSearchSuggestions(this.value)" onfocus="showSearchSuggestions(this.value)" onkeydown="if(event.key==='Enter'){hideSearchSuggestions();const es=document.getElementById('explore-search');es.value=this.value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=this.value?'flex':'none';showPage('explore');renderExplore();}">
+      <button class="btn btn-dark" style="border-radius:0;padding:15px 20px;display:flex;align-items:center;" onclick="hideSearchSuggestions();const es=document.getElementById('explore-search');es.value=document.getElementById('hero-search').value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=es.value?'flex':'none';showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
+      <div id="search-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:0 0 14px 14px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-height:240px;overflow-y:auto;z-index:10;"></div>
     </div>
     <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:14px;position:relative;" id="hero-tags">
       <span style="font-size:11px;color:rgba(200,196,188,.5);padding:4px 0;">人気：</span>
@@ -2201,6 +2202,42 @@ function runAiSearch(query) {
   }, 600);
 }
 function doAi(t) { runAiSearch(t); }
+
+function showSearchSuggestions(q) {
+  const box = document.getElementById('search-suggestions');
+  if (!box) return;
+  if (!q || q.length < 1) { box.style.display = 'none'; return; }
+  const lower = q.toLowerCase();
+  const subjects = [...new Set(teachers.map(t => t.subject))].filter(s => s.toLowerCase().includes(lower));
+  const names = teachers.filter(t => t.name.toLowerCase().includes(lower)).slice(0, 3);
+  const tags = [...new Set(teachers.flatMap(t => t.tags))].filter(g => g.toLowerCase().includes(lower)).slice(0, 3);
+  if (!subjects.length && !names.length && !tags.length) { box.style.display = 'none'; return; }
+  let html = '';
+  subjects.slice(0, 4).forEach(s => {
+    html += `<div onclick="selectSuggestion('${escapeHtml(s)}')" style="padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:background .1s;" onmouseover="this.style.background='var(--lighter)'" onmouseout="this.style.background=''"><i data-lucide="book-open" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;"></i>${escapeHtml(s)}</div>`;
+  });
+  names.forEach(t => {
+    html += `<div onclick="openModal(${t.id});hideSearchSuggestions()" style="padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:background .1s;" onmouseover="this.style.background='var(--lighter)'" onmouseout="this.style.background=''"><i data-lucide="user" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;"></i>${escapeHtml(t.name)} <span style="color:var(--muted);font-size:11px;margin-left:4px;">${escapeHtml(t.subject)}</span></div>`;
+  });
+  tags.forEach(g => {
+    html += `<div onclick="selectSuggestion('${escapeHtml(g)}')" style="padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:background .1s;" onmouseover="this.style.background='var(--lighter)'" onmouseout="this.style.background=''"><i data-lucide="tag" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;"></i>${escapeHtml(g)}</div>`;
+  });
+  box.innerHTML = html;
+  box.style.display = 'block';
+  refreshIcons();
+}
+function hideSearchSuggestions() { const box = document.getElementById('search-suggestions'); if (box) box.style.display = 'none'; }
+function selectSuggestion(val) {
+  document.getElementById('hero-search').value = val;
+  hideSearchSuggestions();
+  const es = document.getElementById('explore-search');
+  es.value = val;
+  const cb = es.closest('div').querySelector('.clear-btn');
+  if (cb) cb.style.display = val ? 'flex' : 'none';
+  showPage('explore');
+  renderExplore();
+}
+document.addEventListener('click', (e) => { if (!e.target.closest('#hero-search') && !e.target.closest('#search-suggestions')) hideSearchSuggestions(); });
 function aiChat() {
   const inp = document.getElementById('ai-input');
   const q = inp.value.trim(); if (!q) return; inp.value = '';
@@ -3228,7 +3265,40 @@ function openModal(id) {
   bookStep = 0; selSlot = null; renderModal();
   document.getElementById('modal').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModal() {
+  const overlay = document.getElementById('modal');
+  const modal = overlay.querySelector('.modal');
+  if (modal) { modal.style.transform = 'translateY(100%)'; modal.style.transition = 'transform .2s ease-in'; }
+  setTimeout(() => { overlay.classList.remove('open'); if (modal) { modal.style.transform = ''; modal.style.transition = ''; } }, 200);
+}
+(function initSwipeDismiss() {
+  const overlay = document.getElementById('modal');
+  if (!overlay) return;
+  let startY = 0, currentY = 0, isDragging = false;
+  overlay.addEventListener('touchstart', (e) => {
+    const modal = overlay.querySelector('.modal');
+    if (!modal || modal.scrollTop > 10) return;
+    startY = e.touches[0].clientY;
+    isDragging = true;
+    modal.style.transition = 'none';
+  }, { passive: true });
+  overlay.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    currentY = e.touches[0].clientY - startY;
+    if (currentY < 0) { currentY = 0; return; }
+    const modal = overlay.querySelector('.modal');
+    if (modal) modal.style.transform = `translateY(${currentY}px)`;
+  }, { passive: true });
+  overlay.addEventListener('touchend', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    const modal = overlay.querySelector('.modal');
+    if (!modal) return;
+    if (currentY > 120) { closeModal(); }
+    else { modal.style.transition = 'transform .2s ease-out'; modal.style.transform = ''; }
+    currentY = 0;
+  });
+})();
 function trapFocus(e) {
   const editModal = document.getElementById('edit-skill-modal');
   const mainModal = document.getElementById('modal');
@@ -3323,7 +3393,7 @@ async function createBookingInDB(t) {
 }
 function renderModal() {
   const t = selTeacher; if (!t) return;
-  let html = '';
+  let html = '<div class="modal-handle" style="width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 12px;"></div>';
   if (bookStep === 0) {
     const verified = t.db_skill_id ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:8px;font-weight:600;"><i data-lucide="badge-check" style="width:12px;height:12px;"></i>認証済み</span>' : '';
     const safeModalAv = safeImgUrl(t.avatar_url);
