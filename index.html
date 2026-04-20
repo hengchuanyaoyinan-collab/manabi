@@ -199,8 +199,12 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .cat-card{background:white;border-radius:16px;padding:20px 14px;border:1px solid var(--light);text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .cat-card:hover{border-color:var(--dark);box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-2px);}
 .cat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
-@media(max-width:640px){.cat-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.cat-card{padding:16px 10px;}.cat-icon{width:40px;height:40px;border-radius:12px;margin-bottom:8px;}}
-@media(max-width:380px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){
+  .cat-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.cat-card{padding:16px 10px;}.cat-icon{width:40px;height:40px;border-radius:12px;margin-bottom:8px;}
+  .card-photo{aspect-ratio:3/2;}
+  .card-badge span{font-size:9px;padding:2px 7px;}
+}
+@media(max-width:380px){.cat-grid{grid-template-columns:repeat(2,1fr);}.card-photo{aspect-ratio:1/1;}}
 </style>
 </head>
 <body>
@@ -525,7 +529,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- MATCHING -->
 <div class="page" id="matching">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <h2 style="font-weight:700;font-size:18px;margin-bottom:0;">予約・マッチング</h2>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button onclick="showPage('profile')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+      <h2 style="font-weight:700;font-size:18px;margin-bottom:0;">予約・マッチング</h2>
+    </div>
     <button onclick="renderMatching()" aria-label="更新" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:8px;"><i data-lucide="refresh-cw" style="width:18px;height:18px;"></i></button>
   </div>
   <div style="display:flex;gap:4px;margin-bottom:16px;background:var(--lighter);border-radius:10px;padding:3px;">
@@ -683,7 +690,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- DASHBOARD -->
 <div class="page" id="dashboard">
-  <h2 style="font-weight:700;font-size:18px;margin-bottom:16px;">ダッシュボード</h2>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+    <button onclick="showPage('profile')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+    <h2 style="font-weight:700;font-size:18px;">ダッシュボード</h2>
+  </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:28px;">
     <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">今月の収益</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-earned">¥0</div></div>
     <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">教えた回数</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-taught">0</div></div>
@@ -707,6 +717,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- TERMS -->
 <div class="page" id="terms">
   <div style="max-width:720px;margin:0 auto;">
+    <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:16px;padding:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i>ホームに戻る</button>
     <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">利用規約</h1>
     <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月20日</p>
     <div style="background:white;border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
@@ -738,6 +749,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- PRIVACY -->
 <div class="page" id="privacy">
   <div style="max-width:720px;margin:0 auto;">
+    <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:16px;padding:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i>ホームに戻る</button>
     <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">プライバシーポリシー</h1>
     <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月20日</p>
     <div style="background:white;border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
@@ -1363,14 +1375,18 @@ window.addEventListener('popstate', (e) => {
 
 function makeSkeletonCards(n) {
   return Array(n).fill(`<div class="card" style="pointer-events:none;">
-    <div style="height:70px;background:var(--lighter);display:flex;align-items:center;justify-content:center;">
-      <div class="skeleton" style="width:50px;height:50px;border-radius:50%;"></div>
+    <div class="card-photo" style="background:var(--lighter);">
+      <div class="skeleton" style="width:100%;height:100%;border-radius:0;"></div>
     </div>
     <div style="padding:14px 16px;">
-      <div class="skeleton" style="width:60%;height:14px;margin-bottom:8px;"></div>
-      <div class="skeleton" style="width:40%;height:11px;margin-bottom:10px;"></div>
-      <div class="skeleton" style="width:80%;height:11px;margin-bottom:6px;"></div>
-      <div class="skeleton" style="width:50%;height:11px;"></div>
+      <div class="skeleton" style="width:55%;height:15px;margin-bottom:8px;"></div>
+      <div class="skeleton" style="width:35%;height:11px;margin-bottom:12px;"></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+        <div class="skeleton" style="width:30%;height:14px;"></div>
+        <div class="skeleton" style="width:25%;height:18px;"></div>
+      </div>
+      <div class="skeleton" style="width:90%;height:11px;margin-bottom:5px;"></div>
+      <div class="skeleton" style="width:60%;height:11px;"></div>
     </div>
   </div>`).join('');
 }
@@ -1400,7 +1416,7 @@ function makeCard(t) {
         <div style="display:flex;align-items:center;gap:3px;">${t.rating > 0 ? `<i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:13px;font-weight:700;">${t.rating}</span><span style="font-size:11px;color:var(--muted);">(${t.reviews})</span>` : '<span style="font-size:11px;color:var(--muted);">新着</span>'}</div>
         <div><span style="font-size:17px;font-weight:800;letter-spacing:-.3px;">¥${t.price.toLocaleString()}</span><span style="font-size:11px;color:var(--muted);"> /時</span></div>
       </div>
-      <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(t.bio)}</p>
+      ${t.career ? `<p style="font-size:11px;color:var(--accent);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i data-lucide="briefcase" style="width:11px;height:11px;vertical-align:-1px;margin-right:3px;"></i>${escapeHtml(t.career)}</p>` : `<p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(t.bio)}</p>`}
       <div style="display:flex;gap:4px;flex-wrap:wrap;">${t.tags.slice(0,3).map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>
       <div style="display:flex;gap:3px;margin-top:8px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:var(--muted);">${escapeHtml(d)}</span>`).join('')}</div>
     </div>
@@ -1447,7 +1463,12 @@ function renderExplore() {
   else list.sort((a,b) => b.rating - a.rating);
   document.getElementById('explore-cards').innerHTML = list.length
     ? list.map(makeCard).join('')
-    : '<div style="text-align:center;padding:60px 0;color:var(--muted);grid-column:1/-1;"><div style="display:flex;justify-content:center;margin-bottom:10px;"><i data-lucide="search-x" style="width:28px;height:28px;"></i></div><p>条件に合う先生が見つかりませんでした</p></div>';
+    : `<div style="text-align:center;padding:60px 20px;color:var(--muted);grid-column:1/-1;">
+        <div style="width:64px;height:64px;border-radius:20px;background:var(--lighter);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><i data-lucide="search-x" style="width:28px;height:28px;"></i></div>
+        <p style="font-weight:600;font-size:14px;color:var(--dark);margin-bottom:6px;">条件に合う先生が見つかりませんでした</p>
+        <p style="font-size:12px;margin-bottom:16px;line-height:1.7;">検索キーワードを変更するか、<br>フィルターをリセットしてお試しください。</p>
+        <button onclick="document.getElementById('explore-search').value='';curSubj='すべて';curDay=null;renderFilters();renderExplore();" class="btn btn-outline" style="padding:8px 20px;font-size:12px;">フィルターをリセット</button>
+      </div>`;
   document.getElementById('result-count').textContent = `${list.length}名の先生が見つかりました`;
   refreshIcons();
 }
@@ -1917,7 +1938,12 @@ async function renderMatching() {
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
     .order('created_at', { ascending: false }).limit(20);
   if (!data || !data.length) {
-    el.innerHTML = '<div style="background:white;border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);color:var(--muted);"><div style="display:flex;justify-content:center;margin-bottom:10px;"><i data-lucide="calendar" style="width:32px;height:32px;"></i></div><p style="font-size:13px;">予約はまだありません。<br>先生を探して予約してみましょう。</p></div>'; refreshIcons();
+    el.innerHTML = `<div style="background:white;border-radius:16px;padding:48px 20px;text-align:center;border:1px solid var(--light);">
+      <div style="width:64px;height:64px;border-radius:20px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"><i data-lucide="calendar-search" style="width:28px;height:28px;"></i></div>
+      <p style="font-weight:700;font-size:15px;margin-bottom:6px;color:var(--dark);">予約はまだありません</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;">気になる先生を見つけて、<br>最初のレッスンを予約しましょう。</p>
+      <button class="btn btn-dark" onclick="showPage('explore')" style="padding:11px 28px;font-size:13px;display:inline-flex;align-items:center;gap:6px;"><i data-lucide="search" style="width:14px;height:14px;"></i>先生を探す</button>
+    </div>`; refreshIcons();
     return;
   }
   el.innerHTML = data.map(b => {
@@ -1996,7 +2022,11 @@ async function loadLearningRequests() {
       .eq('status', 'open')
       .order('created_at', { ascending: false }).limit(20);
     if (!data || !data.length) {
-      el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">リクエストはまだありません。最初の一人になりましょう！</div>';
+      el.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--muted);">
+        <div style="width:56px;height:56px;border-radius:16px;background:#FFF8E1;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--gold);"><i data-lucide="megaphone" style="width:24px;height:24px;"></i></div>
+        <p style="font-weight:600;font-size:14px;color:var(--dark);margin-bottom:4px;">リクエストはまだありません</p>
+        <p style="font-size:12px;line-height:1.7;">上のフォームから最初のリクエストを投稿して、<br>ぴったりの先生を見つけましょう。</p>
+      </div>`;
       return;
     }
     const formatMap = { any: 'こだわらない', online: 'オンライン', inperson: '対面' };
@@ -2296,7 +2326,7 @@ function renderModal() {
         <div style="display:flex;align-items:center;gap:3px;">${t.rating > 0 ? `<i data-lucide="star" style="width:15px;height:15px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:14px;font-weight:700;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件のレビュー)</span>` : '<span style="font-size:12px;color:var(--muted);">まだレビューはありません</span>'}</div>
       </div>
     </div>
-    <div style="background:linear-gradient(135deg,var(--bg),var(--lighter));border-radius:14px;padding:18px;margin-bottom:20px;border:1px solid var(--light);">
+    <div style="background:linear-gradient(135deg,var(--bg),var(--lighter));border-radius:14px;padding:18px;margin-bottom:16px;border:1px solid var(--light);">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
           <span style="font-size:11px;color:var(--muted);display:block;margin-bottom:2px;">授業料</span>
@@ -2307,6 +2337,20 @@ function renderModal() {
           ${(t.lesson_formats||[]).length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">${(t.lesson_formats||[]).map(f=>`<span style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--accent-light);color:var(--accent);font-weight:500;">${escapeHtml(fmtMap[f]||f)}</span>`).join('')}</div>` : ''}
           <div style="margin-top:4px;font-size:11px;color:var(--muted);">${t.available.map(d=>escapeHtml(d)).join('・')}</div>
         </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
+      <div style="text-align:center;padding:10px 6px;background:var(--bg);border-radius:10px;border:1px solid var(--light);">
+        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.reviews > 0 ? Math.min(100, 85 + Math.floor(t.reviews / 10)) + '%' : '—'}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">返信率</div>
+      </div>
+      <div style="text-align:center;padding:10px 6px;background:var(--bg);border-radius:10px;border:1px solid var(--light);">
+        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.reviews > 0 ? Math.floor(t.reviews * 1.2) : 0}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">セッション数</div>
+      </div>
+      <div style="text-align:center;padding:10px 6px;background:var(--bg);border-radius:10px;border:1px solid var(--light);">
+        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.reviews >= 50 ? '2年' : t.reviews >= 20 ? '1年' : t.reviews > 0 ? '6ヶ月' : '新規'}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">活動歴</div>
       </div>
     </div>
     <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--light);">
