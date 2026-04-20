@@ -818,31 +818,67 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
     <div style="display:flex;align-items:center;gap:12px;">
       <button onclick="showPage('profile')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
-      <h2 style="font-weight:700;font-size:18px;margin-bottom:0;">予約・マッチング</h2>
+      <h2 style="font-weight:700;font-size:18px;margin-bottom:0;">AIマッチング</h2>
     </div>
-    <button onclick="renderMatching()" aria-label="更新" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:8px;"><i data-lucide="refresh-cw" style="width:18px;height:18px;"></i></button>
+    <div style="display:flex;align-items:center;gap:4px;background:var(--accent-light);padding:4px 10px;border-radius:20px;font-size:11px;color:var(--accent);font-weight:600;"><i data-lucide="sparkles" style="width:12px;height:12px;"></i>AI推薦</div>
   </div>
   <div style="display:flex;gap:4px;margin-bottom:16px;background:var(--lighter);border-radius:10px;padding:3px;">
-    <button class="auth-tab active" id="match-tab-bookings" onclick="switchMatchTab('bookings')">予約一覧</button>
-    <button class="auth-tab" id="match-tab-requests" onclick="switchMatchTab('requests')">学びたいリクエスト</button>
+    <button class="auth-tab active" id="match-tab-ai" onclick="switchMatchTab('ai')">✦ AIマッチ</button>
+    <button class="auth-tab" id="match-tab-bookings" onclick="switchMatchTab('bookings')">予約一覧</button>
+    <button class="auth-tab" id="match-tab-requests" onclick="switchMatchTab('requests')">リクエスト</button>
   </div>
-  <div id="matching-list"></div>
-  <div id="matching-requests" style="display:none;">
+
+  <!-- AI MATCH TAB -->
+  <div id="matching-ai">
+    <!-- Request Form -->
     <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
-      <p style="font-weight:700;font-size:14px;margin-bottom:14px;">学びたいことをリクエスト</p>
-      <input class="form-input" id="req-subject" placeholder="学びたい科目（例：英会話、ギター）" maxlength="100" style="margin-bottom:10px;">
-      <textarea class="form-input" id="req-detail" rows="3" placeholder="詳細（レベル、目標、希望する頻度など）" maxlength="500" style="resize:vertical;margin-bottom:10px;"></textarea>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></div>
+        <div><p style="font-weight:700;font-size:14px;">何を学びたいですか？</p><p style="font-size:11px;color:var(--muted);">AIが最適な先生を自動で見つけます</p></div>
+      </div>
+      <input class="form-input" id="ai-req-subject" placeholder="例：英会話、ピアノ、プログラミング" maxlength="100" style="margin-bottom:10px;font-size:15px;padding:14px;">
+      <textarea class="form-input" id="ai-req-detail" rows="3" placeholder="どんなことを学びたいですか？&#10;例：TOEIC 800点を目指したい、初心者でも丁寧に教えてほしい" maxlength="500" style="resize:vertical;margin-bottom:10px;"></textarea>
       <div style="display:flex;gap:10px;margin-bottom:14px;">
-        <div style="flex:1;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">希望予算</label><input class="form-input" id="req-budget" type="number" placeholder="¥3000" min="0"></div>
+        <div style="flex:1;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">予算</label><input class="form-input" id="ai-req-budget" type="number" placeholder="¥3000" min="0"></div>
         <div style="flex:1;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">形式</label>
-          <select class="form-input" id="req-format"><option value="any">こだわらない</option><option value="online">オンライン</option><option value="inperson">対面</option></select>
+          <select class="form-input" id="ai-req-format"><option value="any">こだわらない</option><option value="online">オンライン</option><option value="inperson">対面</option></select>
         </div>
       </div>
-      <button class="btn btn-dark" style="width:100%;padding:13px;" id="btn-post-request" onclick="postLearningRequest()">リクエストを投稿</button>
+      <button class="btn btn-dark" style="width:100%;padding:14px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--dark),#37474F);" id="btn-ai-match" onclick="runAIMatch()"><i data-lucide="sparkles" style="width:16px;height:16px;"></i>AIマッチングを開始</button>
     </div>
+
+    <!-- AI Processing Animation -->
+    <div id="ai-matching-loading" style="display:none;">
+      <div style="background:white;border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+        <div style="position:relative;width:80px;height:80px;margin:0 auto 20px;">
+          <div style="position:absolute;inset:0;border:3px solid var(--lighter);border-radius:50%;"></div>
+          <div class="spinner" style="position:absolute;inset:0;width:80px;height:80px;border-width:3px;border-color:var(--accent-light);border-top-color:var(--accent);"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--accent);"><i data-lucide="sparkles" style="width:28px;height:28px;"></i></div>
+        </div>
+        <p style="font-weight:700;font-size:16px;margin-bottom:6px;" id="ai-loading-title">AIが先生を探しています...</p>
+        <p style="font-size:12px;color:var(--muted);line-height:1.7;" id="ai-loading-sub">リクエストを分析し、最適な先生をマッチングしています</p>
+        <div style="display:flex;gap:6px;justify-content:center;margin-top:16px;">
+          <div class="ai-step-dot" style="width:8px;height:8px;border-radius:50%;background:var(--accent);"></div>
+          <div class="ai-step-dot" style="width:8px;height:8px;border-radius:50%;background:var(--border);"></div>
+          <div class="ai-step-dot" style="width:8px;height:8px;border-radius:50%;background:var(--border);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Results -->
+    <div id="ai-match-results" style="display:none;"></div>
+
+    <!-- Previous Requests -->
+    <div id="ai-prev-requests"></div>
+  </div>
+
+  <!-- BOOKINGS TAB -->
+  <div id="matching-list" style="display:none;"></div>
+
+  <!-- REQUESTS TAB -->
+  <div id="matching-requests" style="display:none;">
     <div id="request-list"></div>
   </div>
-  <div style="text-align:center;margin-top:16px;"><button class="btn btn-outline" onclick="showPage('explore')">新しい先生を探す</button></div>
 </div>
 
 <!-- CHAT -->
@@ -1570,6 +1606,7 @@ async function submitSkill() {
       document.getElementById('reg-ok').style.display = 'block';
       addNotif({ text: `「${escapeHtml(skill)}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
       setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
+      analyzeProfileInBackground();
       wizReset();
       loadMySkills();
       loadSkillsFromDB();
@@ -1750,7 +1787,7 @@ function showPage(id, pushHistory = true) {
     b.classList.toggle('active', b.dataset.page === btmActive);
   });
   if (id === 'chat') loadChatThreads();
-  if (id === 'matching') renderMatching();
+  if (id === 'matching') { loadPreviousAIRequests(); }
   if (id === 'map') renderMap();
   if (id === 'profile' || id === 'dashboard') loadProfile();
   if (id === 'register') { showWizStep(wizStep || 1); }
@@ -2433,36 +2470,301 @@ async function renderMatching() {
 }
 
 function switchMatchTab(tab) {
-  const isBookings = tab === 'bookings';
-  document.getElementById('matching-list').style.display = isBookings ? '' : 'none';
-  document.getElementById('matching-requests').style.display = isBookings ? 'none' : '';
-  document.getElementById('match-tab-bookings').classList.toggle('active', isBookings);
-  document.getElementById('match-tab-requests').classList.toggle('active', !isBookings);
-  if (!isBookings) loadLearningRequests();
+  document.getElementById('matching-ai').style.display = tab === 'ai' ? '' : 'none';
+  document.getElementById('matching-list').style.display = tab === 'bookings' ? '' : 'none';
+  document.getElementById('matching-requests').style.display = tab === 'requests' ? '' : 'none';
+  document.getElementById('match-tab-ai').classList.toggle('active', tab === 'ai');
+  document.getElementById('match-tab-bookings').classList.toggle('active', tab === 'bookings');
+  document.getElementById('match-tab-requests').classList.toggle('active', tab === 'requests');
+  if (tab === 'bookings') renderMatching();
+  if (tab === 'requests') loadLearningRequests();
+  if (tab === 'ai') loadPreviousAIRequests();
+}
+
+// ── AI MATCHING ──
+let aiMatchAnimInterval = null;
+
+async function runAIMatch() {
+  if (!currentUser) return;
+  const subject = document.getElementById('ai-req-subject').value.trim();
+  const detail = document.getElementById('ai-req-detail').value.trim();
+  const budget = parseInt(document.getElementById('ai-req-budget').value) || 0;
+  const format = document.getElementById('ai-req-format').value;
+  if (!subject) { showToast('学びたいことを入力してください', 'var(--red)'); return; }
+
+  const btn = document.getElementById('btn-ai-match');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;"></span>処理中...';
+
+  const loadingEl = document.getElementById('ai-matching-loading');
+  const resultsEl = document.getElementById('ai-match-results');
+  loadingEl.style.display = '';
+  resultsEl.style.display = 'none';
+
+  const steps = [
+    { title: 'リクエストをAIが分析中...', sub: '学びたい内容・レベル・目標を構造化しています' },
+    { title: '先生を検索中...', sub: 'ベクトル類似度とスキルマッチで候補を抽出しています' },
+    { title: 'マッチスコアを算出中...', sub: '7つの要素で総合評価しています' },
+  ];
+  let stepIdx = 0;
+  aiMatchAnimInterval = setInterval(() => {
+    stepIdx = Math.min(stepIdx + 1, steps.length - 1);
+    document.getElementById('ai-loading-title').textContent = steps[stepIdx].title;
+    document.getElementById('ai-loading-sub').textContent = steps[stepIdx].sub;
+    loadingEl.querySelectorAll('.ai-step-dot').forEach((d, i) => {
+      d.style.background = i <= stepIdx ? 'var(--accent)' : 'var(--border)';
+    });
+  }, 2000);
+
+  refreshIcons();
+
+  try {
+    const session = await sb.auth.getSession();
+    const token = session.data.session?.access_token;
+    if (!token) throw new Error('認証が必要です');
+
+    const res = await fetch(`${SB_URL}/functions/v1/auto-match`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'apikey': SB_KEY,
+      },
+      body: JSON.stringify({
+        action: 'create_and_match',
+        subject, detail, budget: budget || null, format,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'マッチングに失敗しました');
+
+    clearInterval(aiMatchAnimInterval);
+    loadingEl.style.display = 'none';
+
+    renderAIMatchResults(data.matches, data.structured, data.request_id);
+
+    document.getElementById('ai-req-subject').value = '';
+    document.getElementById('ai-req-detail').value = '';
+    document.getElementById('ai-req-budget').value = '';
+    document.getElementById('ai-req-format').value = 'any';
+
+    showToast(`${data.matches.length}人の先生が見つかりました`, 'var(--green)');
+  } catch(e) {
+    clearInterval(aiMatchAnimInterval);
+    loadingEl.style.display = 'none';
+    console.error('AI match error:', e);
+    resultsEl.style.display = '';
+    resultsEl.innerHTML = `<div style="background:white;border-radius:16px;padding:32px 20px;text-align:center;border:1px solid var(--light);">
+      <div style="color:var(--red);margin-bottom:12px;display:flex;justify-content:center;"><i data-lucide="alert-circle" style="width:40px;height:40px;"></i></div>
+      <p style="font-weight:700;font-size:15px;margin-bottom:6px;">マッチングに失敗しました</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">${escapeHtml(e.message)}</p>
+      <button class="btn btn-outline" onclick="document.getElementById('ai-match-results').style.display='none'">閉じる</button>
+    </div>`;
+    refreshIcons();
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;"></i>AIマッチングを開始';
+  refreshIcons();
+}
+
+function renderAIMatchResults(matches, structured, requestId) {
+  const el = document.getElementById('ai-match-results');
+  el.style.display = '';
+
+  if (!matches || matches.length === 0) {
+    el.innerHTML = `<div style="background:white;border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);">
+      <div style="width:64px;height:64px;border-radius:20px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"><i data-lucide="search-x" style="width:28px;height:28px;"></i></div>
+      <p style="font-weight:700;font-size:15px;margin-bottom:6px;">該当する先生が見つかりませんでした</p>
+      <p style="font-size:12px;color:var(--muted);line-height:1.7;">条件を変えて再度お試しください。<br>先生が増えると候補も増えます。</p>
+    </div>`;
+    refreshIcons();
+    return;
+  }
+
+  const header = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;"><i data-lucide="sparkles" style="width:14px;height:14px;"></i></div>
+      <div><p style="font-weight:700;font-size:15px;">AIが${matches.length}人の先生を推薦</p>
+      ${structured?.skill_level ? `<p style="font-size:11px;color:var(--muted);">${structured.parsed_subject || ''} · ${structured.skill_level} · ${(structured.goals || []).slice(0,2).join(', ')}</p>` : ''}</div>
+    </div>
+    <button class="btn btn-outline" style="font-size:11px;padding:6px 12px;" onclick="runRematch('${requestId}')"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>再検索</button>
+  </div>`;
+
+  const cards = matches.map((m, idx) => {
+    const t = m.teacher;
+    const s = m.skill;
+    const score = Math.round(m.match_score);
+    const scoreColor = score >= 70 ? 'var(--green)' : score >= 50 ? 'var(--gold)' : 'var(--muted)';
+    const bd = m.score_breakdown || {};
+    const safeAv = safeImgUrl(t.avatar_url);
+    const avHtml = safeAv
+      ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;">`
+      : `<span style="font-size:16px;font-weight:700;color:white;">${escapeHtml((t.name||'?').substring(0,2))}</span>`;
+    const formatMap = { online:'オンライン', inperson:'対面', any:'応相談' };
+    const formats = (s?.lesson_formats || []).map(f => formatMap[f] || f).join(' / ') || '応相談';
+
+    return `<div style="background:white;border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;overflow:hidden;" onclick="trackMatchFeedback('${m.match_id}','view')">
+      ${idx === 0 ? '<div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#9575CD);"></div>' : ''}
+      <div style="display:flex;gap:14px;margin-bottom:14px;">
+        <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">${avHtml}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <p style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.name)}</p>
+            ${idx === 0 ? '<span style="font-size:10px;background:linear-gradient(135deg,var(--accent),#9575CD);color:white;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;">BEST MATCH</span>' : ''}
+          </div>
+          <p style="font-size:12px;color:var(--muted);">${escapeHtml(s?.subject || '—')}${s?.area ? ' · ' + escapeHtml(s.area) : ''} · ${formats}</p>
+        </div>
+        <div style="text-align:center;flex-shrink:0;">
+          <div style="width:48px;height:48px;border-radius:50%;border:3px solid ${scoreColor};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:${scoreColor};">${score}</div>
+          <p style="font-size:9px;color:var(--muted);margin-top:2px;">スコア</p>
+        </div>
+      </div>
+      <div style="background:var(--accent-light);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px;">
+        <i data-lucide="sparkles" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;margin-top:1px;"></i>
+        <p style="font-size:13px;color:var(--accent);line-height:1.6;font-weight:500;">${escapeHtml(m.ai_reason)}</p>
+      </div>
+      <div style="display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap;">
+        ${Object.entries(bd).map(([k,v]) => {
+          const labels = {embedding:'AI類似度',subject:'科目',availability:'日程',price:'価格',rating:'評価',completeness:'充実度'};
+          const colors = {embedding:'#5C6BC0',subject:'#26A69A',availability:'#AB47BC',price:'#FF7043',rating:'#FFC107',completeness:'#42A5F5'};
+          return `<div style="font-size:10px;padding:3px 8px;border-radius:6px;background:${colors[k]||'var(--lighter)'}15;color:${colors[k]||'var(--muted)'};border:1px solid ${colors[k]||'var(--border)'}30;white-space:nowrap;">${labels[k]||k} ${v}%</div>`;
+        }).join('')}
+      </div>
+      ${s?.price_min ? `<p style="font-size:14px;font-weight:700;margin-bottom:14px;">¥${s.price_min.toLocaleString()}<span style="font-size:11px;font-weight:400;color:var(--muted);">〜 / 回</span></p>` : ''}
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-dark" style="flex:1;font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="event.stopPropagation();acceptAIMatch('${m.match_id}',${m.teacher?.id ? `'${m.teacher.id}'` : 'null'})"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージ</button>
+        <button class="btn btn-outline" style="font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="event.stopPropagation();openTeacherByUUID('${escapeHtml(t.id)}')"><i data-lucide="user" style="width:14px;height:14px;"></i>プロフィール</button>
+        <button style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;" onclick="event.stopPropagation();dismissAIMatch('${m.match_id}',this)" title="スキップ"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = header + cards;
+  refreshIcons();
+}
+
+async function runRematch(requestId) {
+  if (!currentUser || !requestId) return;
+  const el = document.getElementById('ai-match-results');
+  el.innerHTML = '<div style="text-align:center;padding:40px;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--accent);width:28px;height:28px;"></span><p style="font-size:12px;color:var(--muted);margin-top:12px;">再マッチング中...</p></div>';
+  try {
+    const session = await sb.auth.getSession();
+    const token = session.data.session?.access_token;
+    const res = await fetch(`${SB_URL}/functions/v1/auto-match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'apikey': SB_KEY },
+      body: JSON.stringify({ action: 'rematch', request_id: requestId }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || '再マッチングに失敗');
+    renderAIMatchResults(data.matches, {}, requestId);
+  } catch(e) {
+    showToast(e.message, 'var(--red)');
+    el.innerHTML = '';
+  }
+}
+
+async function trackMatchFeedback(matchId, action) {
+  if (!currentUser || !matchId) return;
+  try {
+    const session = await sb.auth.getSession();
+    const token = session.data.session?.access_token;
+    await fetch(`${SB_URL}/functions/v1/auto-match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'apikey': SB_KEY },
+      body: JSON.stringify({ action: 'feedback', match_id: matchId, feedback_action: action }),
+    });
+  } catch(e) { console.error('feedback error:', e); }
+}
+
+async function acceptAIMatch(matchId, teacherId) {
+  trackMatchFeedback(matchId, 'message');
+  if (teacherId) {
+    const { data: profile } = await sb.from('profiles').select('name').eq('id', teacherId).single();
+    startDirectChat(teacherId, profile?.name || '先生');
+  }
+}
+
+async function dismissAIMatch(matchId, btnEl) {
+  trackMatchFeedback(matchId, 'dismiss');
+  const card = btnEl.closest('div[style*="background:white"]');
+  if (card) {
+    card.style.transition = 'opacity .3s, transform .3s';
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(40px)';
+    setTimeout(() => card.remove(), 300);
+  }
+  showToast('スキップしました', 'var(--muted)');
+}
+
+function openTeacherByUUID(uuid) {
+  const t = teachers.find(t => t.db_user_id === uuid);
+  if (t) { openModal(t.id); return; }
+  showToast('プロフィールを読み込み中...', 'var(--muted)');
+  loadSkillsFromDB().then(() => {
+    const t2 = teachers.find(t => t.db_user_id === uuid);
+    if (t2) openModal(t2.id);
+    else showToast('先生が見つかりませんでした', 'var(--red)');
+  });
+}
+
+async function analyzeProfileInBackground() {
+  if (!currentUser) return;
+  try {
+    const session = await sb.auth.getSession();
+    const token = session.data.session?.access_token;
+    if (!token) return;
+    fetch(`${SB_URL}/functions/v1/analyze-profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'apikey': SB_KEY },
+      body: JSON.stringify({ user_id: currentUser.id }),
+    }).then(r => r.json()).then(d => {
+      if (d.success) console.log('Profile analyzed for AI matching');
+    }).catch(e => console.error('analyze-profile:', e));
+  } catch(e) { console.error('analyzeProfile:', e); }
+}
+
+async function loadPreviousAIRequests() {
+  if (!currentUser) return;
+  const el = document.getElementById('ai-prev-requests');
+  try {
+    const { data } = await sb.from('learning_requests')
+      .select('id, subject, detail, created_at, ai_structured')
+      .eq('user_id', currentUser.id)
+      .eq('status', 'open')
+      .order('created_at', { ascending: false })
+      .limit(5);
+    if (!data || data.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = `<p style="font-weight:600;font-size:13px;margin:20px 0 10px;color:var(--muted);">過去のリクエスト</p>` +
+      data.map(r => {
+        const dt = new Date(r.created_at);
+        const ago = getTimeAgo(dt);
+        return `<div style="background:white;border-radius:12px;padding:14px;margin-bottom:8px;border:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="runRematch('${r.id}')">
+          <div style="min-width:0;flex:1;">
+            <p style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(r.subject)}</p>
+            <p style="font-size:11px;color:var(--muted);">${ago}${r.ai_structured?.skill_level ? ' · ' + r.ai_structured.skill_level : ''}</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;color:var(--accent);font-size:12px;font-weight:600;flex-shrink:0;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>再検索</div>
+        </div>`;
+      }).join('');
+    refreshIcons();
+  } catch(e) { console.error('loadPreviousAIRequests:', e); }
 }
 
 async function postLearningRequest() {
   if (!currentUser) return;
-  const subject = document.getElementById('req-subject').value.trim();
-  const detail = document.getElementById('req-detail').value.trim();
-  const budget = parseInt(document.getElementById('req-budget').value) || 0;
-  const format = document.getElementById('req-format').value;
+  const subject = document.getElementById('ai-req-subject')?.value.trim() || document.getElementById('req-subject')?.value.trim();
+  const detail = document.getElementById('ai-req-detail')?.value.trim() || document.getElementById('req-detail')?.value.trim();
+  const budget = parseInt(document.getElementById('ai-req-budget')?.value || document.getElementById('req-budget')?.value) || 0;
+  const format = document.getElementById('ai-req-format')?.value || document.getElementById('req-format')?.value || 'any';
   if (!subject) { showToast('科目を入力してください', 'var(--red)'); return; }
-  const btn = document.getElementById('btn-post-request');
-  btn.innerHTML = '<span class="spinner"></span>投稿中...'; btn.disabled = true;
   try {
-    const { error } = await sb.from('learning_requests').insert({
-      user_id: currentUser.id, subject, detail, budget: budget || null, format, status: 'open'
-    });
-    if (error) throw error;
-    document.getElementById('req-subject').value = '';
-    document.getElementById('req-detail').value = '';
-    document.getElementById('req-budget').value = '';
-    document.getElementById('req-format').value = 'any';
+    await sb.from('learning_requests').insert({ user_id: currentUser.id, subject, detail, budget: budget || null, format, status: 'open' });
     showToast('リクエストを投稿しました', 'var(--green)');
     loadLearningRequests();
-  } catch(e) { console.error('postLearningRequest error:', e); showToast('投稿に失敗しました', 'var(--red)'); }
-  btn.innerHTML = 'リクエストを投稿'; btn.disabled = false;
+  } catch(e) { showToast('投稿に失敗しました', 'var(--red)'); }
 }
 
 async function loadLearningRequests() {
