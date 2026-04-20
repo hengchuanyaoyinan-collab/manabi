@@ -209,6 +209,43 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
 }
+/* WIZARD STEPS */
+.wiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.wiz-back{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;}
+.wiz-badge{display:flex;align-items:center;gap:4px;background:var(--dark);color:white;padding:4px 10px;border-radius:14px;font-size:12px;font-weight:700;flex-shrink:0;}
+.wiz-dashes{display:flex;gap:4px;flex:1;align-items:center;overflow:hidden;}
+.wiz-dash{height:3px;flex:1;border-radius:2px;background:var(--border);transition:background .2s;min-width:8px;}
+.wiz-dash.done{background:var(--dark);}
+.wiz-skip{background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;color:var(--muted);font-weight:500;flex-shrink:0;}
+.wiz-title-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--light);}
+.wiz-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wiz-title{font-size:20px;font-weight:800;color:var(--dark);margin-bottom:4px;letter-spacing:-.3px;}
+.wiz-desc{font-size:12px;color:var(--muted);line-height:1.7;}
+.wiz-step{display:none;animation:fadeIn .25s ease-out;}
+.wiz-step.active{display:block;}
+.wiz-tip{background:#FFF5E6;border:1px solid #FFE0B2;border-radius:14px;padding:18px;margin-top:16px;text-align:center;}
+.wiz-tip-title{color:#F57C00;font-weight:700;font-size:14px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed #FFCC80;}
+.wiz-tip ul{color:#F57C00;font-size:12px;line-height:1.9;text-align:left;padding-left:18px;}
+.wiz-tip p{color:#F57C00;font-size:12px;line-height:1.9;}
+.wiz-tip-icon{width:48px;height:48px;border-radius:50%;background:#FFE0B2;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;color:#F57C00;}
+.wiz-actions{display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--light);}
+.wiz-next{flex:1;padding:14px;font-size:14px;font-weight:700;}
+.wiz-reset{padding:14px 22px;border:1.5px solid var(--accent);background:white;color:var(--accent);border-radius:12px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;}
+.day-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:8px;align-items:center;margin-top:8px;}
+.day-label{font-size:13px;color:var(--mid);font-weight:500;padding-right:4px;}
+.day-opt{background:white;border:1.5px solid var(--border);border-radius:10px;padding:12px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-family:inherit;color:var(--muted);transition:all .15s;font-weight:700;}
+.day-opt.active[data-val="yes"]{background:var(--green-light);border-color:var(--green);color:var(--green);}
+.day-opt.active[data-val="maybe"]{background:#F3E5F5;border-color:#AB47BC;color:#AB47BC;}
+.day-opt.active[data-val="no"]{background:var(--lighter);border-color:var(--muted);color:var(--muted);}
+.day-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.day-legend span{font-size:11px;padding:5px 12px;border-radius:10px;display:flex;align-items:center;gap:4px;font-weight:600;}
+.wiz-card{background:white;border-radius:18px;padding:24px 22px;border:1px solid var(--light);}
+@media(max-width:640px){
+  .wiz-card{padding:20px 16px;}
+  .wiz-title{font-size:17px;}
+  .wiz-icon{width:48px;height:48px;}
+  .wiz-badge{padding:3px 8px;font-size:11px;}
+}
 /* SCROLL ANIMATIONS */
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity .5s ease-out,transform .5s ease-out;}
 .fade-up.visible{opacity:1;transform:translateY(0);}
@@ -606,38 +643,33 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- REGISTER -->
 <div class="page" id="register">
-  <h2 style="font-weight:700;font-size:18px;margin-bottom:16px;">スキルを出品する</h2>
-  <div id="reg-progress" style="background:white;border-radius:14px;padding:16px 18px;border:1px solid var(--light);margin-bottom:14px;display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <span style="font-size:12px;font-weight:600;color:var(--dark);">出品の完成度</span>
-      <span style="font-size:12px;font-weight:700;color:var(--accent);" id="reg-progress-pct">0%</span>
-    </div>
-    <div style="height:6px;background:var(--lighter);border-radius:3px;overflow:hidden;margin-bottom:10px;"><div id="reg-progress-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),#9575CD);border-radius:3px;width:0%;transition:width .4s cubic-bezier(.4,0,.2,1);"></div></div>
-    <div style="display:flex;justify-content:space-between;gap:4px;" id="reg-steps">
-      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="cat">カテゴリ</span>
-      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="skill">スキル</span>
-      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="price">料金</span>
-      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="area">場所</span>
-      <span style="font-size:10px;color:var(--muted);text-align:center;flex:1;" data-step="days">曜日</span>
-    </div>
+  <!-- Role switcher -->
+  <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:18px;padding:3px;">
+    <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える（出品）</button>
+    <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="book-open" style="width:16px;height:16px;"></i>学ぶ（リクエスト）</button>
   </div>
-  <div style="background:white;border-radius:18px;padding:28px;border:1px solid var(--light);">
-    <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:22px;padding:3px;">
-      <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える（出品）</button>
-      <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="book-open" style="width:16px;height:16px;"></i>学ぶ（リクエスト）</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-      <div style="position:relative;flex-shrink:0;">
-        <div id="reg-av-preview" style="width:56px;height:56px;border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden;"><i data-lucide="camera" style="width:22px;height:22px;"></i></div>
-        <label for="reg-avatar" style="position:absolute;bottom:-4px;right:-4px;width:28px;height:28px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;border:2px solid white;">+</label>
-        <input type="file" id="reg-avatar" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previewRegAvatar(this)">
+
+  <!-- Wizard header -->
+  <div class="wiz-header">
+    <button class="wiz-back" onclick="wizPrev()" aria-label="戻る"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+    <div class="wiz-badge"><i data-lucide="file-text" style="width:12px;height:12px;"></i><span id="wiz-step-text">1/4</span></div>
+    <div class="wiz-dashes" id="wiz-dashes"></div>
+    <button class="wiz-skip" onclick="wizSkip()">スキップ</button>
+  </div>
+
+  <div class="wiz-card">
+    <!-- STEP 1: カテゴリ & スキル -->
+    <div class="wiz-step active" data-step="1">
+      <div class="wiz-title-row">
+        <div class="wiz-icon" style="background:#E8EAF6;color:var(--accent);"><i data-lucide="book-marked" style="width:26px;height:26px;"></i></div>
+        <div style="flex:1;">
+          <h2 class="wiz-title">何を教えますか？</h2>
+          <p class="wiz-desc">得意なこと・好きなことで大丈夫。<br>後から変更もできます。</p>
+        </div>
       </div>
-      <p style="font-size:12px;color:var(--muted);">プロフィール写真を追加（任意）</p>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-      <div><label for="reg-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="reg-name" placeholder="山田 花子" maxlength="50"></div>
-      <div><label for="reg-cat" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">カテゴリ <span style="color:var(--red);">*</span></label>
-        <select class="form-input" id="reg-cat" onchange="updateRegProgress()"><option value="">選択してください</option>
+      <div style="margin-bottom:16px;">
+        <label for="reg-cat" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">カテゴリ <span style="color:var(--red);font-size:11px;background:#FFEBEE;padding:2px 8px;border-radius:6px;margin-left:4px;">必須</span></label>
+        <select class="form-input" id="reg-cat" onchange="updateRegProgress();updateWizNext()" style="padding:14px;font-size:14px;"><option value="">選択してください</option>
           <optgroup label="勉強"><option>英語</option><option>数学</option><option>プログラミング</option><option>日本語</option><option>物理</option><option>化学</option></optgroup>
           <optgroup label="スポーツ"><option>サッカー</option><option>テニス</option><option>ヨガ</option><option>水泳</option><option>バスケ</option></optgroup>
           <optgroup label="音楽"><option>ピアノ</option><option>ギター</option><option>ボーカル</option><option>ドラム</option></optgroup>
@@ -646,35 +678,128 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
           <optgroup label="依頼"><option>引越し手伝い</option><option>掃除</option><option>修理</option><option>買い物代行</option></optgroup>
           <option>その他</option></select>
       </div>
-    </div>
-    <div style="margin-bottom:14px;"><label for="reg-skill" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">スキル・提供内容 <span style="color:var(--red);">*</span></label><input class="form-input" id="reg-skill" placeholder="例：ギター基礎レッスン、サッカー練習パートナー" oninput="updateRegProgress()"></div>
-    <div style="margin-bottom:14px;"><label for="reg-desc" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">自己紹介・詳細</label><textarea class="form-input" id="reg-desc" rows="3" placeholder="経験・レベル・対応できる内容などを書いてください" maxlength="500" style="resize:vertical;" oninput="this.nextElementSibling.textContent=this.value.length+'/500';updateRegProgress()"></textarea><span style="font-size:10px;color:var(--muted);float:right;margin-top:4px;">0/500</span></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-      <div><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;" id="price-label">希望単価（円/時間）</label>
-        <div style="display:flex;gap:8px;align-items:center;"><input class="form-input" type="number" id="reg-min" placeholder="最低" min="0" max="1000000" aria-label="最低単価" style="flex:1;" oninput="updateRegProgress()"><span style="color:var(--muted);">〜</span><input class="form-input" type="number" id="reg-max" placeholder="最高" min="0" max="1000000" aria-label="最高単価" style="flex:1;"></div>
+      <div style="margin-bottom:10px;">
+        <label for="reg-skill" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">スキル・提供内容 <span style="color:var(--red);font-size:11px;background:#FFEBEE;padding:2px 8px;border-radius:6px;margin-left:4px;">必須</span></label>
+        <input class="form-input" id="reg-skill" placeholder="例：ギター基礎レッスン" maxlength="100" oninput="updateRegProgress();updateWizNext()" style="padding:14px;font-size:14px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;">20文字以内でシンプルに</p>
       </div>
-      <div><label for="reg-area" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">レッスン場所</label><input class="form-input" id="reg-area" placeholder="例：渋谷駅周辺のカフェ" maxlength="100" oninput="updateRegProgress()"></div>
-    </div>
-    <div style="margin-bottom:14px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">レッスン形式</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-online"><input type="checkbox" id="reg-fmt-online" style="accent-color:var(--dark);" onchange="updateRegProgress()">オンライン</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-inperson"><input type="checkbox" id="reg-fmt-inperson" style="accent-color:var(--dark);" onchange="updateRegProgress()">対面</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-cafe"><input type="checkbox" id="reg-fmt-cafe" style="accent-color:var(--dark);" onchange="updateRegProgress()">カフェ</label>
-      </div>
-    </div>
-    <div style="margin-bottom:14px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">対応曜日</label>
-      <div id="reg-days" style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button type="button" class="pill-sm" onclick="this.classList.toggle('active');updateRegProgress()">月</button>
-        <button type="button" class="pill-sm" onclick="this.classList.toggle('active');updateRegProgress()">火</button>
-        <button type="button" class="pill-sm" onclick="this.classList.toggle('active');updateRegProgress()">水</button>
-        <button type="button" class="pill-sm" onclick="this.classList.toggle('active');updateRegProgress()">木</button>
-        <button type="button" class="pill-sm" onclick="this.classList.toggle('active');updateRegProgress()">金</button>
-        <button type="button" class="pill-sm" onclick="this.classList.toggle('active');updateRegProgress()">土</button>
-        <button type="button" class="pill-sm" onclick="this.classList.toggle('active');updateRegProgress()">日</button>
+      <div class="wiz-tip">
+        <div class="wiz-tip-icon"><i data-lucide="lightbulb" style="width:22px;height:22px;"></i></div>
+        <p class="wiz-tip-title">どう書けば選ばれる？</p>
+        <ul>
+          <li>対象者を明確に（例：「小学生向け」「初心者OK」）</li>
+          <li>具体的な内容を（例：「TOEIC対策」「基礎文法」）</li>
+          <li>強みを一言添える（例：「海外在住5年」）</li>
+        </ul>
       </div>
     </div>
-    <div style="margin-bottom:20px;"><label for="reg-tags" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">タグ（カンマ区切り）</label><input class="form-input" id="reg-tags" placeholder="例：初心者歓迎, オンライン可, 週末対応" maxlength="200" oninput="updateRegProgress()"></div>
-    <button class="btn btn-dark" id="reg-btn" style="width:100%;padding:14px;font-size:14px;" onclick="submitSkill()">登録する</button>
+
+    <!-- STEP 2: 料金・場所・形式 -->
+    <div class="wiz-step" data-step="2">
+      <div class="wiz-title-row">
+        <div class="wiz-icon" style="background:var(--green-light);color:var(--green);"><i data-lucide="banknote" style="width:26px;height:26px;"></i></div>
+        <div style="flex:1;">
+          <h2 class="wiz-title">料金と場所</h2>
+          <p class="wiz-desc">相場感を確認してから<br>無理のない設定にしましょう。</p>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;" id="price-label">希望単価（円/時間） <span style="color:var(--red);font-size:11px;background:#FFEBEE;padding:2px 8px;border-radius:6px;margin-left:4px;">必須</span></label>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input class="form-input" type="number" id="reg-min" placeholder="2000" min="0" max="1000000" aria-label="最低単価" style="flex:1;padding:14px;font-size:14px;" oninput="updateRegProgress();updateWizNext()">
+          <span style="color:var(--muted);">〜</span>
+          <input class="form-input" type="number" id="reg-max" placeholder="5000" min="0" max="1000000" aria-label="最高単価" style="flex:1;padding:14px;font-size:14px;">
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="reg-area" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">活動エリア</label>
+        <input class="form-input" id="reg-area" placeholder="例：渋谷駅周辺、オンライン対応可" maxlength="100" oninput="updateRegProgress()" style="padding:14px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:10px;">レッスン形式（複数選択可）</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-online"><input type="checkbox" id="reg-fmt-online" style="accent-color:var(--dark);" onchange="updateRegProgress()"><i data-lucide="monitor" style="width:14px;height:14px;"></i>オンライン</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-inperson"><input type="checkbox" id="reg-fmt-inperson" style="accent-color:var(--dark);" onchange="updateRegProgress()"><i data-lucide="users" style="width:14px;height:14px;"></i>対面</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-cafe"><input type="checkbox" id="reg-fmt-cafe" style="accent-color:var(--dark);" onchange="updateRegProgress()"><i data-lucide="coffee" style="width:14px;height:14px;"></i>カフェ</label>
+        </div>
+      </div>
+      <div class="wiz-tip">
+        <div class="wiz-tip-icon"><i data-lucide="trending-up" style="width:22px;height:22px;"></i></div>
+        <p class="wiz-tip-title">料金の目安</p>
+        <ul>
+          <li>初心者向け：¥2,000〜¥3,500 / 時間</li>
+          <li>中級者向け：¥3,500〜¥5,000 / 時間</li>
+          <li>プロレベル：¥5,000〜¥10,000 / 時間</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- STEP 3: 曜日 -->
+    <div class="wiz-step" data-step="3">
+      <div class="wiz-title-row">
+        <div class="wiz-icon" style="background:#F3E5F5;color:#AB47BC;"><i data-lucide="calendar" style="width:26px;height:26px;"></i></div>
+        <div style="flex:1;">
+          <h2 class="wiz-title">授業可能な曜日</h2>
+          <p class="wiz-desc">曜日ごとに対応可能か選んでください。</p>
+        </div>
+      </div>
+      <div class="day-legend">
+        <span style="background:var(--green-light);color:var(--green);"><i data-lucide="circle" style="width:12px;height:12px;"></i>対応可能</span>
+        <span style="background:#F3E5F5;color:#AB47BC;"><i data-lucide="triangle" style="width:12px;height:12px;"></i>相談可能</span>
+        <span style="background:var(--lighter);color:var(--muted);"><i data-lucide="x" style="width:12px;height:12px;"></i>授業不可</span>
+      </div>
+      <div id="reg-day-grid" class="day-grid"></div>
+    </div>
+
+    <!-- STEP 4: アピール -->
+    <div class="wiz-step" data-step="4">
+      <div class="wiz-title-row">
+        <div class="wiz-icon" style="background:#E3F2FD;color:#1976D2;"><i data-lucide="sparkles" style="width:26px;height:26px;"></i></div>
+        <div style="flex:1;">
+          <h2 class="wiz-title">アピールポイント</h2>
+          <p class="wiz-desc">あなたの魅力を伝えて<br>生徒さんに選ばれやすくしましょう。</p>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="reg-name" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">お名前・ニックネーム</label>
+        <input class="form-input" id="reg-name" placeholder="山田 花子" maxlength="50" style="padding:14px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="reg-desc" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">自己紹介</label>
+        <textarea class="form-input" id="reg-desc" rows="3" placeholder="経験・レベル・対応できる内容を書いてください" maxlength="500" style="resize:vertical;padding:14px;font-size:14px;" oninput="document.getElementById('reg-desc-count').textContent=this.value.length+'/500';updateRegProgress()"></textarea>
+        <p style="font-size:11px;color:var(--muted);text-align:right;margin-top:4px;"><span id="reg-desc-count">0/500</span></p>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="reg-tags" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">タグ（カンマ区切り）</label>
+        <input class="form-input" id="reg-tags" placeholder="初心者歓迎, オンライン可, 週末対応" maxlength="200" oninput="updateRegProgress()" style="padding:14px;font-size:14px;">
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;padding:12px;background:var(--bg);border-radius:12px;">
+        <div style="position:relative;flex-shrink:0;">
+          <div id="reg-av-preview" style="width:52px;height:52px;border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden;"><i data-lucide="camera" style="width:20px;height:20px;"></i></div>
+          <label for="reg-avatar" style="position:absolute;bottom:-4px;right:-4px;width:24px;height:24px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;border:2px solid white;">+</label>
+          <input type="file" id="reg-avatar" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previewRegAvatar(this)">
+        </div>
+        <div style="flex:1;">
+          <p style="font-size:13px;font-weight:600;">プロフィール写真</p>
+          <p style="font-size:11px;color:var(--muted);">任意・後から変更可能</p>
+        </div>
+      </div>
+      <div class="wiz-tip">
+        <div class="wiz-tip-icon"><i data-lucide="star" style="width:22px;height:22px;"></i></div>
+        <p class="wiz-tip-title">人気の先生の例</p>
+        <ul>
+          <li>丁寧なスケジュール調整に自信</li>
+          <li>塾講師経験5年・TOEIC 950点</li>
+          <li>現役エンジニアの実践的なレッスン</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="wiz-actions">
+      <button class="wiz-reset" onclick="wizReset()">リセット</button>
+      <button class="btn btn-dark wiz-next" id="wiz-next-btn" onclick="wizNext()">次へ →</button>
+    </div>
     <div id="reg-ok" class="msg-box msg-success" style="margin-top:12px;margin-bottom:0;">登録が完了しました！スキルが公開されました。</div>
     <div id="reg-err" class="msg-box msg-error" style="margin-top:12px;margin-bottom:0;"></div>
   </div>
@@ -1313,33 +1438,93 @@ async function saveProfile() {
   } catch(e) { console.error('saveProfile error:', e); btn.innerHTML = '保存する'; btn.disabled = false; addNotif({ text: 'プロフィールの保存に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
+// WIZARD NAVIGATION
+let wizStep = 1;
+const WIZ_TOTAL = 4;
+const regDayStates = {}; // {月: 'yes'|'maybe'|'no'}
+
+function renderWizDayGrid() {
+  const days = ['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日','日曜日'];
+  const grid = document.getElementById('reg-day-grid');
+  if (!grid) return;
+  grid.innerHTML = days.map(d => {
+    const key = d.charAt(0);
+    const state = regDayStates[key] || '';
+    return `
+      <div class="day-label">${d}</div>
+      <button type="button" class="day-opt${state==='yes'?' active':''}" data-day="${key}" data-val="yes" onclick="setDayState('${key}','yes')">○</button>
+      <button type="button" class="day-opt${state==='maybe'?' active':''}" data-day="${key}" data-val="maybe" onclick="setDayState('${key}','maybe')">△</button>
+      <button type="button" class="day-opt${state==='no'?' active':''}" data-day="${key}" data-val="no" onclick="setDayState('${key}','no')">×</button>
+    `;
+  }).join('');
+  refreshIcons();
+}
+function setDayState(day, val) {
+  regDayStates[day] = regDayStates[day] === val ? null : val;
+  renderWizDayGrid();
+  updateRegProgress();
+  updateWizNext();
+}
+function renderWizDashes() {
+  const el = document.getElementById('wiz-dashes');
+  if (!el) return;
+  el.innerHTML = Array.from({length: WIZ_TOTAL}, (_, i) => `<div class="wiz-dash${i < wizStep ? ' done' : ''}"></div>`).join('');
+  const t = document.getElementById('wiz-step-text');
+  if (t) t.textContent = `${wizStep}/${WIZ_TOTAL}`;
+}
+function showWizStep(n) {
+  wizStep = Math.max(1, Math.min(WIZ_TOTAL, n));
+  document.querySelectorAll('.wiz-step').forEach(s => s.classList.toggle('active', +s.dataset.step === wizStep));
+  renderWizDashes();
+  updateWizNext();
+  document.querySelector('#register .wiz-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (wizStep === 3) renderWizDayGrid();
+  refreshIcons();
+}
+function wizNext() {
+  if (!canProceedWiz()) return;
+  if (wizStep < WIZ_TOTAL) { showWizStep(wizStep + 1); }
+  else { submitSkill(); }
+}
+function wizPrev() {
+  if (wizStep > 1) showWizStep(wizStep - 1);
+  else showPage('home');
+}
+function wizSkip() {
+  if (wizStep < WIZ_TOTAL) showWizStep(wizStep + 1);
+}
+async function wizReset() {
+  const ok = await showConfirm('入力内容をすべてリセットしますか？');
+  if (!ok) return;
+  ['reg-cat','reg-skill','reg-min','reg-max','reg-area','reg-desc','reg-tags','reg-name'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['reg-fmt-online','reg-fmt-inperson','reg-fmt-cafe'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
+  Object.keys(regDayStates).forEach(k => delete regDayStates[k]);
+  const dc = document.getElementById('reg-desc-count'); if (dc) dc.textContent = '0/500';
+  renderWizDayGrid();
+  showWizStep(1);
+  updateWizNext();
+}
+function canProceedWiz() {
+  if (wizStep === 1) return !!document.getElementById('reg-cat').value && !!document.getElementById('reg-skill').value.trim();
+  if (wizStep === 2) return (parseInt(document.getElementById('reg-min').value) || 0) > 0;
+  if (wizStep === 3) return Object.values(regDayStates).filter(v => v === 'yes' || v === 'maybe').length > 0;
+  return true;
+}
+function updateWizNext() {
+  const btn = document.getElementById('wiz-next-btn');
+  if (!btn) return;
+  const ok = canProceedWiz();
+  btn.disabled = !ok;
+  btn.style.opacity = ok ? '1' : '0.5';
+  btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+  if (wizStep === WIZ_TOTAL) btn.innerHTML = '登録する <i data-lucide="check" style="width:16px;height:16px;"></i>';
+  else btn.innerHTML = '次へ →';
+  refreshIcons();
+}
+
 function updateRegProgress() {
-  const fields = [
-    !!document.getElementById('reg-cat').value,
-    !!document.getElementById('reg-skill').value.trim(),
-    !!document.getElementById('reg-min').value,
-    !!document.getElementById('reg-desc').value.trim(),
-    !!document.getElementById('reg-area').value.trim(),
-    document.querySelectorAll('#reg-days .pill-sm.active').length > 0,
-    document.getElementById('reg-fmt-online').checked || document.getElementById('reg-fmt-inperson').checked || document.getElementById('reg-fmt-cafe').checked,
-    !!document.getElementById('reg-tags').value.trim(),
-  ];
-  const filled = fields.filter(Boolean).length;
-  const pct = Math.round((filled / fields.length) * 100);
-  const el = document.getElementById('reg-progress');
-  if (el) {
-    el.style.display = filled > 0 ? '' : 'none';
-    document.getElementById('reg-progress-pct').textContent = pct + '%';
-    document.getElementById('reg-progress-bar').style.width = pct + '%';
-    document.getElementById('reg-progress-bar').style.background = pct === 100 ? 'var(--green)' : '';
-    const steps = document.querySelectorAll('#reg-steps span');
-    const stepMap = { cat: fields[0], skill: fields[1], price: fields[2], area: fields[4], days: fields[5] };
-    steps.forEach(s => {
-      const done = stepMap[s.dataset.step];
-      s.style.color = done ? 'var(--accent)' : 'var(--muted)';
-      s.style.fontWeight = done ? '700' : '400';
-    });
-  }
+  // legacy noop kept for existing callers; wizard state tracks per-step validity
+  updateWizNext();
 }
 
 async function submitSkill() {
@@ -1347,14 +1532,15 @@ async function submitSkill() {
   const skill = document.getElementById('reg-skill').value.trim();
   const cat = document.getElementById('reg-cat').value;
   if (!skill || !cat) { addNotif({ text: 'スキルとカテゴリを入力してください', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
-  const btn = document.getElementById('reg-btn');
+  const btn = document.getElementById('wiz-next-btn');
+  const origHtml = btn.innerHTML;
   btn.innerHTML = '<span class="spinner"></span>登録中...'; btn.disabled = true;
   try {
-    const selDays = Array.from(document.querySelectorAll('#reg-days .pill-sm.active')).map(b => b.textContent);
+    const selDays = Object.entries(regDayStates).filter(([k,v]) => v === 'yes' || v === 'maybe').map(([k]) => k);
     const desc = document.getElementById('reg-desc').value.trim();
     const priceMin = Math.max(0, parseInt(document.getElementById('reg-min').value) || 0);
     const priceMax = Math.max(priceMin, parseInt(document.getElementById('reg-max').value) || 0);
-    if (priceMin <= 0) { addNotif({ text: '最低単価を1円以上で設定してください', time: 'たった今', unread: true, color: 'var(--red)' }); btn.innerHTML = '登録する'; btn.disabled = false; return; }
+    if (priceMin <= 0) { addNotif({ text: '最低単価を1円以上で設定してください', time: 'たった今', unread: true, color: 'var(--red)' }); btn.innerHTML = origHtml; btn.disabled = false; return; }
     const lessonFormats = [];
     if (document.getElementById('reg-fmt-online').checked) lessonFormats.push('online');
     if (document.getElementById('reg-fmt-inperson').checked) lessonFormats.push('inperson');
@@ -1368,7 +1554,7 @@ async function submitSkill() {
       tags: document.getElementById('reg-tags').value.split(',').map(t => t.trim()).filter(Boolean).slice(0, 10),
       lesson_formats: lessonFormats.length ? lessonFormats : null,
     });
-    btn.innerHTML = '登録する'; btn.disabled = false;
+    btn.innerHTML = origHtml; btn.disabled = false;
     if (!error) {
       const regName = document.getElementById('reg-name').value.trim();
       if (regName) await sb.from('profiles').update({ name: regName }).eq('id', currentUser.id);
@@ -1376,26 +1562,14 @@ async function submitSkill() {
       document.getElementById('reg-ok').style.display = 'block';
       addNotif({ text: `「${escapeHtml(skill)}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
       setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
-      document.getElementById('reg-skill').value = '';
-      document.getElementById('reg-cat').value = '';
-      const descEl = document.getElementById('reg-desc');
-      descEl.value = '';
-      if (descEl.nextElementSibling) descEl.nextElementSibling.textContent = '0/500';
-      document.getElementById('reg-min').value = '';
-      document.getElementById('reg-max').value = '';
-      document.getElementById('reg-area').value = '';
-      document.getElementById('reg-tags').value = '';
-      document.querySelectorAll('#reg-days .pill-sm.active').forEach(b => b.classList.remove('active'));
-      document.getElementById('reg-fmt-online').checked = false;
-      document.getElementById('reg-fmt-inperson').checked = false;
-      document.getElementById('reg-fmt-cafe').checked = false;
+      wizReset();
       loadMySkills();
       loadSkillsFromDB();
     } else {
       document.getElementById('reg-err').textContent = '登録に失敗しました。入力内容を確認してください';
       document.getElementById('reg-err').style.display = 'block';
     }
-  } catch(e) { console.error('submitSkill error:', e); btn.innerHTML = '登録する'; btn.disabled = false; addNotif({ text: 'スキルの登録に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+  } catch(e) { console.error('submitSkill error:', e); btn.innerHTML = origHtml; btn.disabled = false; addNotif({ text: 'スキルの登録に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
 async function loadDashboardReviews() {
@@ -1571,6 +1745,7 @@ function showPage(id, pushHistory = true) {
   if (id === 'matching') renderMatching();
   if (id === 'map') renderMap();
   if (id === 'profile' || id === 'dashboard') loadProfile();
+  if (id === 'register') { showWizStep(wizStep || 1); }
   if (document.getElementById('modal').classList.contains('open')) closeModal();
   bookStep = 0; selSlot = null;
   document.querySelector('.nav-links')?.classList.remove('open');
@@ -2972,6 +3147,8 @@ function showSkeletonCards(containerId, count = 6) {
 
 // INIT
 showSkeletonCards('home-cards', 6);
+renderWizDashes();
+updateWizNext();
 updateNavAuth();
 renderHome();
 renderFilters();
