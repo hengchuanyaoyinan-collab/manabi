@@ -25,6 +25,7 @@
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
 <title>Manabi — スキルのマーケットプレイス</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -324,6 +325,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
         <span class="brand" style="font-size:32px;color:var(--primary);">Manabi</span>
       </div>
       <p style="font-size:13px;color:var(--muted);font-weight:400;">学びをシェアするマーケットプレイス</p>
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;background:var(--green-light);border-radius:20px;font-size:11px;color:var(--green);font-weight:600;"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);"></span>登録無料・すぐに始められます</div>
     </div>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchTab('login')">ログイン</button>
@@ -368,6 +370,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button class="nav-btn active" onclick="showPage('home')">ホーム</button>
     <button class="nav-btn" onclick="showPage('explore')">探す</button>
     <button class="nav-btn" onclick="showPage('map')">地図</button>
+    <button class="nav-btn" onclick="showPage('matching')">AIマッチ</button>
     <button class="nav-btn" onclick="showPage('register')">出品</button>
     <button class="nav-btn" onclick="showPage('chat')">メッセージ</button>
   </div>
@@ -1832,7 +1835,7 @@ function showPage(id, pushHistory = true) {
   if (!el) { document.getElementById('home').classList.add('active'); return; }
   el.classList.add('active');
   const navPages = ['home','explore','map','register','chat'];
-  const navMap = {home:0,explore:1,map:2,register:3,matching:4,chat:4,payment:4,dashboard:4};
+  const navMap = {home:0,explore:1,map:2,matching:3,register:4,chat:5,payment:3,dashboard:5};
   const navIdx = navMap[id];
   if (navIdx != null) {
     const btns = document.querySelectorAll('.nav-btn');

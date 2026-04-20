@@ -1,0 +1,26 @@
+{
+  "name": "Manabi — スキルのマーケットプレイス",
+  "short_name": "Manabi",
+  "description": "誰でも教え、誰でも学べる。AIマッチングで最適な先生を見つける。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF7",
+  "theme_color": "#2D2D2D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education", "lifestyle"],
+  "lang": "ja",
+  "dir": "ltr"
+}
