@@ -27,8 +27,16 @@ body{font-family:'Noto Sans JP',system-ui,-apple-system,sans-serif;background:va
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:10000;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease-out;}
+#splash.out{opacity:0;pointer-events:none;}
+#splash .splash-logo{width:64px;height:64px;background:white;border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1);}
+#splash .splash-name{font-size:32px;font-weight:800;color:white;letter-spacing:-.5px;opacity:0;animation:splashFade .5s .3s ease-out forwards;}
+#splash .splash-sub{font-size:13px;color:#9A9690;margin-top:6px;opacity:0;animation:splashFade .5s .5s ease-out forwards;}
+@keyframes splashPop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes splashFade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 /* AUTH */
-#auth-screen{position:fixed;inset:0;background:#fff;z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;}
+#auth-screen{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
 .auth-box{background:white;border-radius:16px;padding:32px 28px;width:100%;max-width:380px;}
 .auth-tabs{display:flex;background:var(--lighter);border-radius:10px;margin-bottom:24px;padding:3px;}
 .auth-tab{flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:all .2s;border-radius:8px;}
@@ -182,6 +190,13 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 </head>
 <body>
 
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><rect width="100" height="100" rx="22" fill="#2D2D2D"/><text x="50" y="68" font-size="56" text-anchor="middle" fill="white" font-family="sans-serif">✦</text></svg></div>
+  <div class="splash-name">manabi</div>
+  <div class="splash-sub">学びをシェアするマーケットプレイス</div>
+</div>
+
 <!-- AUTH -->
 <div id="auth-screen">
   <div id="auth-loading" style="text-align:center;padding:40px;">
@@ -239,10 +254,16 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button class="nav-btn" onclick="showPage('payment')">支払い</button>
     <button class="nav-btn" onclick="showPage('dashboard')">履歴</button>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;">
-    <button onclick="toggleNotif()" aria-label="通知を表示" style="position:relative;background:none;border:none;cursor:pointer;padding:10px;color:var(--mid);"><i data-lucide="bell" style="width:20px;height:20px;"></i><span id="notif-badge" style="position:absolute;top:2px;right:2px;min-width:16px;height:16px;background:var(--red);border-radius:8px;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;padding:0 4px;"></span></button>
-    <button id="nav-av" onclick="showPage('profile')" aria-label="マイページ" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#FF8A80);display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;cursor:pointer;overflow:hidden;border:none;">?</button>
-    <button onclick="doLogout()" style="font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-weight:500;">ログアウト</button>
+  <div id="nav-auth-area" style="display:flex;align-items:center;gap:10px;">
+    <div id="nav-logged-in" style="display:none;align-items:center;gap:10px;">
+      <button onclick="toggleNotif()" aria-label="通知を表示" style="position:relative;background:none;border:none;cursor:pointer;padding:10px;color:var(--mid);"><i data-lucide="bell" style="width:20px;height:20px;"></i><span id="notif-badge" style="position:absolute;top:2px;right:2px;min-width:16px;height:16px;background:var(--red);border-radius:8px;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;padding:0 4px;"></span></button>
+      <button id="nav-av" onclick="showPage('profile')" aria-label="マイページ" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#FF8A80);display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;cursor:pointer;overflow:hidden;border:none;">?</button>
+      <button onclick="doLogout()" style="font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-weight:500;">ログアウト</button>
+    </div>
+    <div id="nav-logged-out" style="display:flex;align-items:center;gap:8px;">
+      <button onclick="openAuthModal('login')" style="font-size:13px;color:var(--dark);background:none;border:none;cursor:pointer;font-weight:600;padding:8px 14px;">ログイン</button>
+      <button onclick="openAuthModal('signup')" class="btn btn-dark" style="padding:8px 18px;font-size:13px;">新規登録</button>
+    </div>
   </div>
 </nav>
 
@@ -331,6 +352,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;">
       <div class="logo-icon" style="width:24px;height:24px;"><i data-lucide="sparkles" style="width:12px;height:12px;"></i></div>
       <span style="font-weight:700;font-size:14px;color:var(--primary);">manabi</span>
+    </div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:10px;">
+      <a href="#terms" onclick="event.preventDefault();showPage('terms')" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:500;">利用規約</a>
+      <a href="#privacy" onclick="event.preventDefault();showPage('privacy')" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:500;">プライバシーポリシー</a>
     </div>
     <p style="font-size:11px;color:var(--muted);line-height:1.8;">学びをシェアするマーケットプレイス<br>&copy; 2026 manabi. All rights reserved.</p>
   </footer>
@@ -576,6 +601,69 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   </div>
 </div>
 
+<!-- TERMS -->
+<div class="page" id="terms">
+  <div style="max-width:720px;margin:0 auto;">
+    <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">利用規約</h1>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月20日</p>
+    <div style="background:white;border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第1条（適用）</h2>
+      <p style="margin-bottom:20px;">本規約は、manabi（以下「本サービス」）の利用に関する条件を定めるものです。ユーザーは本サービスを利用することにより、本規約に同意したものとみなされます。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第2条（アカウント登録）</h2>
+      <p style="margin-bottom:20px;">ユーザーは正確な情報を提供し、アカウントを登録する必要があります。虚偽の情報による登録は禁止されています。アカウントの管理責任はユーザーにあります。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第3条（サービス内容）</h2>
+      <p style="margin-bottom:20px;">本サービスは、スキルを教えたい人（先生）と学びたい人（生徒）をマッチングするプラットフォームです。本サービスは仲介のみを行い、レッスンの内容・品質について保証するものではありません。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第4条（料金と決済）</h2>
+      <p style="margin-bottom:20px;">レッスン料金は先生が設定します。決済はStripeを通じて安全に処理されます。本サービスはレッスン料金の5%を手数料として徴収します。支払い完了後のキャンセル・返金については、個別の状況に応じて対応します。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第5条（禁止事項）</h2>
+      <p style="margin-bottom:8px;">以下の行為を禁止します：</p>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li>法令または公序良俗に反する行為</li><li>犯罪行為に関連する行為</li><li>他のユーザーへの嫌がらせ、誹謗中傷</li><li>虚偽の情報の掲載</li><li>本サービスの運営を妨害する行為</li><li>不正アクセスまたはそれを試みる行為</li><li>本サービス外での直接取引を促す行為</li></ul>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第6条（レビューと信用スコア）</h2>
+      <p style="margin-bottom:20px;">ユーザーはセッション終了後にレビューを投稿できます。レビューは事実に基づく内容でなければなりません。不正なレビュー操作が判明した場合、アカウントの停止措置を行うことがあります。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第7条（知的財産権）</h2>
+      <p style="margin-bottom:20px;">本サービスに関する知的財産権はすべて当社に帰属します。ユーザーが投稿したコンテンツの権利はユーザーに帰属しますが、サービスの運営に必要な範囲で利用を許諾するものとします。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第8条（免責事項）</h2>
+      <p style="margin-bottom:20px;">本サービスは現状有姿で提供され、ユーザー間のトラブルについて当社は一切の責任を負いません。ただし、当社は誠意をもって解決に協力します。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第9条（規約の変更）</h2>
+      <p style="margin-bottom:20px;">当社は必要に応じて本規約を変更できるものとします。変更後の規約は本ページに掲載した時点で効力を生じます。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第10条（準拠法・管轄）</h2>
+      <p>本規約は日本法に準拠し、紛争が生じた場合は東京地方裁判所を第一審の専属的合意管轄裁判所とします。</p>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY -->
+<div class="page" id="privacy">
+  <div style="max-width:720px;margin:0 auto;">
+    <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">プライバシーポリシー</h1>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月20日</p>
+    <div style="background:white;border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">1. 収集する情報</h2>
+      <p style="margin-bottom:8px;">当社は以下の情報を収集します：</p>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li>アカウント情報（氏名、メールアドレス）</li><li>プロフィール情報（自己紹介、アバター画像、スキル情報）</li><li>利用情報（アクセスログ、操作履歴、デバイス情報）</li><li>決済情報（Stripeを通じて処理、当社はカード情報を保持しません）</li><li>コミュニケーション情報（メッセージ、レビュー）</li></ul>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">2. 情報の利用目的</h2>
+      <p style="margin-bottom:8px;">収集した情報は以下の目的で利用します：</p>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li>サービスの提供・運営・改善</li><li>ユーザーの本人確認</li><li>マッチング機能の最適化</li><li>決済処理</li><li>カスタマーサポート</li><li>利用規約違反への対応</li></ul>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">3. 情報の共有</h2>
+      <p style="margin-bottom:8px;">以下の場合を除き、ユーザーの個人情報を第三者に提供しません：</p>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li>ユーザーの同意がある場合</li><li>法令に基づく場合</li><li>サービス提供に必要な業務委託先（Supabase、Stripe等）</li></ul>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">4. 情報の保護</h2>
+      <p style="margin-bottom:20px;">当社は適切な技術的・組織的措置を講じ、個人情報の漏洩、滅失、毀損の防止に努めます。通信はSSL/TLSにより暗号化されています。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">5. Cookieの使用</h2>
+      <p style="margin-bottom:20px;">本サービスはセッション管理および認証のためにCookieおよびローカルストレージを使用します。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">6. ユーザーの権利</h2>
+      <p style="margin-bottom:8px;">ユーザーは以下の権利を有します：</p>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li>個人情報の開示・訂正・削除の請求</li><li>アカウントの削除</li><li>データのエクスポート</li></ul>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">7. 子どものプライバシー</h2>
+      <p style="margin-bottom:20px;">本サービスは16歳未満の方の利用を想定しておりません。16歳未満の方が利用する場合は、保護者の同意が必要です。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">8. ポリシーの変更</h2>
+      <p style="margin-bottom:20px;">本ポリシーは必要に応じて変更されることがあります。重要な変更がある場合はサービス内で通知します。</p>
+      <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">9. お問い合わせ</h2>
+      <p>プライバシーに関するお問い合わせは、サービス内のメッセージ機能またはサポート窓口までご連絡ください。</p>
+    </div>
+  </div>
+</div>
+
 <!-- BACK TO TOP -->
 <button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="ページの先頭へ"><i data-lucide="chevron-up" style="width:20px;height:20px;"></i></button>
 
@@ -609,28 +697,51 @@ let payCart = {
 
 // AUTH STATE
 let authLoading = false;
+function updateNavAuth() {
+  const loggedIn = document.getElementById('nav-logged-in');
+  const loggedOut = document.getElementById('nav-logged-out');
+  if (currentUser) {
+    loggedIn.style.display = 'flex';
+    loggedOut.style.display = 'none';
+  } else {
+    loggedIn.style.display = 'none';
+    loggedOut.style.display = 'flex';
+  }
+}
+function openAuthModal(tab) {
+  const authScreen = document.getElementById('auth-screen');
+  authScreen.style.display = 'flex';
+  document.getElementById('auth-loading').style.display = 'none';
+  document.querySelector('.auth-box').style.display = '';
+  if (tab) switchTab(tab);
+}
+function closeAuthModal() {
+  document.getElementById('auth-screen').style.display = 'none';
+}
+function requireAuth() {
+  if (currentUser) return true;
+  openAuthModal('login');
+  return false;
+}
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     currentUser = session.user;
-    document.getElementById('auth-screen').style.display = 'none';
+    closeAuthModal();
+    updateNavAuth();
     updateNavUser();
     if (event === 'TOKEN_REFRESHED') return;
     if (authLoading) return;
     authLoading = true;
     try {
       await Promise.all([loadProfile(), loadSkillsFromDB()]);
-      loadHeroStats();
-      loadNotificationsFromDB();
+      Promise.allSettled([loadHeroStats(), loadNotificationsFromDB()]);
       subscribeRealtimeMessages();
     } finally {
       authLoading = false;
     }
   } else {
     currentUser = null;
-    const authScreen = document.getElementById('auth-screen');
-    authScreen.style.display = 'flex';
-    document.getElementById('auth-loading').style.display = 'none';
-    document.querySelector('.auth-box').style.display = '';
+    updateNavAuth();
   }
 });
 
@@ -657,7 +768,11 @@ async function loadProfile() {
         document.getElementById('nav-av').textContent = (data.name || currentUser.email).substring(0, 2).toUpperCase();
       }
       if (data.name) document.getElementById('edit-name').value = data.name;
-      if (data.bio) document.getElementById('edit-bio').value = data.bio;
+      if (data.bio) {
+        const bioEl = document.getElementById('edit-bio');
+        bioEl.value = data.bio;
+        if (bioEl.nextElementSibling) bioEl.nextElementSibling.textContent = data.bio.length + '/500';
+      }
       if (data.role) document.getElementById('edit-role').value = data.role;
     } else {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
@@ -801,6 +916,7 @@ async function doLogout() {
     reviewBookingId = null;
     revieweeId = null;
     await sb.auth.signOut();
+    showPage('home');
   } catch(e) { console.error('doLogout error:', e); }
 }
 
@@ -906,7 +1022,9 @@ async function submitSkill() {
       setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
       document.getElementById('reg-skill').value = '';
       document.getElementById('reg-cat').value = '';
-      document.getElementById('reg-desc').value = '';
+      const descEl = document.getElementById('reg-desc');
+      descEl.value = '';
+      if (descEl.nextElementSibling) descEl.nextElementSibling.textContent = '0/500';
       document.getElementById('reg-min').value = '';
       document.getElementById('reg-max').value = '';
       document.getElementById('reg-area').value = '';
@@ -1046,9 +1164,13 @@ let notifs = [];
 
 // ── UI ──
 function showPage(id, pushHistory = true) {
+  const protectedPages = ['register','matching','chat','payment','dashboard','profile'];
+  if (protectedPages.includes(id) && !requireAuth()) return;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const el = document.getElementById(id);
+  if (!el) { document.getElementById('home').classList.add('active'); return; }
+  el.classList.add('active');
   const pages = ['home','explore','map','register','matching','chat','payment','dashboard'];
   const i = pages.indexOf(id);
   if (i >= 0) {
@@ -1073,7 +1195,7 @@ function showPage(id, pushHistory = true) {
 }
 window.addEventListener('popstate', (e) => {
   const page = e.state?.page || location.hash.replace('#','') || 'home';
-  const valid = ['home','explore','map','register','matching','chat','payment','dashboard','profile'];
+  const valid = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy'];
   if (valid.includes(page)) showPage(page, false);
 });
 
@@ -1938,7 +2060,8 @@ async function editSkill(skillId) {
   const cats = ['英語','数学','プログラミング','音楽','美術','スポーツ','その他'];
   const modal = document.createElement('div');
   modal.id = 'edit-skill-modal';
-  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);';
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
   modal.innerHTML = `<div style="background:white;border-radius:16px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:700;">スキル編集</h2><button onclick="document.getElementById('edit-skill-modal').remove()" aria-label="閉じる" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);"><i data-lucide="x" style="width:20px;height:20px;"></i></button></div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">カテゴリ</label>
@@ -2129,7 +2252,16 @@ function refreshIcons() {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+// SPLASH
+setTimeout(() => { const s = document.getElementById('splash'); if (s) { s.classList.add('out'); setTimeout(() => s.remove(), 500); } }, 1500);
+
+// AUTH MODAL: close on backdrop click
+document.getElementById('auth-screen').addEventListener('click', function(e) {
+  if (e.target === this) closeAuthModal();
+});
+
 // INIT
+updateNavAuth();
 renderHome();
 renderFilters();
 renderExplore();
@@ -2138,7 +2270,7 @@ renderNotifs();
 handlePaymentReturn();
 if (location.hash) {
   const initPage = location.hash.replace('#','');
-  const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile'];
+  const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy'];
   if (validPages.includes(initPage)) showPage(initPage, false);
 }
 refreshIcons();
