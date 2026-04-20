@@ -421,8 +421,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   <h2 class="section-title">スキルを登録する</h2>
   <div style="background:white;border-radius:20px;padding:28px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:22px;">
-      <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える</button>
-      <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="book-open" style="width:16px;height:16px;"></i>学ぶ</button>
+      <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える（出品）</button>
+      <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="book-open" style="width:16px;height:16px;"></i>学ぶ（リクエスト）</button>
     </div>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
       <div style="position:relative;flex-shrink:0;">
@@ -1517,9 +1517,13 @@ function filterMapTeachers() {
 
 const debouncedMapFilter = debounce(filterMapTeachers, 150);
 function setRole(r) {
-  document.getElementById('role-teach').style.cssText = `flex:1;padding:10px;border:none;background:${r==='teach'?'var(--dark)':'transparent'};color:${r==='teach'?'white':'var(--muted)'};cursor:pointer;font-family:inherit;font-size:13px;font-weight:${r==='teach'?700:400};`;
-  document.getElementById('role-learn').style.cssText = `flex:1;padding:10px;border:none;background:${r==='learn'?'var(--dark)':'transparent'};color:${r==='learn'?'white':'var(--muted)'};cursor:pointer;font-family:inherit;font-size:13px;font-weight:${r==='learn'?700:400};`;
-  document.getElementById('price-label').textContent = r === 'teach' ? '希望単価（円/時間）' : '希望上限（円/時間）';
+  if (r === 'learn') {
+    showPage('matching');
+    setTimeout(() => switchMatchTab('requests'), 50);
+    return;
+  }
+  document.getElementById('role-teach').style.cssText = `flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;`;
+  document.getElementById('role-learn').style.cssText = `flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;`;
 }
 
 function renderNotifs() {
