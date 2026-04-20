@@ -130,7 +130,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 .btn-accent:active{transform:translateY(0);}
 .btn-accent:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;box-shadow:none;transform:none;}
 /* CARDS */
-.card{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid var(--light);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid var(--light);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.04);contain:layout style;}
 .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);border-color:var(--border);}
 .card:active{transform:translateY(0);box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;contain:layout style;}
@@ -512,6 +512,18 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         <div style="width:44px;height:44px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:15px;font-weight:800;box-shadow:0 2px 8px rgba(76,175,80,.3);">4</div>
         <p style="font-weight:700;font-size:12px;margin-bottom:3px;">学ぶ</p>
         <p style="font-size:10px;color:var(--muted);line-height:1.5;">チャットで相談<br>学習スタート</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Permission -->
+  <div id="notif-permission-banner" style="display:none;background:linear-gradient(135deg,var(--accent-light),var(--lighter));border-radius:14px;padding:14px 16px;margin-bottom:16px;border:1px solid var(--border);">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="bell" style="width:18px;height:18px;color:white;"></i></div>
+      <div style="flex:1;"><p style="font-size:12px;font-weight:600;margin-bottom:2px;">通知をオンにしませんか？</p><p style="font-size:11px;color:var(--muted);">新しいメッセージや予約の更新をお知らせします</p></div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button onclick="requestNotifPermission()" style="padding:6px 12px;border-radius:8px;background:var(--accent);color:white;border:none;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;">許可</button>
+        <button onclick="dismissNotifBanner()" style="padding:6px 8px;border-radius:8px;background:none;border:1px solid var(--border);cursor:pointer;font-size:11px;color:var(--muted);font-family:inherit;">後で</button>
       </div>
     </div>
   </div>
@@ -2171,6 +2183,15 @@ function getPriceIndicator(t) {
   return '';
 }
 
+function getTeacherBadges(t) {
+  const b = [];
+  if (t.rating >= 4.8 && t.reviews >= 10) b.push({ icon: 'award', label: 'トップ講師', color: 'var(--gold)' });
+  if (t.reviews >= 50) b.push({ icon: 'users', label: '人気', color: 'var(--accent)' });
+  if (t.available.length >= 5) b.push({ icon: 'calendar-check', label: '柔軟対応', color: 'var(--green)' });
+  if ((t.lesson_formats || []).includes('online')) b.push({ icon: 'globe', label: 'オンライン可', color: '#00BCD4' });
+  return b.slice(0, 2);
+}
+
 function makeCard(t) {
   const safeAv = safeImgUrl(t.avatar_url);
   const fallbackDiv = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:28px;font-weight:800;color:white;position:absolute;inset:0;">${escapeHtml(t.avatar)}</div>`;
@@ -2181,6 +2202,7 @@ function makeCard(t) {
   const isNew = t.created_at && (Date.now() - new Date(t.created_at).getTime()) < 7 * 86400000;
   const todayDay = ['日','月','火','水','木','金','土'][new Date().getDay()];
   const availToday = t.available.includes(todayDay);
+  const badges = getTeacherBadges(t);
   const popularBadge = t.reviews >= 100 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#FF6B35,#FF8F00);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">人気</span>' : t.rating >= 4.8 && t.reviews >= 20 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--accent),#7C4DFF);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">高評価</span>' : isNew ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#00BCD4,#00ACC1);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">NEW</span>' : '';
   const verified = t.db_skill_id ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--green);flex-shrink:0;"></i>' : '';
   const fmtLabels = {online:'オンライン',inperson:'対面',cafe:'カフェ'};
@@ -2209,7 +2231,8 @@ function makeCard(t) {
       </div>
       ${t.career ? `<p style="font-size:11px;color:var(--accent);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i data-lucide="briefcase" style="width:11px;height:11px;vertical-align:-1px;margin-right:3px;"></i>${escapeHtml(t.career)}</p>` : `<p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(t.bio)}</p>`}
       <div style="display:flex;gap:4px;flex-wrap:wrap;">${t.tags.slice(0,3).map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>
-      <div style="display:flex;gap:3px;margin-top:8px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:var(--muted);">${escapeHtml(d)}</span>`).join('')}</div>
+      ${badges.length ? `<div style="display:flex;gap:4px;margin-top:6px;">${badges.map(b=>`<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 8px;border-radius:6px;background:${b.color}15;color:${b.color};font-weight:600;"><i data-lucide="${b.icon}" style="width:10px;height:10px;"></i>${b.label}</span>`).join('')}</div>` : ''}
+      <div style="display:flex;gap:3px;margin-top:6px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:var(--muted);">${escapeHtml(d)}</span>`).join('')}</div>
     </div>
   </div>`;
 }
@@ -4379,6 +4402,43 @@ if (window.SpeechRecognition || window.webkitSpeechRecognition) {
   const vb = document.getElementById('voice-search-btn');
   if (vb) vb.style.display = 'flex';
 }
+
+// Notification permission banner
+function showNotifBannerIfNeeded() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'default') return;
+  if (localStorage.getItem('manabi_notif_dismissed')) return;
+  const banner = document.getElementById('notif-permission-banner');
+  if (banner) banner.style.display = '';
+}
+function requestNotifPermission() {
+  Notification.requestPermission().then(p => {
+    if (p === 'granted') showToast('通知を有効にしました！', 'var(--green)');
+  });
+  document.getElementById('notif-permission-banner').style.display = 'none';
+  localStorage.setItem('manabi_notif_dismissed', '1');
+}
+function dismissNotifBanner() {
+  document.getElementById('notif-permission-banner').style.display = 'none';
+  localStorage.setItem('manabi_notif_dismissed', '1');
+}
+setTimeout(showNotifBannerIfNeeded, 5000);
+
+// Visit streak tracker
+(function trackStreak() {
+  const today = new Date().toDateString();
+  const lastVisit = localStorage.getItem('manabi_last_visit');
+  let streak = parseInt(localStorage.getItem('manabi_streak') || '0');
+  if (lastVisit === today) return;
+  const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+  if (lastVisit === yesterday.toDateString()) { streak++; }
+  else if (lastVisit !== today) { streak = 1; }
+  localStorage.setItem('manabi_last_visit', today);
+  localStorage.setItem('manabi_streak', String(streak));
+  if (streak >= 3 && streak % 3 === 0) {
+    setTimeout(() => showToast(`${streak}日連続ログイン！🔥`, 'var(--gold)'), 2000);
+  }
+})();
 
 // Onboarding for first-time visitors
 (function onboardingTour() {
