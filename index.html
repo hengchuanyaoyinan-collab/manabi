@@ -97,9 +97,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .btn-accent:active{transform:translateY(0);}
 .btn-accent:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;box-shadow:none;transform:none;}
 /* CARDS */
-.card{background:white;border-radius:14px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);}
-.card:hover{box-shadow:0 12px 32px rgba(0,0,0,.1);transform:translateY(-3px);}
-.card:active{transform:translateY(0);box-shadow:var(--shadow);}
+.card{background:white;border-radius:16px;overflow:hidden;border:1px solid var(--light);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);border-color:var(--border);}
+.card:active{transform:translateY(0);box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
 .tag{display:inline-block;padding:4px 10px;border-radius:8px;font-size:11px;background:var(--lighter);color:var(--mid);margin:2px;font-weight:500;transition:background .15s;}
 .pill{padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid var(--border);background:white;font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;flex-shrink:0;}
@@ -305,7 +305,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- SPLASH -->
 <div id="splash">
-  <div class="splash-logo"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><rect width="100" height="100" rx="22" fill="#2D2D2D"/><text x="50" y="68" font-size="56" text-anchor="middle" fill="white" font-family="sans-serif">✦</text></svg></div>
+  <div class="splash-logo"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><rect width="100" height="100" rx="22" fill="#2D2D2D"/><path d="M50 15 C53 38 62 47 85 50 C62 53 53 62 50 85 C47 62 38 53 15 50 C38 47 47 38 50 15Z" fill="white"/></svg></div>
   <div class="splash-name">Manabi</div>
   <div class="splash-sub">学びをシェアするマーケットプレイス</div>
 </div>
@@ -389,7 +389,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   <div class="btm-tabs-inner">
     <button class="btm-tab active" data-page="home" onclick="showPage('home')"><span class="btm-icon"><i data-lucide="home" style="width:22px;height:22px;"></i></span><span class="btm-label">ホーム</span></button>
     <button class="btm-tab" data-page="explore" onclick="showPage('explore')"><span class="btm-icon"><i data-lucide="search" style="width:22px;height:22px;"></i></span><span class="btm-label">さがす</span></button>
-    <button class="btm-tab" data-page="register" onclick="showPage('register')"><span class="btm-icon"><i data-lucide="plus-circle" style="width:22px;height:22px;"></i></span><span class="btm-label">出品</span></button>
+    <button class="btm-tab" data-page="matching" onclick="showPage('matching')"><span class="btm-icon"><i data-lucide="sparkles" style="width:22px;height:22px;"></i></span><span class="btm-label">マッチ</span></button>
     <button class="btm-tab" data-page="chat" onclick="showPage('chat')"><span class="btm-icon"><i data-lucide="message-circle" style="width:22px;height:22px;"></i></span><span class="btm-label">メッセージ</span></button>
     <button class="btm-tab" data-page="profile" onclick="showPage('profile')"><span class="btm-icon"><i data-lucide="user" style="width:22px;height:22px;"></i></span><span class="btm-label">マイページ</span></button>
   </div>
@@ -578,6 +578,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <button onclick="document.getElementById('ai-panel').style.display=document.getElementById('ai-panel').style.display==='none'?'':'none'" style="width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;transition:all .15s;" title="AI検索"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></button>
     </div>
     <div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;" id="subj-filters"></div>
+  </div>
+  <div onclick="showPage('matching')" style="background:linear-gradient(135deg,#1a1a2e,#2D2D2D);border-radius:14px;padding:14px 16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:opacity .15s;" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+    <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="sparkles" style="width:18px;height:18px;color:white;"></i></div>
+    <div style="flex:1;"><p style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">AIに先生を探してもらう</p><p style="font-size:11px;color:rgba(255,255,255,.5);">学びたいことを入力するだけで最適な先生を自動推薦</p></div>
+    <i data-lucide="chevron-right" style="width:16px;height:16px;color:rgba(255,255,255,.4);flex-shrink:0;"></i>
   </div>
   <div id="ai-panel" style="display:none;background:white;border-radius:16px;padding:16px;border:1px solid var(--light);margin-bottom:12px;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
@@ -1789,7 +1794,7 @@ function showPage(id, pushHistory = true) {
     const btns = document.querySelectorAll('.nav-btn');
     if (btns[navIdx]) btns[navIdx].classList.add('active');
   }
-  const btmMap = { home:'home', explore:'explore', map:'explore', register:'register', matching:'chat', chat:'chat', payment:'chat', dashboard:'profile', profile:'profile' };
+  const btmMap = { home:'home', explore:'explore', map:'explore', register:'profile', matching:'matching', chat:'chat', payment:'matching', dashboard:'profile', profile:'profile' };
   const btmActive = btmMap[id] || id;
   document.querySelectorAll('.btm-tab').forEach(b => {
     b.classList.toggle('active', b.dataset.page === btmActive);
