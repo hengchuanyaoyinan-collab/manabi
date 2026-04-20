@@ -1931,7 +1931,7 @@ async function loadLearningRequests() {
         ${r.detail ? `<p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:10px;">${escapeHtml(r.detail)}</p>` : ''}
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <span class="tag">${formatMap[r.format] || r.format}</span>
-          ${!isMine ? `<button class="btn btn-dark" style="font-size:12px;padding:6px 14px;margin-left:auto;" onclick="startDirectChat(${JSON.stringify(r.user_id)},${JSON.stringify(name)})">メッセージを送る</button>` : `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;margin-left:auto;color:var(--red);border-color:var(--red);" onclick="closeLearningRequest('${r.id}',this)">取り下げ</button>`}
+          ${!isMine ? `<button class="btn btn-dark" style="font-size:12px;padding:6px 14px;margin-left:auto;" onclick="startDirectChat('${escapeHtml(r.user_id)}','${escapeHtml(name)}')">メッセージを送る</button>` : `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;margin-left:auto;color:var(--red);border-color:var(--red);" onclick="closeLearningRequest('${r.id}',this)">取り下げ</button>`}
         </div>
       </div>`;
     }).join('');
