@@ -335,6 +335,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 </style>
 </head>
 <body>
+<a href="#home" class="sr-only" style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1000;background:var(--accent);color:white;padding:8px 16px;border-radius:0 0 8px 8px;" onfocus="this.style.position='fixed';this.classList.remove('sr-only')" onblur="this.classList.add('sr-only')">コンテンツへスキップ</a>
 
 <!-- SPLASH -->
 <div id="splash">
@@ -1218,6 +1219,8 @@ function applyTheme(theme) {
     icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = theme === 'dark' ? '#1a1a1a' : '#2D2D2D';
 }
 function toggleDarkMode() {
   const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
@@ -3382,7 +3385,26 @@ document.addEventListener('keydown', e => {
     else if (curPage === 'home') { document.getElementById('hero-search')?.focus(); }
     else { showPage('explore'); setTimeout(() => document.getElementById('explore-search')?.focus(), 100); }
   }
+  if (e.key === '?' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) {
+    e.preventDefault();
+    showShortcutsHelp();
+  }
 });
+function showShortcutsHelp() {
+  const shortcuts = [
+    ['/', '検索にフォーカス'],
+    ['?', 'このヘルプを表示'],
+    ['Escape', 'モーダルを閉じる'],
+  ];
+  document.getElementById('modal-body').innerHTML = `<div style="text-align:center;">
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:16px;">キーボードショートカット</h2>
+    <div style="text-align:left;max-width:280px;margin:0 auto;">
+      ${shortcuts.map(([key, desc]) => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--light);"><span style="font-size:13px;color:var(--mid);">${desc}</span><kbd style="background:var(--lighter);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12px;font-family:monospace;font-weight:600;">${key}</kbd></div>`).join('')}
+    </div>
+    <button class="btn btn-outline" onclick="closeModal()" style="margin-top:20px;padding:10px 32px;font-size:13px;">閉じる</button>
+  </div>`;
+  document.getElementById('modal').classList.add('open');
+}
 
 function renderPaySummary() {
   const el = document.getElementById('pay-summary');
