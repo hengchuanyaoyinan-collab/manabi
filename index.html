@@ -118,10 +118,15 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .notif-panel.open{display:block;animation:fadeIn .15s ease-out;}
 .notif-panel button:hover{background:var(--lighter) !important;}
 /* MAP */
-.map-area{position:relative;height:400px;background:var(--lighter);overflow:hidden;border-radius:12px;}
+.map-area{position:relative;height:450px;background:var(--lighter);overflow:hidden;border-radius:12px;}
 .map-area .leaflet-container{height:100%;width:100%;border-radius:12px;z-index:1;}
-.leaflet-popup-content-wrapper{border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.1);padding:0;}
-.leaflet-popup-content{margin:14px;font-family:'Noto Sans JP',system-ui,sans-serif;font-size:13px;line-height:1.6;}
+.leaflet-control-zoom{border:none!important;box-shadow:0 2px 8px rgba(0,0,0,.12)!important;border-radius:10px!important;overflow:hidden;}
+.leaflet-control-zoom a{width:36px!important;height:36px!important;line-height:36px!important;font-size:18px!important;color:var(--dark)!important;background:white!important;border-bottom:1px solid var(--light)!important;}
+.leaflet-control-zoom a:last-child{border-bottom:none!important;}
+.leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.7)!important;border-radius:6px 0 0 0!important;padding:2px 6px!important;}
+.leaflet-popup-content-wrapper{border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.12);padding:0;border:none;}
+.leaflet-popup-tip{box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.leaflet-popup-content{margin:16px;font-family:'Noto Sans JP',system-ui,sans-serif;font-size:13px;line-height:1.6;}
 .map-popup-inner .popup-name{font-weight:700;font-size:14px;margin-bottom:4px;}
 .map-popup-inner .popup-subject{font-size:12px;color:var(--muted);margin-bottom:6px;}
 .map-popup-inner .popup-price{font-weight:700;font-size:13px;}
@@ -1977,9 +1982,10 @@ function renderMap() {
   if (!container) return;
   if (!leafletMap) {
     leafletMap = L.map('leaflet-map', { zoomControl: true }).setView([35.6620, 139.7038], 14);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap',
-      maxZoom: 19,
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20,
     }).addTo(leafletMap);
     setTimeout(() => leafletMap.invalidateSize(), 200);
   } else {
@@ -2004,9 +2010,9 @@ function renderMap() {
     const safeMarkerAv = safeImgUrl(t.avatar_url);
     const initials = safeMarkerAv ? '' : escapeHtml(t.avatar || t.name.substring(0,2));
     const iconHtml = safeMarkerAv
-      ? `<div style="width:36px;height:36px;border-radius:50%;border:3px solid ${color};box-shadow:0 2px 8px rgba(0,0,0,.2);overflow:hidden;background:white;"><img src="${escapeHtml(safeMarkerAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;"></div>`
-      : `<div style="width:36px;height:36px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.2);background:${color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;">${initials}</div>`;
-    const icon = L.divIcon({ html: iconHtml, className: '', iconSize: [36,36], iconAnchor: [18,18] });
+      ? `<div style="width:40px;height:46px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));"><div style="width:38px;height:38px;border-radius:50%;border:3px solid ${color};overflow:hidden;background:white;"><img src="${escapeHtml(safeMarkerAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${color};margin-top:-1px;"></div></div>`
+      : `<div style="width:40px;height:46px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));"><div style="width:38px;height:38px;border-radius:50%;border:3px solid white;background:${color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;">${initials}</div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${color};margin-top:-1px;"></div></div>`;
+    const icon = L.divIcon({ html: iconHtml, className: '', iconSize: [40,46], iconAnchor: [20,46] });
     const marker = L.marker([lat, lng], { icon }).addTo(leafletMap);
     const popupContent = `<div class="map-popup-inner">
       <div class="popup-name">${escapeHtml(t.name)}</div>
