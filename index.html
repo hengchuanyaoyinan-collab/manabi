@@ -202,6 +202,12 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .fade-up:nth-child(4){transition-delay:.18s;}
 .fade-up:nth-child(5){transition-delay:.24s;}
 .fade-up:nth-child(6){transition-delay:.3s;}
+/* CARD FAVORITE */
+.card-fav{position:absolute;top:10px;right:10px;z-index:3;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s,transform .15s;color:var(--muted);}
+.card:hover .card-fav{opacity:1;}
+.card-fav:hover{transform:scale(1.15);}
+.card-fav.liked{opacity:1;color:var(--red);}
+.card-fav.liked svg{fill:var(--red);}
 /* SKELETON CARDS */
 .skeleton-card{background:white;border-radius:14px;overflow:hidden;border:1px solid var(--border);}
 .skeleton-card .sk-photo{aspect-ratio:4/3;background:var(--lighter);}
@@ -1579,7 +1585,9 @@ function makeCard(t) {
   const verified = t.db_skill_id ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--green);flex-shrink:0;"></i>' : '';
   const fmtLabels = {online:'オンライン',inperson:'対面',cafe:'カフェ'};
   const formats = (t.lesson_formats||[]).slice(0,2).map(f => fmtLabels[f]||f);
+  const isLiked = getLikes().includes(t.id);
   return `<div class="card" onclick="openModal(${t.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openModal(${t.id})" style="position:relative;">
+    <button class="card-fav${isLiked?' liked':''}" onclick="event.stopPropagation();toggleLike(${t.id},this)" aria-label="お気に入り"><i data-lucide="heart" style="width:16px;height:16px;"></i></button>
     ${sampleBadge}
     ${popularBadge}
     <div class="card-photo" style="background:linear-gradient(135deg,${t.color},${t.color}cc);">
@@ -1686,7 +1694,15 @@ function renderFilters() {
     `<button class="pill-sm${curDay===d?' active':''}" onclick="toggleDay(${escapeHtml(JSON.stringify(d))})">${escapeHtml(d)}</button>`).join('');
 }
 const debouncedExplore = debounce(renderExplore, 150);
-function setSubj(s) { curSubj = s; renderFilters(); renderExplore(); }
+function setSubj(s) {
+  curSubj = s;
+  renderFilters();
+  const cards = document.getElementById('explore-cards');
+  cards.style.opacity = '0';
+  cards.style.transform = 'translateY(8px)';
+  setTimeout(() => { renderExplore(); cards.style.transition = 'opacity .25s,transform .25s'; cards.style.opacity = '1'; cards.style.transform = 'translateY(0)'; }, 80);
+  setTimeout(() => { cards.style.transition = ''; }, 350);
+}
 function toggleDay(d) { curDay = curDay === d ? null : d; renderFilters(); renderExplore(); }
 
 function renderAiChips() {
@@ -2425,6 +2441,15 @@ function generateSlots(availableDays) {
     }
   }
   return out;
+}
+function getLikes() {
+  try { return JSON.parse(localStorage.getItem('manabi_likes') || '[]'); } catch { return []; }
+}
+function toggleLike(id, btn) {
+  let likes = getLikes();
+  if (likes.includes(id)) { likes = likes.filter(x => x !== id); btn.classList.remove('liked'); }
+  else { likes.push(id); btn.classList.add('liked'); btn.style.transform = 'scale(1.3)'; setTimeout(() => btn.style.transform = '', 200); }
+  localStorage.setItem('manabi_likes', JSON.stringify(likes));
 }
 function trackRecentView(id) {
   try {
