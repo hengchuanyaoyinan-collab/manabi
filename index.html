@@ -114,7 +114,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 .page.active{display:block;animation:fadeIn .2s ease-out;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 /* BUTTONS */
-.btn{padding:12px 28px;border-radius:12px;border:none;cursor:pointer;font-size:14px;font-family:inherit;transition:all .2s cubic-bezier(.4,0,.2,1);font-weight:600;letter-spacing:.01em;position:relative;overflow:hidden;}
+.btn{padding:12px 28px;border-radius:12px;border:none;cursor:pointer;font-size:14px;font-family:inherit;transition:all .2s cubic-bezier(.4,0,.2,1);font-weight:600;letter-spacing:.01em;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;}
+.btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--ripple-x,50%) var(--ripple-y,50%),rgba(255,255,255,.3) 0%,transparent 60%);opacity:0;transition:opacity .4s;}
+.btn:active::after{opacity:1;transition:opacity 0s;}
 .btn-dark{background:var(--primary);color:white;box-shadow:0 1px 3px rgba(0,0,0,.12);}
 .btn-dark:hover{background:var(--mid);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15);}
 .btn-dark:active{transform:translateY(0) scale(.97);box-shadow:0 1px 2px rgba(0,0,0,.1);}
@@ -202,6 +204,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 .skeleton{background:linear-gradient(90deg,var(--lighter) 25%,#E8E5E0 50%,var(--lighter) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes shimmer{to{background-position:-200% 0;}}
+@keyframes heartBurst{0%{transform:scale(0);opacity:1;}40%{transform:scale(1.2);opacity:1;}100%{transform:scale(1.4);opacity:0;}}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.page-transition{animation:pageIn .25s ease-out;}
 .back-top{position:fixed;bottom:80px;right:16px;width:40px;height:40px;border-radius:50%;background:var(--dark);color:white;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:90;transition:opacity .2s;}
 .back-top.show{display:flex;}
 @media(max-width:640px){.back-top{bottom:72px;}}
@@ -337,6 +342,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 </style>
 </head>
 <body>
+<div id="scroll-progress" style="position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;z-index:9999;transition:width .1s linear;pointer-events:none;"></div>
 <a href="#home" class="sr-only" style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1000;background:var(--accent);color:white;padding:8px 16px;border-radius:0 0 8px 8px;" onfocus="this.style.position='fixed';this.classList.remove('sr-only')" onblur="this.classList.add('sr-only')">コンテンツへスキップ</a>
 
 <!-- SPLASH -->
@@ -529,6 +535,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <button onclick="localStorage.removeItem('manabi_recent');document.getElementById('recent-section').style.display='none'" style="font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;">クリア</button>
     </div>
     <div style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;" id="recent-cards"></div>
+  </div>
+
+  <div id="recommend-section" style="display:none;margin-top:32px;" class="fade-up">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px;"><i data-lucide="sparkles" style="width:16px;height:16px;color:var(--accent);"></i>あなたへのおすすめ</h2>
+    </div>
+    <div class="cards" id="recommend-cards" style="grid-template-columns:repeat(auto-fill,minmax(165px,1fr));"></div>
   </div>
 
   <!-- Why Manabi -->
@@ -2004,6 +2017,9 @@ function showPage(id, pushHistory = true) {
   const el = document.getElementById(id);
   if (!el) { document.getElementById('home').classList.add('active'); return; }
   el.classList.add('active');
+  el.classList.remove('page-transition');
+  void el.offsetWidth;
+  el.classList.add('page-transition');
   const navPages = ['home','explore','map','register','chat'];
   const navMap = {home:0,explore:1,map:2,matching:3,register:4,chat:5,payment:3,dashboard:5};
   const navIdx = navMap[id];
@@ -2080,7 +2096,7 @@ function makeCard(t) {
     <button class="card-fav${isLiked?' liked':''}" onclick="event.stopPropagation();toggleLike(${t.id},this)" aria-label="お気に入り"><i data-lucide="heart" style="width:16px;height:16px;"></i></button>
     ${sampleBadge}
     ${popularBadge}
-    <div class="card-photo" style="background:linear-gradient(135deg,${t.color},${t.color}cc);">
+    <div class="card-photo" onclick="event.stopPropagation();handleCardDoubleTap(event,${t.id})" style="background:linear-gradient(135deg,${t.color},${t.color}cc);">
       ${avInner}
       ${formats.length ? `<div class="card-badge">${formats.map(f=>`<span>${escapeHtml(f)}</span>`).join('')}</div>` : ''}
     </div>
@@ -2125,6 +2141,7 @@ function renderHome() {
   }
   renderFavorites();
   renderRecentViews();
+  renderRecommendations();
   renderTestimonials();
   refreshIcons();
   observeFadeUps();
@@ -2193,33 +2210,87 @@ function renderRecentViews() {
   }).join('');
 }
 
+function renderRecommendations() {
+  const section = document.getElementById('recommend-section');
+  if (!section) return;
+  const viewed = getRecentViews();
+  const liked = getLikes();
+  if (!viewed.length && !liked.length) { section.style.display = 'none'; return; }
+  const interacted = [...new Set([...viewed, ...liked])];
+  const cats = interacted.map(id => teachers.find(t => t.id === id)).filter(Boolean).map(t => getCatForSubject(t.subject));
+  const catFreq = {};
+  cats.forEach(c => { catFreq[c] = (catFreq[c] || 0) + 1; });
+  const topCats = Object.entries(catFreq).sort((a,b) => b[1] - a[1]).slice(0, 3).map(e => e[0]);
+  const recs = teachers.filter(t => topCats.includes(getCatForSubject(t.subject)) && !interacted.includes(t.id)).sort((a,b) => b.rating - a.rating).slice(0, 6);
+  if (!recs.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  document.getElementById('recommend-cards').innerHTML = recs.map(makeCard).join('');
+  refreshIcons();
+}
+
+let _exploreList = [];
+let _exploreShown = 0;
+const EXPLORE_PAGE_SIZE = 12;
+let _exploreObserver = null;
+
 function renderExplore() {
   const q = (document.getElementById('explore-search')?.value || '').toLowerCase();
   const sortBy = document.getElementById('explore-sort')?.value || 'rating';
   const base = visibleTeachers();
-  const list = base.filter(t =>
+  _exploreList = base.filter(t =>
     (curSubj === 'すべて' || t.subject === curSubj) &&
     (!curDay || t.available.includes(curDay)) &&
     (!q || t.name.toLowerCase().includes(q) || t.subject.toLowerCase().includes(q) || getCatForSubject(t.subject).toLowerCase().includes(q) || t.bio.toLowerCase().includes(q) || t.tags.some(g => g.toLowerCase().includes(q)))
   );
-  if (sortBy === 'price-asc') list.sort((a,b) => a.price - b.price);
-  else if (sortBy === 'price-desc') list.sort((a,b) => b.price - a.price);
-  else if (sortBy === 'reviews') list.sort((a,b) => b.reviews - a.reviews);
-  else if (sortBy === 'newest') list.sort((a,b) => (b.created_at||'') > (a.created_at||'') ? 1 : -1);
-  else list.sort((a,b) => b.rating - a.rating);
-  document.getElementById('explore-cards').innerHTML = list.length
-    ? list.map(makeCard).join('')
-    : `<div style="text-align:center;padding:60px 20px;color:var(--muted);grid-column:1/-1;">
+  if (sortBy === 'price-asc') _exploreList.sort((a,b) => a.price - b.price);
+  else if (sortBy === 'price-desc') _exploreList.sort((a,b) => b.price - a.price);
+  else if (sortBy === 'reviews') _exploreList.sort((a,b) => b.reviews - a.reviews);
+  else if (sortBy === 'newest') _exploreList.sort((a,b) => (b.created_at||'') > (a.created_at||'') ? 1 : -1);
+  else _exploreList.sort((a,b) => b.rating - a.rating);
+  _exploreShown = 0;
+  const container = document.getElementById('explore-cards');
+  container.innerHTML = '';
+  if (!_exploreList.length) {
+    container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted);grid-column:1/-1;">
         <div style="width:64px;height:64px;border-radius:20px;background:var(--lighter);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><i data-lucide="search-x" style="width:28px;height:28px;"></i></div>
         <p style="font-weight:600;font-size:14px;color:var(--dark);margin-bottom:6px;">条件に合う先生が見つかりませんでした</p>
         <p style="font-size:12px;margin-bottom:16px;line-height:1.7;">検索キーワードを変更するか、<br>フィルターをリセットしてお試しください。</p>
         <button onclick="document.getElementById('explore-search').value='';curSubj='すべて';curDay=null;renderFilters();renderExplore();" class="btn btn-outline" style="padding:8px 20px;font-size:12px;">フィルターをリセット</button>
       </div>`;
+  } else {
+    loadMoreExplore();
+  }
   const rc = document.getElementById('result-count');
-  rc.textContent = `${list.length}名の先生が見つかりました`;
+  rc.textContent = `${_exploreList.length}名の先生が見つかりました`;
   rc.style.opacity = '0';
   requestAnimationFrame(() => { rc.style.transition = 'opacity .3s'; rc.style.opacity = '1'; });
   refreshIcons();
+}
+
+function loadMoreExplore() {
+  const container = document.getElementById('explore-cards');
+  const sentinel = container.querySelector('.explore-sentinel');
+  if (sentinel) sentinel.remove();
+  const batch = _exploreList.slice(_exploreShown, _exploreShown + EXPLORE_PAGE_SIZE);
+  _exploreShown += batch.length;
+  container.insertAdjacentHTML('beforeend', batch.map(makeCard).join(''));
+  if (_exploreShown < _exploreList.length) {
+    container.insertAdjacentHTML('beforeend', '<div class="explore-sentinel" style="grid-column:1/-1;height:1px;"></div>');
+    setupExploreObserver();
+  } else if (_exploreObserver) {
+    _exploreObserver.disconnect();
+  }
+  refreshIcons();
+}
+
+function setupExploreObserver() {
+  if (_exploreObserver) _exploreObserver.disconnect();
+  const sentinel = document.querySelector('.explore-sentinel');
+  if (!sentinel) return;
+  _exploreObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) loadMoreExplore();
+  }, { rootMargin: '200px' });
+  _exploreObserver.observe(sentinel);
 }
 
 function renderFilters() {
@@ -3321,6 +3392,35 @@ function toggleLike(id, btn) {
   else { likes.push(id); btn.classList.add('liked'); btn.style.transform = 'scale(1.3)'; setTimeout(() => { btn.style.transform = ''; }, 200); showToast('お気に入りに追加しました', 'var(--red)'); if (navigator.vibrate) navigator.vibrate(10); }
   localStorage.setItem('manabi_likes', JSON.stringify(likes));
 }
+function showHeartBurst(el) {
+  const rect = el.getBoundingClientRect();
+  const heart = document.createElement('div');
+  heart.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="#EF5350" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+  heart.style.cssText = `position:fixed;z-index:9999;pointer-events:none;left:${rect.left+rect.width/2-30}px;top:${rect.top+rect.height/2-30}px;animation:heartBurst .6s ease-out forwards;`;
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 700);
+}
+const _dblTapState = {};
+let _dblTapTimer = null;
+function handleCardDoubleTap(e, id) {
+  const now = Date.now();
+  if (_dblTapState[id] && now - _dblTapState[id] < 350) {
+    e.preventDefault(); e.stopPropagation();
+    clearTimeout(_dblTapTimer);
+    const likes = getLikes();
+    if (!likes.includes(id)) {
+      const card = e.currentTarget.closest('.card');
+      const btn = card?.querySelector('.card-fav');
+      if (btn) toggleLike(id, btn);
+    }
+    showHeartBurst(e.currentTarget);
+    if (navigator.vibrate) navigator.vibrate([5, 30, 5]);
+    _dblTapState[id] = 0;
+    return;
+  }
+  _dblTapState[id] = now;
+  _dblTapTimer = setTimeout(() => openModal(id), 360);
+}
 function celebrateBooking() {
   const colors = ['#5C6BC0','#4CAF50','#FF9800','#E91E63','#00BCD4','#9C27B0'];
   for (let i = 0; i < 30; i++) {
@@ -3944,6 +4044,11 @@ window.addEventListener('scroll', () => {
   if (hero && window.scrollY < 600) {
     hero.style.transform = `translateY(${window.scrollY * 0.15}px)`;
     hero.style.opacity = Math.max(0, 1 - window.scrollY / 500);
+  }
+  const scrollProg = document.getElementById('scroll-progress');
+  if (scrollProg) {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    scrollProg.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
   }
 }, { passive: true });
 window.addEventListener('offline', () => {
