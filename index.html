@@ -99,9 +99,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .card:active{transform:translateY(0);box-shadow:var(--shadow);}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
 .tag{display:inline-block;padding:4px 10px;border-radius:8px;font-size:11px;background:var(--lighter);color:var(--mid);margin:2px;font-weight:500;transition:background .15s;}
-.pill{padding:8px 18px;border-radius:24px;font-size:13px;cursor:pointer;border:1.5px solid var(--border);background:white;font-family:inherit;font-weight:500;transition:all .15s;}
+.pill{padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid var(--border);background:white;font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .pill:hover,.pill.active{background:var(--primary);color:white;border-color:var(--primary);}
-.pill-sm{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:white;font-family:inherit;font-weight:500;transition:all .15s;}
+.pill-sm{padding:4px 10px;border-radius:16px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:white;font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .pill-sm:hover,.pill-sm.active{background:var(--primary);color:white;border-color:var(--primary);}
 /* FORM */
 .form-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;transition:all .2s cubic-bezier(.4,0,.2,1);background:white;}
@@ -192,6 +192,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   #home>section:first-child{padding:40px 16px 36px !important;margin:-16px -12px 28px !important;}
   #home>section:first-child h1{font-size:26px !important;}
   #home>section:first-child p:first-of-type{font-size:10px !important;}
+  #explore-filter-bar{top:50px;border-radius:0;margin:-16px -12px 12px !important;padding:12px 14px;border-left:none;border-right:none;border-radius:0;}
+  #explore .cards-grid{gap:8px;}
+  #day-filters{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;}
+  #day-filters .pill-sm{padding:3px 8px;font-size:10px;}
 }
 @media(max-width:380px){
   .cards-grid{grid-template-columns:1fr;}
@@ -363,8 +367,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <h1 style="color:white;font-size:34px;line-height:1.25;margin-bottom:8px;font-weight:800;letter-spacing:-.5px;position:relative;">学びを、もっと<br>パーソナルに。</h1>
     <p style="color:rgba(200,196,188,.6);font-size:14px;margin-bottom:26px;line-height:1.6;position:relative;">勉強・スポーツ・音楽・趣味 — 誰でも教え、誰でも学べる</p>
     <div style="display:flex;max-width:480px;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.25);position:relative;">
-      <input type="text" id="hero-search" placeholder="何を学びたいですか？" aria-label="科目・キーワードで検索" style="flex:1;padding:15px 18px;border:none;font-size:14px;font-family:inherit;outline:none;" onkeydown="if(event.key==='Enter'){const es=document.getElementById('explore-search');es.value=this.value;es.nextElementSibling.style.display=this.value?'flex':'none';showPage('explore');renderExplore();}">
-      <button class="btn btn-dark" style="border-radius:0;padding:15px 20px;display:flex;align-items:center;" onclick="const es=document.getElementById('explore-search');es.value=document.getElementById('hero-search').value;es.nextElementSibling.style.display=es.value?'flex':'none';showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
+      <input type="text" id="hero-search" placeholder="何を学びたいですか？" aria-label="科目・キーワードで検索" style="flex:1;padding:15px 18px;border:none;font-size:14px;font-family:inherit;outline:none;" onkeydown="if(event.key==='Enter'){const es=document.getElementById('explore-search');es.value=this.value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=this.value?'flex':'none';showPage('explore');renderExplore();}">
+      <button class="btn btn-dark" style="border-radius:0;padding:15px 20px;display:flex;align-items:center;" onclick="const es=document.getElementById('explore-search');es.value=document.getElementById('hero-search').value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=es.value?'flex':'none';showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
     </div>
     <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:14px;position:relative;" id="hero-tags">
       <span style="font-size:11px;color:rgba(200,196,188,.5);padding:4px 0;">人気：</span>
@@ -533,37 +537,43 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- EXPLORE -->
 <div class="page" id="explore">
-  <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);margin-bottom:16px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-      <div style="width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;"><i data-lucide="sparkles" style="width:15px;height:15px;"></i></div>
-      <div style="flex:1;"><span style="font-weight:700;font-size:13px;">AIレコメンド</span><span style="font-size:11px;color:var(--muted);margin-left:8px;">自然文で検索できます</span></div>
+  <div id="explore-filter-bar" style="background:white;border-radius:16px;padding:14px 16px;border:1px solid var(--light);margin-bottom:12px;position:sticky;top:56px;z-index:50;transition:box-shadow .2s;">
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <div style="flex:1;display:flex;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;" onfocusin="this.style.borderColor='var(--dark)'" onfocusout="this.style.borderColor='var(--border)'">
+        <span style="display:flex;align-items:center;padding:0 10px;color:var(--muted);"><i data-lucide="search" style="width:15px;height:15px;"></i></span>
+        <input type="text" id="explore-search" placeholder="何を学びたい？" aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.closest('div').querySelector('.clear-btn').style.display=this.value?'flex':'none'" style="flex:1;padding:10px 0;border:none;font-size:13px;font-family:inherit;outline:none;">
+        <button class="clear-btn" onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;align-items:center;padding:0 10px;background:none;border:none;cursor:pointer;color:var(--muted);"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+      </div>
+      <button onclick="document.getElementById('ai-panel').style.display=document.getElementById('ai-panel').style.display==='none'?'':'none'" style="width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;transition:all .15s;" title="AI検索"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></button>
+    </div>
+    <div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;" id="subj-filters"></div>
+  </div>
+  <div id="ai-panel" style="display:none;background:white;border-radius:16px;padding:16px;border:1px solid var(--light);margin-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+      <div style="width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;"><i data-lucide="sparkles" style="width:13px;height:13px;"></i></div>
+      <span style="font-weight:700;font-size:13px;flex:1;">AI検索</span>
+      <button onclick="document.getElementById('ai-panel').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="ai-chips"></div>
     <div id="ai-loading" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:10px;"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span><span style="margin-left:4px;">分析中...</span></div>
     <div id="ai-result" style="display:none;background:var(--bg);border-radius:12px;padding:14px;font-size:12px;line-height:1.8;margin-bottom:10px;"></div>
     <div style="display:flex;gap:8px;">
-      <input id="ai-input" class="form-input" placeholder="例：週1回英語を学びたい、予算3500円以内" aria-label="AIに質問する" onkeydown="if(event.key==='Enter')aiChat()" style="flex:1;">
-      <button class="btn btn-dark" onclick="aiChat()" style="padding:10px 18px;">検索</button>
+      <input id="ai-input" class="form-input" placeholder="例：週1回英語を学びたい" aria-label="AIに質問する" onkeydown="if(event.key==='Enter')aiChat()" style="flex:1;font-size:13px;">
+      <button class="btn btn-dark" onclick="aiChat()" style="padding:10px 16px;font-size:13px;">検索</button>
     </div>
   </div>
-  <div id="explore-filter-bar" style="background:white;border-radius:16px;padding:16px 18px;border:1px solid var(--light);margin-bottom:16px;position:sticky;top:56px;z-index:50;transition:box-shadow .2s;">
-    <div style="display:flex;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;position:relative;transition:border-color .2s;" onfocusin="this.style.borderColor='var(--dark)'" onfocusout="this.style.borderColor='var(--border)'">
-      <span style="display:flex;align-items:center;padding:0 12px;color:var(--muted);"><i data-lucide="search" style="width:16px;height:16px;"></i></span>
-      <input type="text" id="explore-search" placeholder="科目・カテゴリ・キーワードで検索..." aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.parentElement.querySelector('.clear-btn').style.display=this.value?'flex':'none'" style="flex:1;padding:11px 0;border:none;font-size:13px;font-family:inherit;outline:none;">
-      <button class="clear-btn" onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;align-items:center;padding:0 12px;background:none;border:none;cursor:pointer;color:var(--muted);"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <p id="result-count" style="font-size:12px;color:var(--muted);"></p>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:8px;-webkit-overflow-scrolling:touch;" id="subj-filters"></div>
-    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:11px;color:var(--muted);font-weight:500;">曜日</span><div id="day-filters"></div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <p id="result-count" style="font-size:12px;color:var(--muted);"></p>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <button onclick="showPage('map')" style="font-size:12px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;color:var(--muted);white-space:nowrap;"><i data-lucide="map-pin" style="width:13px;height:13px;"></i>地図</button>
-      <select id="explore-sort" class="form-input" onchange="renderExplore()" style="width:auto;padding:6px 12px;font-size:12px;border-radius:8px;">
+    <div style="display:flex;gap:6px;align-items:center;">
+      <div style="display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;" id="day-filters"></div>
+      <button onclick="showPage('map')" style="font-size:11px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px;color:var(--muted);white-space:nowrap;"><i data-lucide="map-pin" style="width:12px;height:12px;"></i>地図</button>
+      <select id="explore-sort" class="form-input" onchange="renderExplore()" style="width:auto;padding:5px 10px;font-size:11px;border-radius:8px;">
       <option value="rating">評価順</option>
-      <option value="price-asc">料金：安い順</option>
-      <option value="price-desc">料金：高い順</option>
-      <option value="reviews">レビュー数順</option>
+      <option value="price-asc">安い順</option>
+      <option value="price-desc">高い順</option>
+      <option value="reviews">レビュー数</option>
     </select>
     </div>
   </div>
@@ -1522,7 +1532,11 @@ function filterByCategory(catName) {
   curSubj = 'すべて';
   showPage('explore');
   const searchEl = document.getElementById('explore-search');
-  if (searchEl) { searchEl.value = catName; if (searchEl.nextElementSibling) searchEl.nextElementSibling.style.display = 'flex'; }
+  if (searchEl) {
+    searchEl.value = catName;
+    const clearBtn = searchEl.closest('div').querySelector('.clear-btn');
+    if (clearBtn) clearBtn.style.display = 'flex';
+  }
   renderFilters();
   renderExplore();
 }
