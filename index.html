@@ -475,6 +475,15 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;" class="fade-up"><h2 style="font-weight:700;font-size:16px;margin-bottom:0;">注目のスキル提供者</h2><button onclick="showPage('explore')" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;display:flex;align-items:center;gap:4px;">すべて見る <i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button></div>
   <div class="cards-grid" id="home-cards"></div>
 
+  <!-- Favorites -->
+  <div id="favorites-section" style="display:none;margin-top:32px;" class="fade-up">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px;"><i data-lucide="heart" style="width:16px;height:16px;color:var(--red);"></i>お気に入り</h2>
+      <span id="fav-count" style="font-size:11px;color:var(--muted);"></span>
+    </div>
+    <div style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;" id="fav-cards"></div>
+  </div>
+
   <!-- Recently Viewed -->
   <div id="recent-section" style="display:none;margin-top:32px;" class="fade-up">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -1941,9 +1950,32 @@ function renderHome() {
       </button>`;
     }).join('');
   }
+  renderFavorites();
   renderRecentViews();
   refreshIcons();
   observeFadeUps();
+}
+
+function renderFavorites() {
+  const ids = getLikes();
+  const section = document.getElementById('favorites-section');
+  if (!section || !ids.length) { if (section) section.style.display = 'none'; return; }
+  const favs = ids.map(id => teachers.find(t => t.id === id)).filter(Boolean);
+  if (!favs.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  document.getElementById('fav-count').textContent = `${favs.length}件`;
+  document.getElementById('fav-cards').innerHTML = favs.map(t => {
+    const safeAv = safeImgUrl(t.avatar_url);
+    const avHtml = safeAv
+      ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy">`
+      : `<span style="font-size:14px;font-weight:700;color:white;">${escapeHtml(t.avatar)}</span>`;
+    return `<div onclick="openModal(${t.id})" style="flex-shrink:0;width:140px;background:white;border-radius:14px;padding:14px;border:1px solid var(--light);cursor:pointer;text-align:center;transition:all .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,${t.color},${t.color}cc);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;overflow:hidden;">${avHtml}</div>
+      <p style="font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.name)}</p>
+      <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.subject)}</p>
+      <p style="font-size:12px;font-weight:700;margin-top:4px;">¥${t.price.toLocaleString()}</p>
+    </div>`;
+  }).join('');
 }
 
 function renderRecentViews() {
@@ -3041,7 +3073,7 @@ function getLikes() {
 function toggleLike(id, btn) {
   let likes = getLikes();
   if (likes.includes(id)) { likes = likes.filter(x => x !== id); btn.classList.remove('liked'); }
-  else { likes.push(id); btn.classList.add('liked'); btn.style.transform = 'scale(1.3)'; setTimeout(() => btn.style.transform = '', 200); }
+  else { likes.push(id); btn.classList.add('liked'); btn.style.transform = 'scale(1.3)'; setTimeout(() => { btn.style.transform = ''; }, 200); showToast('お気に入りに追加しました', 'var(--red)'); }
   localStorage.setItem('manabi_likes', JSON.stringify(likes));
 }
 function trackRecentView(id) {
@@ -3516,7 +3548,7 @@ function refreshIcons() {
 }
 
 // SPLASH
-setTimeout(() => { const s = document.getElementById('splash'); if (s) { s.classList.add('out'); setTimeout(() => s.remove(), 500); } }, 1500);
+setTimeout(() => { const s = document.getElementById('splash'); if (s) { s.classList.add('out'); setTimeout(() => s.remove(), 500); } }, 1000);
 
 // AUTH MODAL: close on backdrop click
 document.getElementById('auth-screen').addEventListener('click', function(e) {
