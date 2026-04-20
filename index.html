@@ -5,6 +5,10 @@
 <script>((d)=>{const t=localStorage.getItem('manabi-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');if(t==='dark')d.setAttribute('data-theme','dark')})(document.documentElement)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="Manabi — スキルのマーケットプレイス。勉強・スポーツ・音楽・趣味、何でも教え合える。AIが最適な先生を自動マッチング。登録無料・Stripe安全決済。">
+<link rel="preconnect" href="https://dajngnlvrwesosvgoilh.supabase.co">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="canonical" href="https://manabi-bay.vercel.app">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Manabi","url":"https://manabi-bay.vercel.app","description":"スキルのマーケットプレイス。勉強・スポーツ・音楽・趣味を教え合う。AIマッチング搭載。","applicationCategory":"EducationalApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY","description":"登録・出品無料"},"creator":{"@type":"Organization","name":"Manabi"}}</script>
 <meta name="theme-color" content="#2D2D2D">
@@ -125,7 +129,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 .card{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid var(--light);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);border-color:var(--border);}
 .card:active{transform:translateY(0);box-shadow:0 1px 3px rgba(0,0,0,.04);}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;contain:layout style;}
 .tag{display:inline-block;padding:4px 10px;border-radius:8px;font-size:11px;background:var(--lighter);color:var(--mid);margin:2px;font-weight:500;transition:background .15s;}
 .pill{padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .pill:hover,.pill.active{background:var(--primary);color:white;border-color:var(--primary);}
@@ -415,6 +419,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     </div>
   </div>
 </nav>
+<div id="offline-bar" style="display:none;position:fixed;top:56px;left:0;right:0;z-index:99;background:var(--red);color:white;padding:6px 16px;font-size:11px;font-weight:600;align-items:center;justify-content:center;gap:6px;"><i data-lucide="wifi-off" style="width:12px;height:12px;"></i>オフライン — 一部の機能が制限されています</div>
 
 <!-- BOTTOM TAB BAR (mobile) -->
 <div class="btm-tabs">
@@ -3851,7 +3856,10 @@ loadSkillsFromDB();
 if (location.hash) {
   const initPage = location.hash.replace('#','');
   const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy'];
-  if (validPages.includes(initPage)) showPage(initPage, false);
+  if (initPage.startsWith('teacher-')) {
+    const tid = parseInt(initPage.replace('teacher-', ''));
+    if (tid) setTimeout(() => { if (teachers.find(t => t.id === tid)) openModal(tid); }, 800);
+  } else if (validPages.includes(initPage)) showPage(initPage, false);
 }
 refreshIcons();
 observeFadeUps();
@@ -3864,8 +3872,14 @@ window.addEventListener('scroll', () => {
     hero.style.opacity = Math.max(0, 1 - window.scrollY / 500);
   }
 }, { passive: true });
-window.addEventListener('offline', () => showToast('インターネット接続が切れました', 'var(--red)'));
-window.addEventListener('online', () => showToast('接続が復旧しました', 'var(--green)'));
+window.addEventListener('offline', () => {
+  showToast('インターネット接続が切れました', 'var(--red)');
+  document.getElementById('offline-bar').style.display = 'flex';
+});
+window.addEventListener('online', () => {
+  showToast('接続が復旧しました', 'var(--green)');
+  document.getElementById('offline-bar').style.display = 'none';
+});
 // Sticky filter bar shadow
 const filterBar = document.getElementById('explore-filter-bar');
 if (filterBar) {
@@ -3874,6 +3888,7 @@ if (filterBar) {
   }, { threshold: [1], rootMargin: '-57px 0px 0px 0px' });
   fbObserver.observe(filterBar);
 }
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 
 </script>
 </body>
