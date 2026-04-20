@@ -68,24 +68,24 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* SPLASH */
 #splash{position:fixed;inset:0;z-index:10000;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease-out;}
 #splash.out{opacity:0;pointer-events:none;}
-#splash .splash-logo{width:64px;height:64px;background:white;border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1);}
+#splash .splash-logo{width:64px;height:64px;background:var(--white);border-radius:18px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;animation:splashPop .6s cubic-bezier(.34,1.56,.64,1);}
 #splash .splash-name{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;color:white;letter-spacing:-.01em;opacity:0;animation:splashFade .5s .3s ease-out forwards;}
 #splash .splash-sub{font-size:13px;color:#9A9690;margin-top:6px;opacity:0;animation:splashFade .5s .5s ease-out forwards;}
 @keyframes splashPop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
 @keyframes splashFade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 /* AUTH */
 #auth-screen{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
-.auth-box{background:white;border-radius:16px;padding:32px 28px;width:100%;max-width:380px;}
+.auth-box{background:var(--white);border-radius:16px;padding:32px 28px;width:100%;max-width:380px;}
 .auth-tabs{display:flex;background:var(--lighter);border-radius:10px;margin-bottom:24px;padding:3px;}
 .auth-tab{flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;transition:all .2s;border-radius:8px;}
-.auth-tab.active{background:white;color:var(--dark);box-shadow:var(--shadow);}
+.auth-tab.active{background:var(--white);color:var(--dark);box-shadow:var(--shadow);}
 .auth-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;font-size:15px;font-family:inherit;outline:none;margin-bottom:12px;transition:border-color .2s;background:var(--lighter);}
-.auth-input:focus{border-color:var(--primary);background:white;}
+.auth-input:focus{border-color:var(--primary);background:var(--white);}
 .msg-box{border-radius:12px;padding:12px 16px;font-size:13px;margin-bottom:12px;display:none;}
 .msg-error{background:#FFF0F1;border:1px solid #FFD0D4;color:#C62828;}
 .msg-success{background:var(--green-light);border:1px solid #B2DFDB;color:#00695C;}
 /* NAV */
-nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, calc((100% - 1160px) / 2));height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(20px, calc((100% - 1160px) / 2));height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .logo{font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:var(--primary);cursor:pointer;display:flex;align-items:center;gap:8px;letter-spacing:-.01em;}
 .logo-icon{width:32px;height:32px;background:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;}
 .nav-links{display:flex;gap:4px;}
@@ -94,7 +94,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .nav-btn.active{background:var(--primary-light);color:var(--primary);font-weight:600;}
 .hamburger{display:none;background:none;border:none;font-size:22px;cursor:pointer;padding:4px 8px;color:var(--dark);}
 /* BOTTOM TAB (mobile) */
-.btm-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);z-index:100;padding:4px 0 env(safe-area-inset-bottom,0);box-shadow:0 -1px 8px rgba(0,0,0,.06);}
+.btm-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);z-index:100;padding:4px 0 env(safe-area-inset-bottom,0);box-shadow:0 -1px 8px rgba(0,0,0,.06);}
 .btm-tabs-inner{display:flex;justify-content:space-around;max-width:500px;margin:0 auto;}
 .btm-tab{background:none;border:none;cursor:pointer;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:inherit;color:var(--muted);transition:color .15s;min-width:56px;-webkit-tap-highlight-color:transparent;}
 .btm-tab .btm-icon{font-size:22px;line-height:1;}
@@ -122,7 +122,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .btn-accent:active{transform:translateY(0);}
 .btn-accent:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;box-shadow:none;transform:none;}
 /* CARDS */
-.card{background:white;border-radius:16px;overflow:hidden;border:1px solid var(--light);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.card{background:var(--white);border-radius:16px;overflow:hidden;border:1px solid var(--light);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);border-color:var(--border);}
 .card:active{transform:translateY(0);box-shadow:0 1px 3px rgba(0,0,0,.04);}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
@@ -141,14 +141,14 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .ai-dot:nth-child(2){animation-delay:.2s;}.ai-dot:nth-child(3){animation-delay:.4s;}
 @keyframes abounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
 /* NOTIF */
-.notif-panel{position:fixed;top:56px;right:12px;width:320px;background:white;border:1px solid var(--border);border-radius:14px;z-index:150;box-shadow:0 12px 40px rgba(0,0,0,.12);display:none;max-height:calc(100vh - 80px);overflow-y:auto;}
+.notif-panel{position:fixed;top:56px;right:12px;width:320px;background:var(--white);border:1px solid var(--border);border-radius:14px;z-index:150;box-shadow:0 12px 40px rgba(0,0,0,.12);display:none;max-height:calc(100vh - 80px);overflow-y:auto;}
 .notif-panel.open{display:block;animation:fadeIn .15s ease-out;}
 .notif-panel button:hover{background:var(--lighter) !important;}
 /* MAP */
 .map-area{position:relative;height:450px;background:var(--lighter);overflow:hidden;border-radius:12px;}
 .map-area .leaflet-container{height:100%;width:100%;border-radius:12px;z-index:1;}
 .leaflet-control-zoom{border:none!important;box-shadow:0 2px 8px rgba(0,0,0,.12)!important;border-radius:10px!important;overflow:hidden;}
-.leaflet-control-zoom a{width:36px!important;height:36px!important;line-height:36px!important;font-size:18px!important;color:var(--dark)!important;background:white!important;border-bottom:1px solid var(--light)!important;}
+.leaflet-control-zoom a{width:36px!important;height:36px!important;line-height:36px!important;font-size:18px!important;color:var(--dark)!important;background:var(--white)!important;border-bottom:1px solid var(--light)!important;}
 .leaflet-control-zoom a:last-child{border-bottom:none!important;}
 .leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.7)!important;border-radius:6px 0 0 0!important;padding:2px 6px!important;}
 .leaflet-popup-content-wrapper{border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.12);padding:0;border:none;}
@@ -161,7 +161,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 /* LUCIDE */
 .lucide{width:1em;height:1em;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;vertical-align:middle;display:inline-block;}
 /* CHAT */
-.chat-layout{background:white;border-radius:12px;border:1px solid var(--border);display:grid;grid-template-columns:260px 1fr;height:480px;overflow:hidden;}
+.chat-layout{background:var(--white);border-radius:12px;border:1px solid var(--border);display:grid;grid-template-columns:260px 1fr;height:480px;overflow:hidden;}
 .chat-list{border-right:1px solid var(--border);overflow-y:auto;}
 .chat-item{display:flex;gap:10px;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;}
 .chat-item:hover,.chat-item.active{background:var(--primary-light);}
@@ -169,7 +169,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .msg-me{background:var(--primary);color:white;border-radius:18px 4px 18px 18px;padding:10px 14px;font-size:14px;line-height:1.6;max-width:75%;align-self:flex-end;}
 .msg-them{background:var(--lighter);color:var(--dark);border-radius:4px 18px 18px 18px;padding:10px 14px;font-size:14px;line-height:1.6;max-width:75%;align-self:flex-start;}
 /* PAYMENT */
-.pay-steps{display:flex;background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;}
+.pay-steps{display:flex;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;}
 .pay-step{flex:1;padding:14px;text-align:center;font-size:12px;color:var(--muted);border-right:1px solid var(--border);border-top:none;border-bottom:none;border-left:none;background:none;font-family:inherit;cursor:pointer;font-weight:500;opacity:.6;}
 .pay-step:last-child{border-right:none;}
 .pay-step.active{background:var(--primary);color:white;font-weight:700;opacity:1;}
@@ -179,11 +179,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 /* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
 .overlay.open{display:flex;animation:fadeIn .2s ease-out;}
-.modal{background:white;border-radius:16px;max-width:520px;width:100%;padding:28px;max-height:90vh;overflow-y:auto;animation:modalIn .25s ease-out;}
+.modal{background:var(--white);border-radius:16px;max-width:520px;width:100%;padding:28px;max-height:90vh;overflow-y:auto;animation:modalIn .25s ease-out;}
 @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
 /* TOAST */
 .toast-container{position:fixed;top:64px;right:16px;z-index:9998;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-.toast{pointer-events:auto;background:white;border-radius:12px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.12);border-left:4px solid var(--accent);font-size:13px;max-width:320px;animation:toastIn .3s ease-out;display:flex;align-items:center;gap:8px;}
+.toast{pointer-events:auto;background:var(--white);border-radius:12px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.12);border-left:4px solid var(--accent);font-size:13px;max-width:320px;animation:toastIn .3s ease-out;display:flex;align-items:center;gap:8px;}
 .toast.out{animation:toastOut .3s ease-in forwards;}
 @keyframes toastIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
 @keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(40px);}}
@@ -247,7 +247,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 }
 /* WIZARD STEPS */
 .wiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-.wiz-back{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;}
+.wiz-back{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;}
 .wiz-badge{display:flex;align-items:center;gap:4px;background:var(--dark);color:white;padding:4px 10px;border-radius:14px;font-size:12px;font-weight:700;flex-shrink:0;}
 .wiz-dashes{display:flex;gap:4px;flex:1;align-items:center;overflow:hidden;}
 .wiz-dash{height:3px;flex:1;border-radius:2px;background:var(--border);transition:background .2s;min-width:8px;}
@@ -266,16 +266,16 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .wiz-tip-icon{width:48px;height:48px;border-radius:50%;background:#FFE0B2;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;color:#F57C00;}
 .wiz-actions{display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--light);}
 .wiz-next{flex:1;padding:14px;font-size:14px;font-weight:700;}
-.wiz-reset{padding:14px 22px;border:1.5px solid var(--accent);background:white;color:var(--accent);border-radius:12px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;}
+.wiz-reset{padding:14px 22px;border:1.5px solid var(--accent);background:var(--white);color:var(--accent);border-radius:12px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;}
 .day-grid{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:8px;align-items:center;margin-top:8px;}
 .day-label{font-size:13px;color:var(--mid);font-weight:500;padding-right:4px;}
-.day-opt{background:white;border:1.5px solid var(--border);border-radius:10px;padding:12px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-family:inherit;color:var(--muted);transition:all .15s;font-weight:700;}
+.day-opt{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:12px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-family:inherit;color:var(--muted);transition:all .15s;font-weight:700;}
 .day-opt.active[data-val="yes"]{background:var(--green-light);border-color:var(--green);color:var(--green);}
 .day-opt.active[data-val="maybe"]{background:#F3E5F5;border-color:#AB47BC;color:#AB47BC;}
 .day-opt.active[data-val="no"]{background:var(--lighter);border-color:var(--muted);color:var(--muted);}
 .day-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
 .day-legend span{font-size:11px;padding:5px 12px;border-radius:10px;display:flex;align-items:center;gap:4px;font-weight:600;}
-.wiz-card{background:white;border-radius:18px;padding:24px 22px;border:1px solid var(--light);}
+.wiz-card{background:var(--white);border-radius:18px;padding:24px 22px;border:1px solid var(--light);}
 @media(max-width:640px){
   .wiz-card{padding:20px 16px;}
   .wiz-title{font-size:17px;}
@@ -318,7 +318,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .card-badge span{font-size:10px;padding:3px 9px;border-radius:6px;background:rgba(255,255,255,.92);color:var(--dark);font-weight:600;backdrop-filter:blur(4px);}
 /* CATEGORY GRID */
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
-.cat-card{background:white;border-radius:16px;padding:20px 14px;border:1px solid var(--light);text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.cat-card{background:var(--white);border-radius:16px;padding:20px 14px;border:1px solid var(--light);text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .cat-card:hover{border-color:var(--dark);box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-2px);}
 .cat-card:active{transform:scale(.95);transition-duration:.1s;}
 .cat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
@@ -368,7 +368,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <div style="position:relative;"><input class="auth-input" id="login-pass" type="password" placeholder="パスワード" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePass('login-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
       <button class="btn btn-dark" id="btn-login" style="width:100%;padding:13px;font-size:14px;" onclick="doLogin()">ログイン</button>
       <div style="display:flex;align-items:center;gap:8px;margin:14px 0;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="font-size:11px;color:var(--muted);">または</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
-      <button onclick="doGoogle()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Googleでログイン</button>
+      <button onclick="doGoogle()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;font-size:13px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Googleでログイン</button>
     </div>
     <!-- SIGNUP -->
     <div id="tab-signup" style="display:none;">
@@ -381,7 +381,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <div id="pass-strength" style="display:none;margin:-6px 0 12px;"><div style="display:flex;gap:4px;margin-bottom:4px;"><div id="ps-bar-1" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div><div id="ps-bar-2" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div><div id="ps-bar-3" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div></div><p id="ps-label" style="font-size:10px;color:var(--muted);"></p></div>
       <button class="btn btn-dark" id="btn-signup" style="width:100%;padding:13px;font-size:14px;" onclick="doSignup()">アカウントを作成</button>
       <div style="display:flex;align-items:center;gap:8px;margin:14px 0;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="font-size:11px;color:var(--muted);">または</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
-      <button onclick="doGoogle()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Googleで登録</button>
+      <button onclick="doGoogle()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;font-size:13px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Googleで登録</button>
       <div style="display:flex;flex-direction:column;gap:6px;padding:12px;background:var(--bg);border-radius:10px;">
         <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mid);"><i data-lucide="check" style="width:12px;height:12px;color:var(--green);flex-shrink:0;"></i>登録・出品は完全無料</div>
         <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mid);"><i data-lucide="check" style="width:12px;height:12px;color:var(--green);flex-shrink:0;"></i>安全なStripe決済</div>
@@ -443,7 +443,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <p style="color:rgba(200,196,188,.7);font-size:11px;letter-spacing:.2em;margin-bottom:14px;font-weight:500;position:relative;">AI-POWERED SKILL MARKETPLACE</p>
     <h1 style="color:white;font-size:34px;line-height:1.25;margin-bottom:8px;font-weight:800;letter-spacing:-.5px;position:relative;">学びを、もっと<br>パーソナルに。</h1>
     <p style="color:rgba(200,196,188,.6);font-size:14px;margin-bottom:26px;line-height:1.6;position:relative;">AIが最適な先生を見つける。誰でも教え、誰でも学べるプラットフォーム</p>
-    <div style="display:flex;max-width:480px;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.25);position:relative;">
+    <div style="display:flex;max-width:480px;margin:0 auto;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.25);position:relative;">
       <input type="text" id="hero-search" placeholder="何を学びたいですか？" aria-label="科目・キーワードで検索" autocomplete="off" style="flex:1;padding:15px 18px;border:none;font-size:14px;font-family:inherit;outline:none;" oninput="showSearchSuggestions(this.value)" onfocus="showSearchSuggestions(this.value)" onkeydown="if(event.key==='Enter'){hideSearchSuggestions();const es=document.getElementById('explore-search');es.value=this.value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=this.value?'flex':'none';showPage('explore');renderExplore();}">
       <button class="btn btn-dark" style="border-radius:0;padding:15px 20px;display:flex;align-items:center;" onclick="hideSearchSuggestions();const es=document.getElementById('explore-search');es.value=document.getElementById('hero-search').value;const cb=es.closest('div').querySelector('.clear-btn');if(cb)cb.style.display=es.value?'flex':'none';showPage('explore');renderExplore();"><i data-lucide="search" style="width:18px;height:18px;"></i></button>
       <div id="search-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:0 0 14px 14px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-height:240px;overflow-y:auto;z-index:10;"></div>
@@ -622,7 +622,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- EXPLORE -->
 <div class="page" id="explore">
-  <div id="explore-filter-bar" style="background:white;border-radius:16px;padding:14px 16px;border:1px solid var(--light);margin-bottom:12px;position:sticky;top:56px;z-index:50;transition:box-shadow .2s;">
+  <div id="explore-filter-bar" style="background:var(--white);border-radius:16px;padding:14px 16px;border:1px solid var(--light);margin-bottom:12px;position:sticky;top:56px;z-index:50;transition:box-shadow .2s;">
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <div style="flex:1;display:flex;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;" onfocusin="this.style.borderColor='var(--dark)'" onfocusout="this.style.borderColor='var(--border)'">
         <span style="display:flex;align-items:center;padding:0 10px;color:var(--muted);"><i data-lucide="search" style="width:15px;height:15px;"></i></span>
@@ -630,7 +630,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
         <button class="clear-btn" onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;align-items:center;padding:0 10px;background:none;border:none;cursor:pointer;color:var(--muted);"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
         <kbd class="search-kbd" style="display:none;align-items:center;padding:2px 6px;margin-right:8px;border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--muted);font-family:monospace;background:var(--lighter);flex-shrink:0;">/</kbd>
       </div>
-      <button onclick="document.getElementById('ai-panel').style.display=document.getElementById('ai-panel').style.display==='none'?'':'none'" style="width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;transition:all .15s;" title="AI検索"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></button>
+      <button onclick="document.getElementById('ai-panel').style.display=document.getElementById('ai-panel').style.display==='none'?'':'none'" style="width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;transition:all .15s;" title="AI検索"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></button>
     </div>
     <div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;" id="subj-filters"></div>
   </div>
@@ -695,7 +695,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     </div>
     <div style="padding:10px 16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--light);">
       <div id="map-legend" style="display:flex;gap:14px;flex-wrap:wrap;flex:1;"></div>
-      <a id="map-glink" href="https://www.google.com/maps/@35.6620,139.7038,15z" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#4285F4;text-decoration:none;white-space:nowrap;padding:4px 10px;border:1px solid #dadce0;border-radius:8px;background:white;transition:background .15s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'"><img src="https://maps.google.com/mapfiles/api-3/images/google_gray.svg" alt="Google" style="height:12px;">Mapsで開く</a>
+      <a id="map-glink" href="https://www.google.com/maps/@35.6620,139.7038,15z" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#4285F4;text-decoration:none;white-space:nowrap;padding:4px 10px;border:1px solid #dadce0;border-radius:8px;background:var(--white);transition:background .15s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'"><img src="https://maps.google.com/mapfiles/api-3/images/google_gray.svg" alt="Google" style="height:12px;">Mapsで開く</a>
     </div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
@@ -873,7 +873,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <div class="page" id="matching">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
     <div style="display:flex;align-items:center;gap:12px;">
-      <button onclick="showPage('profile')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+      <button onclick="showPage('profile')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
       <h2 style="font-weight:700;font-size:18px;margin-bottom:0;">AIマッチング</h2>
     </div>
     <div style="display:flex;align-items:center;gap:4px;background:var(--accent-light);padding:4px 10px;border-radius:20px;font-size:11px;color:var(--accent);font-weight:600;"><i data-lucide="sparkles" style="width:12px;height:12px;"></i>AI推薦</div>
@@ -887,7 +887,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   <!-- AI MATCH TAB -->
   <div id="matching-ai">
     <!-- Request Form -->
-    <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
+    <div style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
         <div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></div>
         <div><p style="font-weight:700;font-size:14px;">何を学びたいですか？</p><p style="font-size:11px;color:var(--muted);">AIが最適な先生を自動で見つけます</p></div>
@@ -905,7 +905,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
     <!-- AI Processing Animation -->
     <div id="ai-matching-loading" style="display:none;">
-      <div style="background:white;border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+      <div style="background:var(--white);border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
         <div style="position:relative;width:80px;height:80px;margin:0 auto 20px;">
           <div style="position:absolute;inset:0;border:3px solid var(--lighter);border-radius:50%;"></div>
           <div class="spinner" style="position:absolute;inset:0;width:80px;height:80px;border-width:3px;border-color:var(--accent-light);border-top-color:var(--accent);"></div>
@@ -966,7 +966,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- PAYMENT -->
 <div class="page" id="payment" style="max-width:560px;">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-    <button onclick="showPage('matching')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+    <button onclick="showPage('matching')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
     <h2 style="font-weight:700;font-size:18px;">支払い・決済</h2>
   </div>
   <div class="pay-steps">
@@ -975,7 +975,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button class="pay-step" id="ps3">③ 完了</button>
   </div>
   <div class="pay-panel active" id="pp1">
-    <div id="pay-summary" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);"></div>
+    <div id="pay-summary" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);"></div>
     <div style="background:var(--accent-light);border-radius:12px;padding:13px;font-size:12px;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:8px;"><i data-lucide="lock" style="width:14px;height:14px;flex-shrink:0;"></i>セッション完了後に先生へ自動送金。キャンセル時は全額返金されます。</div>
     <button class="btn btn-dark" style="width:100%;padding:14px;font-size:14px;" onclick="goPayStep(2)">支払い方法を選ぶ →</button>
   </div>
@@ -991,7 +991,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     </div>
   </div>
   <div class="pay-panel" id="pp3">
-    <div style="background:white;border-radius:20px;padding:40px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--light);">
+    <div style="background:var(--white);border-radius:20px;padding:40px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--light);">
       <div style="margin-bottom:14px;color:var(--green);display:flex;justify-content:center;"><i data-lucide="check-circle-2" style="width:52px;height:52px;"></i></div>
       <h3 style="font-size:22px;margin-bottom:8px;">支払い完了！</h3>
       <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.8;" id="pay-done-msg">先生へ料金が預託されました。<br>セッション後に自動で送金されます。</p>
@@ -1009,7 +1009,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- PROFILE -->
 <div class="page" id="profile">
-  <div style="background:white;border-radius:18px;padding:24px;margin-bottom:16px;border:1px solid var(--light);position:relative;overflow:hidden;">
+  <div style="background:var(--white);border-radius:18px;padding:24px;margin-bottom:16px;border:1px solid var(--light);position:relative;overflow:hidden;">
     <div style="position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(135deg,var(--accent),#9575CD);"></div>
     <div style="position:relative;display:flex;gap:18px;align-items:flex-end;margin-bottom:16px;padding-top:20px;">
       <div style="position:relative;flex-shrink:0;">
@@ -1031,11 +1031,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
         <span style="font-size:22px;font-weight:900;color:var(--accent);" id="prof-skills-count">0</span>
         <div><p style="font-size:10px;font-weight:700;color:var(--accent);">出品中</p></div>
       </div>
-      <button onclick="showPage('matching')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="calendar-check" style="width:14px;height:14px;"></i>予約管理</button>
-      <button onclick="showPage('dashboard')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>ダッシュボード</button>
+      <button onclick="showPage('matching')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="calendar-check" style="width:14px;height:14px;"></i>予約管理</button>
+      <button onclick="showPage('dashboard')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>ダッシュボード</button>
     </div>
   </div>
-  <div id="prof-display" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;display:none;">
+  <div id="prof-display" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;display:none;">
     <div id="prof-bio-block" style="display:none;margin-bottom:14px;">
       <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="user" style="width:13px;height:13px;"></i>自己紹介</p>
       <p id="prof-bio-text" style="font-size:14px;line-height:1.8;color:var(--mid);white-space:pre-wrap;"></p>
@@ -1063,7 +1063,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div id="ai-profile-strengths" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;"></div>
     <div id="ai-profile-tags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
   </div>
-  <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);">
+  <div style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);">
     <p style="font-weight:700;font-size:14px;margin-bottom:16px;">プロフィールを編集</p>
     <div style="margin-bottom:14px;"><label for="edit-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="edit-name" placeholder="山田 花子" maxlength="50"></div>
     <div style="margin-bottom:14px;"><label for="edit-bio" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">自己紹介</label><textarea class="form-input" id="edit-bio" rows="3" placeholder="あなたのことを教えてください" maxlength="500" style="resize:vertical;" oninput="this.nextElementSibling.textContent=this.value.length+'/500'"></textarea><span style="font-size:10px;color:var(--muted);float:right;margin-top:4px;">0/500</span></div>
@@ -1078,7 +1078,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button class="btn btn-dark" id="btn-save-prof" style="width:100%;padding:13px;" onclick="saveProfile()">保存する</button>
     <div id="prof-saved" class="msg-box msg-success" style="margin-top:12px;margin-bottom:0;">保存しました！</div>
   </div>
-  <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-top:16px;">
+  <div style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-top:16px;">
     <p style="font-weight:700;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><i data-lucide="star" style="width:16px;height:16px;color:var(--gold);"></i>受け取ったレビュー</p>
     <div id="prof-reviews"><p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">レビューはまだありません</p></div>
   </div>
@@ -1088,14 +1088,14 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- DASHBOARD -->
 <div class="page" id="dashboard">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-    <button onclick="showPage('profile')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+    <button onclick="showPage('profile')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
     <h2 style="font-weight:700;font-size:18px;">ダッシュボード</h2>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:28px;">
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">今月の収益</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-earned">¥0</div></div>
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">教えた回数</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-taught">0</div></div>
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">学んだ回数</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-learned">0</div></div>
-    <div style="background:white;border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:#AB47BC;"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">信用スコア</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-score">0</div></div>
+    <div style="background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">今月の収益</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-earned">¥0</div></div>
+    <div style="background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">教えた回数</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-taught">0</div></div>
+    <div style="background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">学んだ回数</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-learned">0</div></div>
+    <div style="background:var(--white);border-radius:14px;padding:16px;border:1px solid var(--light);position:relative;overflow:hidden;"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:#AB47BC;"></div><div style="font-size:11px;color:var(--muted);margin-bottom:8px;">信用スコア</div><div style="font-size:22px;font-weight:900;letter-spacing:-.3px;" id="dash-score">0</div></div>
   </div>
   <div style="display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;">
     <button class="btn btn-outline" style="flex:1;min-width:120px;padding:12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="showPage('register')"><i data-lucide="plus" style="width:14px;height:14px;"></i>スキル追加</button>
@@ -1103,15 +1103,15 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button class="btn btn-outline" style="flex:1;min-width:120px;padding:12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージ</button>
   </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="layers" style="width:18px;height:18px;color:var(--accent);"></i>登録済みスキル</h3>
-  <div id="my-skills" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
+  <div id="my-skills" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">まだスキルが登録されていません。<br><a href="#" onclick="event.preventDefault();showPage('register')" style="color:var(--accent);">スキルを登録する →</a></p>
   </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="star" style="width:18px;height:18px;color:var(--gold);"></i>受け取ったレビュー</h3>
-  <div id="dash-reviews" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
+  <div id="dash-reviews" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">レビューはまだありません</p>
   </div>
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="history" style="width:18px;height:18px;color:var(--accent);"></i>取引履歴</h3>
-  <div id="dash-history" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+  <div id="dash-history" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">取引履歴はまだありません</p>
   </div>
 </div>
@@ -1122,7 +1122,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:16px;padding:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i>ホームに戻る</button>
     <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">利用規約</h1>
     <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月20日</p>
-    <div style="background:white;border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
+    <div style="background:var(--white);border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第1条（適用）</h2>
       <p style="margin-bottom:20px;">本規約は、Manabi（以下「本サービス」）の利用に関する条件を定めるものです。ユーザーは本サービスを利用することにより、本規約に同意したものとみなされます。</p>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">第2条（アカウント登録）</h2>
@@ -1154,7 +1154,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:16px;padding:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i>ホームに戻る</button>
     <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">プライバシーポリシー</h1>
     <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月20日</p>
-    <div style="background:white;border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
+    <div style="background:var(--white);border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">1. 収集する情報</h2>
       <p style="margin-bottom:8px;">当社は以下の情報を収集します：</p>
       <ul style="margin-bottom:20px;padding-left:20px;"><li>アカウント情報（氏名、メールアドレス）</li><li>プロフィール情報（自己紹介、アバター画像、スキル情報）</li><li>利用情報（アクセスログ、操作履歴、デバイス情報）</li><li>決済情報（Stripeを通じて処理、当社はカード情報を保持しません）</li><li>コミュニケーション情報（メッセージ、レビュー）</li></ul>
@@ -1421,7 +1421,7 @@ function showConfirm(msg) {
   return new Promise(resolve => {
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);';
-    overlay.innerHTML = `<div style="background:white;border-radius:16px;padding:24px;width:100%;max-width:340px;text-align:center;">
+    overlay.innerHTML = `<div style="background:var(--white);border-radius:16px;padding:24px;width:100%;max-width:340px;text-align:center;">
       <p style="font-size:14px;margin-bottom:20px;line-height:1.6;">${escapeHtml(msg)}</p>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-outline" id="confirm-no" style="flex:1;padding:10px;">キャンセル</button>
@@ -2197,7 +2197,7 @@ function renderAiChips() {
   const allSubjects = [...new Set(visibleTeachers().map(t => t.subject))];
   const chips = allSubjects.length ? allSubjects.slice(0, 6) : ['英語','数学','プログラミング','音楽','スポーツ'];
   document.getElementById('ai-chips').innerHTML = chips.map(c =>
-    `<button onclick="doAi(${escapeHtml(JSON.stringify(c))})" style="padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(c)}</button>`).join('');
+    `<button onclick="doAi(${escapeHtml(JSON.stringify(c))})" style="padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(c)}</button>`).join('');
 }
 function aiSearchTeachers(query) {
   const q = query.toLowerCase();
@@ -2339,7 +2339,7 @@ function renderMap() {
     const safeMarkerAv = safeImgUrl(t.avatar_url);
     const initials = safeMarkerAv ? '' : escapeHtml(t.avatar || t.name.substring(0,2));
     const iconHtml = safeMarkerAv
-      ? `<div style="width:40px;height:46px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));"><div style="width:38px;height:38px;border-radius:50%;border:3px solid ${color};overflow:hidden;background:white;"><img src="${escapeHtml(safeMarkerAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${color};margin-top:-1px;"></div></div>`
+      ? `<div style="width:40px;height:46px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));"><div style="width:38px;height:38px;border-radius:50%;border:3px solid ${color};overflow:hidden;background:var(--white);"><img src="${escapeHtml(safeMarkerAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${color};margin-top:-1px;"></div></div>`
       : `<div style="width:40px;height:46px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));"><div style="width:38px;height:38px;border-radius:50%;border:3px solid white;background:${color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;">${initials}</div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid ${color};margin-top:-1px;"></div></div>`;
     const icon = L.divIcon({ html: iconHtml, className: '', iconSize: [40,46], iconAnchor: [20,46] });
     const marker = L.marker([lat, lng], { icon }).addTo(leafletMap);
@@ -2613,7 +2613,7 @@ function renderChat(idx) {
     msgs.innerHTML = `<div style="margin:auto;text-align:center;color:var(--muted);padding:20px;">
       <div style="width:48px;height:48px;border-radius:14px;background:var(--lighter);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="message-circle" style="width:22px;height:22px;"></i></div>
       <p style="font-size:13px;margin-bottom:14px;">${escapeHtml(o.name||'')}さんとの会話を始めましょう</p>
-      <div style="display:flex;flex-direction:column;gap:6px;max-width:260px;margin:0 auto;">${starters.map(s => `<button onclick="document.getElementById('chat-input').value='${escapeHtml(s)}';sendMsg();" style="padding:8px 14px;border:1px solid var(--border);border-radius:20px;background:white;cursor:pointer;font-size:12px;font-family:inherit;text-align:left;transition:all .15s;color:var(--mid);" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(s)}</button>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;gap:6px;max-width:260px;margin:0 auto;">${starters.map(s => `<button onclick="document.getElementById('chat-input').value='${escapeHtml(s)}';sendMsg();" style="padding:8px 14px;border:1px solid var(--border);border-radius:20px;background:var(--white);cursor:pointer;font-size:12px;font-family:inherit;text-align:left;transition:all .15s;color:var(--mid);" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(s)}</button>`).join('')}</div>
     </div>`;
     refreshIcons();
   }
@@ -2713,7 +2713,7 @@ async function renderMatching() {
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
     .order('created_at', { ascending: false }).limit(20);
   if (!data || !data.length) {
-    el.innerHTML = `<div style="background:white;border-radius:16px;padding:48px 20px;text-align:center;border:1px solid var(--light);">
+    el.innerHTML = `<div style="background:var(--white);border-radius:16px;padding:48px 20px;text-align:center;border:1px solid var(--light);">
       <div style="width:64px;height:64px;border-radius:20px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"><i data-lucide="calendar-search" style="width:28px;height:28px;"></i></div>
       <p style="font-weight:700;font-size:15px;margin-bottom:6px;color:var(--dark);">予約はまだありません</p>
       <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;">気になる先生を見つけて、<br>最初のレッスンを予約しましょう。</p>
@@ -2733,7 +2733,7 @@ async function renderMatching() {
     const s = statusMap[b.status] || statusMap.pending;
     const dt = b.scheduled_at ? new Date(b.scheduled_at) : null;
     const dtStr = dt ? `${dt.getMonth()+1}/${dt.getDate()} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}〜` : '日時未定';
-    return `<div style="background:white;border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+    return `<div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
         <div><p style="font-weight:700;font-size:15px;">${escapeHtml(b.skills?.subject || 'セッション')}</p><p style="font-size:12px;color:var(--muted);margin-top:2px;">${amStudent?'先生':'生徒'}: ${escapeHtml(other?.name || '名前未設定')}</p></div>
         <span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;color:${s.color};background:${s.bg};">${s.label}</span>
@@ -2841,7 +2841,7 @@ async function runAIMatch() {
     loadingEl.style.display = 'none';
     console.error('AI match error:', e);
     resultsEl.style.display = '';
-    resultsEl.innerHTML = `<div style="background:white;border-radius:16px;padding:32px 20px;text-align:center;border:1px solid var(--light);">
+    resultsEl.innerHTML = `<div style="background:var(--white);border-radius:16px;padding:32px 20px;text-align:center;border:1px solid var(--light);">
       <div style="color:var(--red);margin-bottom:12px;display:flex;justify-content:center;"><i data-lucide="alert-circle" style="width:40px;height:40px;"></i></div>
       <p style="font-weight:700;font-size:15px;margin-bottom:6px;">マッチングに失敗しました</p>
       <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">${escapeHtml(e.message)}</p>
@@ -2860,7 +2860,7 @@ function renderAIMatchResults(matches, structured, requestId) {
   el.style.display = '';
 
   if (!matches || matches.length === 0) {
-    el.innerHTML = `<div style="background:white;border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);">
+    el.innerHTML = `<div style="background:var(--white);border-radius:16px;padding:40px 20px;text-align:center;border:1px solid var(--light);">
       <div style="width:64px;height:64px;border-radius:20px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"><i data-lucide="search-x" style="width:28px;height:28px;"></i></div>
       <p style="font-weight:700;font-size:15px;margin-bottom:6px;">該当する先生が見つかりませんでした</p>
       <p style="font-size:12px;color:var(--muted);line-height:1.7;">条件を変えて再度お試しください。<br>先生が増えると候補も増えます。</p>
@@ -2891,7 +2891,7 @@ function renderAIMatchResults(matches, structured, requestId) {
     const formatMap = { online:'オンライン', inperson:'対面', any:'応相談' };
     const formats = (s?.lesson_formats || []).map(f => formatMap[f] || f).join(' / ') || '応相談';
 
-    return `<div style="background:white;border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;overflow:hidden;" onclick="trackMatchFeedback('${m.match_id}','view')">
+    return `<div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:12px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);position:relative;overflow:hidden;" onclick="trackMatchFeedback('${m.match_id}','view')">
       ${idx === 0 ? '<div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#9575CD);"></div>' : ''}
       <div style="display:flex;gap:14px;margin-bottom:14px;">
         <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">${avHtml}</div>
@@ -2922,7 +2922,7 @@ function renderAIMatchResults(matches, structured, requestId) {
       <div style="display:flex;gap:8px;">
         <button class="btn btn-dark" style="flex:1;font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="event.stopPropagation();acceptAIMatch('${m.match_id}',${m.teacher?.id ? `'${m.teacher.id}'` : 'null'})"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージ</button>
         <button class="btn btn-outline" style="font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="event.stopPropagation();openTeacherByUUID('${escapeHtml(t.id)}')"><i data-lucide="user" style="width:14px;height:14px;"></i>プロフィール</button>
-        <button style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;" onclick="event.stopPropagation();dismissAIMatch('${m.match_id}',this)" title="スキップ"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+        <button style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;" onclick="event.stopPropagation();dismissAIMatch('${m.match_id}',this)" title="スキップ"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
       </div>
     </div>`;
   }).join('');
@@ -2975,7 +2975,7 @@ async function acceptAIMatch(matchId, teacherId) {
 
 async function dismissAIMatch(matchId, btnEl) {
   trackMatchFeedback(matchId, 'dismiss');
-  const card = btnEl.closest('div[style*="background:white"]');
+  const card = btnEl.closest('div[style*="background:var(--white)"]');
   if (card) {
     card.style.transition = 'opacity .3s, transform .3s';
     card.style.opacity = '0';
@@ -3027,7 +3027,7 @@ async function loadPreviousAIRequests() {
       data.map(r => {
         const dt = new Date(r.created_at);
         const ago = getTimeAgo(dt);
-        return `<div style="background:white;border-radius:12px;padding:14px;margin-bottom:8px;border:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="runRematch('${r.id}')">
+        return `<div style="background:var(--white);border-radius:12px;padding:14px;margin-bottom:8px;border:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="runRematch('${r.id}')">
           <div style="min-width:0;flex:1;">
             <p style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(r.subject)}</p>
             <p style="font-size:11px;color:var(--muted);">${ago}${r.ai_structured?.skill_level ? ' · ' + r.ai_structured.skill_level : ''}</p>
@@ -3075,7 +3075,7 @@ async function loadLearningRequests() {
       const name = r.profiles?.name || '匿名';
       const dt = new Date(r.created_at);
       const ago = getTimeAgo(dt);
-      return `<div style="background:white;border-radius:16px;padding:18px;margin-bottom:10px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+      return `<div style="background:var(--white);border-radius:16px;padding:18px;margin-bottom:10px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
           <div><p style="font-weight:700;font-size:15px;margin-bottom:2px;">${escapeHtml(r.subject)}</p>
           <p style="font-size:11px;color:var(--muted);">${escapeHtml(name)} · ${ago}</p></div>
@@ -3528,7 +3528,7 @@ function renderModal() {
       grouped[key].push(s);
     });
     html = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-      <button onclick="bookStep=0;renderModal();" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:18px;height:18px;"></i></button>
+      <button onclick="bookStep=0;renderModal();" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:18px;height:18px;"></i></button>
       <div><h2 style="font-size:20px;font-weight:700;">日程を選択</h2><p style="font-size:12px;color:var(--muted);">${escapeHtml(t.name)}の空き時間</p></div>
     </div>
     <div style="max-height:340px;overflow-y:auto;padding:2px;margin-bottom:16px;">
@@ -3537,7 +3537,7 @@ function renderModal() {
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
           ${daySlots.map(s => {
             const h = new Date(s.iso).getHours();
-            return `<button onclick="selSlot='${escapeHtml(s.iso)}';bookStep=2;renderModal();" style="padding:10px 18px;border:1.5px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;font-weight:600;" onmouseover="this.style.borderColor='var(--dark)';this.style.background='var(--lighter)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='white'">${String(h).padStart(2,'0')}:00</button>`;
+            return `<button onclick="selSlot='${escapeHtml(s.iso)}';bookStep=2;renderModal();" style="padding:10px 18px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;font-weight:600;" onmouseover="this.style.borderColor='var(--dark)';this.style.background='var(--lighter)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='white'">${String(h).padStart(2,'0')}:00</button>`;
           }).join('')}
         </div>
       `).join('')}
@@ -3617,7 +3617,7 @@ async function editSkill(skillId) {
   modal.id = 'edit-skill-modal';
   modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);';
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-  modal.innerHTML = `<div style="background:white;border-radius:16px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;">
+  modal.innerHTML = `<div style="background:var(--white);border-radius:16px;padding:24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h2 style="font-size:18px;font-weight:700;">スキル編集</h2><button onclick="document.getElementById('edit-skill-modal').remove()" aria-label="閉じる" style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);"><i data-lucide="x" style="width:20px;height:20px;"></i></button></div>
     <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">カテゴリ</label>
       <select class="form-input" id="edit-cat">${cats.map(c => `<option ${c===skill.subject?'selected':''}>${c}</option>`).join('')}</select></div>
