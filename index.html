@@ -82,8 +82,8 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .btn-accent:active{transform:translateY(0);}
 .btn-accent:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;box-shadow:none;transform:none;}
 /* CARDS */
-.card{background:white;border-radius:12px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
-.card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-2px);}
+.card{background:white;border-radius:14px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);}
+.card:hover{box-shadow:0 12px 32px rgba(0,0,0,.1);transform:translateY(-3px);}
 .card:active{transform:translateY(0);box-shadow:var(--shadow);}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
 .tag{display:inline-block;padding:4px 10px;border-radius:8px;font-size:11px;background:var(--lighter);color:var(--mid);margin:2px;font-weight:500;transition:background .15s;}
@@ -193,8 +193,6 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
 }
 /* CARD ENHANCED */
-.card{border-radius:14px;transition:all .25s cubic-bezier(.4,0,.2,1);}
-.card:hover{box-shadow:0 12px 32px rgba(0,0,0,.1);transform:translateY(-3px);}
 .card:hover .card-photo img{transform:scale(1.04);}
 .card-photo{aspect-ratio:4/3;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;}
 .card-photo img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
@@ -1441,9 +1439,10 @@ function makeSkeletonCards(n) {
 
 function makeCard(t) {
   const safeAv = safeImgUrl(t.avatar_url);
+  const fallbackDiv = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:28px;font-weight:800;color:white;position:absolute;inset:0;">${escapeHtml(t.avatar)}</div>`;
   const avInner = safeAv
-    ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:28px;font-weight:800;color:white;\\'>${escapeHtml(t.avatar)}</div>'" style="width:100%;height:100%;object-fit:cover;">`
-    : `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:28px;font-weight:800;color:white;">${escapeHtml(t.avatar)}</div>`;
+    ? `${fallbackDiv}<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" loading="lazy" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;position:relative;z-index:1;">`
+    : fallbackDiv;
   const sampleBadge = !t.db_skill_id ? '<span style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:600;backdrop-filter:blur(4px);">サンプル</span>' : '';
   const popularBadge = t.reviews >= 100 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#FF6B35,#FF8F00);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">人気</span>' : t.rating >= 4.8 && t.reviews >= 20 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--accent),#7C4DFF);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">高評価</span>' : '';
   const verified = t.db_skill_id ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--green);flex-shrink:0;"></i>' : '';
