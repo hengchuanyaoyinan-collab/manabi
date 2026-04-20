@@ -3081,6 +3081,29 @@ function toggleLike(id, btn) {
   else { likes.push(id); btn.classList.add('liked'); btn.style.transform = 'scale(1.3)'; setTimeout(() => { btn.style.transform = ''; }, 200); showToast('お気に入りに追加しました', 'var(--red)'); if (navigator.vibrate) navigator.vibrate(10); }
   localStorage.setItem('manabi_likes', JSON.stringify(likes));
 }
+function celebrateBooking() {
+  const colors = ['#5C6BC0','#4CAF50','#FF9800','#E91E63','#00BCD4','#9C27B0'];
+  for (let i = 0; i < 30; i++) {
+    const dot = document.createElement('div');
+    dot.style.cssText = `position:fixed;width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;border-radius:50%;background:${colors[Math.floor(Math.random()*colors.length)]};z-index:10000;pointer-events:none;left:${50+Math.random()*window.innerWidth*0.6-window.innerWidth*0.3}px;top:50%;`;
+    document.body.appendChild(dot);
+    const angle = -Math.PI/2 + (Math.random()-0.5)*Math.PI;
+    const speed = 200 + Math.random()*300;
+    const vx = Math.cos(angle)*speed;
+    const vy = Math.sin(angle)*speed;
+    let x = parseFloat(dot.style.left), y = parseFloat(dot.style.top);
+    let frame = 0;
+    function animate() {
+      frame++;
+      x += vx/60; y += vy/60 + frame*0.3;
+      dot.style.left = x+'px'; dot.style.top = y+'px';
+      dot.style.opacity = Math.max(0, 1-frame/60);
+      if (frame < 60) requestAnimationFrame(animate);
+      else dot.remove();
+    }
+    setTimeout(() => requestAnimationFrame(animate), Math.random()*200);
+  }
+}
 async function shareTeacher(id) {
   const t = teachers.find(x => x.id === id);
   if (!t) return;
@@ -3320,6 +3343,8 @@ function renderModal() {
           <button class="btn btn-dark" onclick="proceedToPayment();" style="width:100%;padding:14px;">支払いへ進む</button>
         </div>`;
         addNotif({text:`${escapeHtml(t.name)}先生との予約が完了しました`, time:'たった今', unread:true, color:'var(--green)'});
+        if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
+        celebrateBooking();
         refreshIcons();
       }).catch(err => {
         t._bookingCreated = false;
@@ -3483,6 +3508,7 @@ async function loadSkillsFromDB() {
         career: s.profiles?.career || '',
         achievements: s.profiles?.achievements || '',
         teaching_style: s.profiles?.teaching_style || '',
+        score: s.profiles?.score || 0,
       };
     });
     teachers = teachers.filter(t => !t.db_skill_id);
