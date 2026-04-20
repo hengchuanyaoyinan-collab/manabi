@@ -3188,16 +3188,16 @@ function renderModal() {
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;">
       <div style="text-align:center;padding:10px 6px;background:var(--bg);border-radius:10px;border:1px solid var(--light);">
-        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.reviews > 0 ? Math.min(100, 85 + Math.floor(t.reviews / 10)) + '%' : '—'}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:2px;">返信率</div>
+        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.rating > 0 ? t.rating : '—'}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">評価</div>
       </div>
       <div style="text-align:center;padding:10px 6px;background:var(--bg);border-radius:10px;border:1px solid var(--light);">
-        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.reviews > 0 ? Math.floor(t.reviews * 1.2) : 0}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:2px;">セッション数</div>
+        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.reviews || 0}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">レビュー数</div>
       </div>
       <div style="text-align:center;padding:10px 6px;background:var(--bg);border-radius:10px;border:1px solid var(--light);">
-        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.reviews >= 50 ? '2年' : t.reviews >= 20 ? '1年' : t.reviews > 0 ? '6ヶ月' : '新規'}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:2px;">活動歴</div>
+        <div style="font-size:17px;font-weight:800;color:var(--dark);">${t.score || 0}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">信用スコア</div>
       </div>
     </div>
     <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--light);">
@@ -3216,7 +3216,8 @@ function renderModal() {
       <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i data-lucide="sparkles" style="width:13px;height:13px;"></i>教え方のスタイル</p>
       <p style="font-size:14px;color:var(--mid);">${escapeHtml(styleMap[t.teaching_style]||'')}</p>
     </div>` : ''}
-    ${t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;">${t.tags.map(g=>`<span class="tag" style="padding:5px 12px;font-size:12px;">${escapeHtml(g)}</span>`).join('')}</div>` : ''}
+    ${t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">${t.tags.map(g=>`<span class="tag" style="padding:5px 12px;font-size:12px;">${escapeHtml(g)}</span>`).join('')}</div>` : ''}
+    ${t.dist ? `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--lighter);border-radius:10px;margin-bottom:20px;"><i data-lucide="map-pin" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;"></i><span style="font-size:12px;color:var(--mid);flex:1;">${escapeHtml(t.dist)}エリア</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.dist + ' 駅')}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);font-weight:600;text-decoration:none;" onclick="event.stopPropagation()">地図を開く →</a></div>` : ''}
     <div style="display:flex;gap:10px;"><button class="btn btn-outline" onclick="closeModal()" style="flex:1;padding:13px;">閉じる</button>${currentUser && t.db_user_id === currentUser.id ? '<button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">自分のスキルです</button>' : !t.db_skill_id ? '<button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">サンプル（予約不可）</button>' : !currentUser ? `<button class="btn btn-dark" onclick="closeModal();openAuthModal('signup');" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="log-in" style="width:16px;height:16px;"></i>ログインして予約</button>` : '<button class="btn btn-dark" onclick="bookStep=1;renderModal();" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="calendar" style="width:16px;height:16px;"></i>予約する</button>'}</div>
     ${t.db_skill_id && t.db_user_id && currentUser && t.db_user_id !== currentUser.id ? `<button onclick="closeModal();startDirectChat('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="width:100%;margin-top:10px;padding:11px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージを送る</button>` : ''}`;
   } else if (bookStep === 1) {
