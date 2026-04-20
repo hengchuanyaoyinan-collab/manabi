@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script>((d)=>{const t=localStorage.getItem('manabi-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');if(t==='dark')d.setAttribute('data-theme','dark')})(document.documentElement)</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="Manabi — スキルのマーケットプレイス。勉強・スポーツ・音楽・趣味、何でも教え合える。AIが最適な先生を自動マッチング。登録無料・Stripe安全決済。">
 <link rel="canonical" href="https://manabi-bay.vercel.app">
@@ -37,6 +38,26 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--bg:#FAFAF7;--white:#fff;--dark:#2D2D2D;--mid:#4A4A4A;--muted:#6B6B6B;--light:#EEEAE4;--lighter:#F0EDE8;--primary:#2D2D2D;--primary-light:#F0EDE8;--accent:#5C6BC0;--accent-light:#E8EAF6;--green:#4CAF50;--green-light:#E8F5E9;--gold:#F5A623;--red:#E57373;--border:#E0DDD8;--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);}
+[data-theme="dark"]{--bg:#1a1a1a;--white:#242424;--dark:#f0f0f0;--mid:#d0d0d0;--muted:#999;--light:#333;--lighter:#2a2a2a;--primary:#f0f0f0;--primary-light:#2a2a2a;--accent:#7986CB;--accent-light:#1a1a3e;--green:#66BB6A;--green-light:#1a2e1a;--gold:#FFB74D;--red:#EF5350;--border:#3a3a3a;--shadow:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);}
+[data-theme="dark"] body{-webkit-font-smoothing:auto;}
+[data-theme="dark"] nav{background:var(--white);border-color:var(--border);}
+[data-theme="dark"] .btm-tabs{background:var(--white);border-color:var(--border);}
+[data-theme="dark"] .card{background:var(--white);border-color:var(--border);}
+[data-theme="dark"] .auth-box{background:var(--white);}
+[data-theme="dark"] .auth-input{background:var(--lighter);border-color:var(--border);color:var(--dark);}
+[data-theme="dark"] .form-input{background:var(--lighter);border-color:var(--border);color:var(--dark);}
+[data-theme="dark"] .modal{background:var(--white);}
+[data-theme="dark"] .chat-layout{background:var(--white);border-color:var(--border);}
+[data-theme="dark"] .overlay{background:rgba(0,0,0,.7);}
+[data-theme="dark"] .toast{background:var(--white);border-color:var(--border);color:var(--dark);}
+[data-theme="dark"] .pill,[data-theme="dark"] .pill-sm{background:var(--lighter);border-color:var(--border);color:var(--mid);}
+[data-theme="dark"] .pill.active,[data-theme="dark"] .pill-sm.active{background:var(--dark);color:var(--bg);border-color:var(--dark);}
+[data-theme="dark"] .notif-panel{background:var(--white);border-color:var(--border);}
+[data-theme="dark"] .pay-steps{background:var(--white);border-color:var(--border);}
+[data-theme="dark"] .wiz-back,[data-theme="dark"] .wiz-reset{background:var(--lighter);border-color:var(--border);color:var(--mid);}
+[data-theme="dark"] .auth-tab.active{background:var(--lighter);color:var(--dark);}
+[data-theme="dark"] .leaflet-control-zoom a{background:var(--white)!important;color:var(--dark)!important;border-color:var(--border)!important;}
+[data-theme="dark"] select.form-input{background:var(--lighter);border-color:var(--border);color:var(--dark);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html{scroll-behavior:smooth;}
 body{font-family:'Noto Sans JP',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;-webkit-font-smoothing:antialiased;}
@@ -379,6 +400,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button class="nav-btn" onclick="showPage('chat')">メッセージ</button>
   </div>
   <div id="nav-auth-area" style="display:flex;align-items:center;gap:10px;">
+    <button onclick="toggleDarkMode()" aria-label="テーマ切替" style="background:none;border:none;cursor:pointer;padding:8px;color:var(--muted);display:flex;align-items:center;"><i data-lucide="moon" id="theme-icon" style="width:18px;height:18px;"></i></button>
     <div id="nav-logged-in" style="display:none;align-items:center;gap:10px;">
       <button onclick="toggleNotif()" aria-label="通知を表示" style="position:relative;background:none;border:none;cursor:pointer;padding:10px;color:var(--mid);"><i data-lucide="bell" style="width:20px;height:20px;"></i><span id="notif-badge" style="position:absolute;top:2px;right:2px;min-width:16px;height:16px;background:var(--red);border-radius:8px;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;padding:0 4px;"></span></button>
       <button id="nav-av" onclick="showPage('profile')" aria-label="マイページ" style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#FF8A80);display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700;cursor:pointer;overflow:hidden;border:none;">?</button>
@@ -1159,6 +1181,31 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 let currentUser = null;
 const FEE_RATE = 0.05;
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+// ── DARK MODE ──
+function getPreferredTheme() {
+  const stored = localStorage.getItem('manabi-theme');
+  if (stored) return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : '');
+  const icon = document.getElementById('theme-icon');
+  if (icon) {
+    icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('manabi-theme', next);
+  applyTheme(next);
+}
+applyTheme(getPreferredTheme());
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (!localStorage.getItem('manabi-theme')) applyTheme(e.matches ? 'dark' : 'light');
+});
 
 // 現在カートに入っている決済対象 (予約モーダルで設定される)
 // teacher_id / skill_id は Supabase 上の uuid。デモデータの数値ID は null にする。
@@ -3617,6 +3664,7 @@ function refreshIcons() {
 
 // SPLASH
 setTimeout(() => { const s = document.getElementById('splash'); if (s) { s.classList.add('out'); setTimeout(() => s.remove(), 500); } }, 1000);
+applyTheme(getPreferredTheme());
 
 // AUTH MODAL: close on backdrop click
 document.getElementById('auth-screen').addEventListener('click', function(e) {
