@@ -1041,6 +1041,16 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <button onclick="showPage('dashboard')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>ダッシュボード</button>
     </div>
   </div>
+  <div id="prof-completion" style="display:none;background:var(--white);border-radius:14px;padding:14px 18px;border:1px solid var(--light);margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span style="font-size:12px;font-weight:600;">プロフィール完成度</span>
+      <span id="prof-pct" style="font-size:12px;font-weight:700;color:var(--accent);">0%</span>
+    </div>
+    <div style="height:6px;background:var(--lighter);border-radius:3px;overflow:hidden;">
+      <div id="prof-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width .5s ease;width:0%;"></div>
+    </div>
+    <p id="prof-tip" style="font-size:11px;color:var(--muted);margin-top:6px;"></p>
+  </div>
   <div id="prof-display" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;display:none;">
     <div id="prof-bio-block" style="display:none;margin-bottom:14px;">
       <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="user" style="width:13px;height:13px;"></i>自己紹介</p>
@@ -1282,6 +1292,11 @@ sb.auth.onAuthStateChange(async (event, session) => {
     updateNavAuth();
     updateNavUser();
     if (event === 'TOKEN_REFRESHED') return;
+    if (event === 'SIGNED_IN') {
+      const { data: prof } = await sb.from('profiles').select('name').eq('id', currentUser.id).single();
+      const greeting = prof?.name ? `おかえりなさい、${prof.name}さん！` : 'ログインしました！';
+      showToast(greeting, 'var(--green)');
+    }
     if (pendingPageAfterAuth) {
       const target = pendingPageAfterAuth;
       pendingPageAfterAuth = null;
@@ -1356,6 +1371,7 @@ async function loadProfile() {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
   } catch(e) { console.error('loadProfile error:', e); addNotif({ text: 'プロフィールの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+  updateProfileCompletion(data);
   await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory(), loadAIProfileBadge()]);
 }
 
@@ -1555,10 +1571,12 @@ async function uploadAvatar(input) {
   if (!currentUser || !input.files[0]) return;
   const file = input.files[0];
   if (file.size > 5 * 1024 * 1024) { addNotif({ text: 'ファイルサイズは5MB以下にしてください', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
+  const profAv = document.getElementById('prof-av');
+  const reader = new FileReader();
+  reader.onload = e => { if (profAv) profAv.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;opacity:.6;filter:blur(2px);">`; };
+  reader.readAsDataURL(file);
   const compressed = await compressImage(file);
   const path = `${currentUser.id}/avatar.jpg`;
-  const profAv = document.getElementById('prof-av');
-  if (profAv) profAv.innerHTML = '<span class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;"></span>';
   try {
     const { error: upErr } = await sb.storage.from('avatars').upload(path, compressed, { upsert: true, contentType: 'image/jpeg' });
     if (upErr) { addNotif({ text: 'アップロードに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (profAv) profAv.textContent = '?'; return; }
@@ -1623,6 +1641,26 @@ async function saveProfile() {
       addNotif({ text: 'プロフィールの保存に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' });
     }
   } catch(e) { console.error('saveProfile error:', e); btn.innerHTML = '保存する'; btn.disabled = false; addNotif({ text: 'プロフィールの保存に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+}
+
+function updateProfileCompletion(data) {
+  const el = document.getElementById('prof-completion');
+  if (!el || !data) { if (el) el.style.display = 'none'; return; }
+  const checks = [
+    { done: !!data.name, tip: '名前を設定しましょう' },
+    { done: !!data.bio, tip: '自己紹介を書きましょう' },
+    { done: !!data.avatar_url, tip: 'プロフィール写真を追加しましょう' },
+    { done: !!data.career, tip: '経歴を追加すると信頼度UP' },
+    { done: !!data.teaching_style, tip: '教え方のスタイルを選びましょう' },
+  ];
+  const done = checks.filter(c => c.done).length;
+  const pct = Math.round((done / checks.length) * 100);
+  if (pct >= 100) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  document.getElementById('prof-pct').textContent = pct + '%';
+  document.getElementById('prof-bar').style.width = pct + '%';
+  const next = checks.find(c => !c.done);
+  document.getElementById('prof-tip').textContent = next ? '💡 ' + next.tip : '';
 }
 
 // WIZARD NAVIGATION
