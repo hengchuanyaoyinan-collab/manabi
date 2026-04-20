@@ -446,11 +446,11 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- REGISTER -->
 <div class="page" id="register">
-  <h2 class="section-title">スキルを登録する</h2>
-  <div style="background:white;border-radius:20px;padding:28px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
-    <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:22px;">
-      <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える（出品）</button>
-      <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="book-open" style="width:16px;height:16px;"></i>学ぶ（リクエスト）</button>
+  <h2 style="font-weight:700;font-size:18px;margin-bottom:16px;">スキルを出品する</h2>
+  <div style="background:white;border-radius:18px;padding:28px;border:1px solid var(--light);">
+    <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:22px;padding:3px;">
+      <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える（出品）</button>
+      <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="book-open" style="width:16px;height:16px;"></i>学ぶ（リクエスト）</button>
     </div>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
       <div style="position:relative;flex-shrink:0;">
@@ -509,7 +509,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- MATCHING -->
 <div class="page" id="matching">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <h2 class="section-title" style="margin-bottom:0;">予約・マッチング</h2>
+    <h2 style="font-weight:700;font-size:18px;margin-bottom:0;">予約・マッチング</h2>
     <button onclick="renderMatching()" aria-label="更新" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:8px;"><i data-lucide="refresh-cw" style="width:18px;height:18px;"></i></button>
   </div>
   <div style="display:flex;gap:4px;margin-bottom:16px;background:var(--lighter);border-radius:10px;padding:3px;">
@@ -538,7 +538,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 <!-- CHAT -->
 <div class="page" id="chat">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <h2 class="section-title" style="margin-bottom:0;">チャット</h2>
+    <h2 style="font-weight:700;font-size:18px;margin-bottom:0;">メッセージ</h2>
     <button onclick="loadChatThreads()" aria-label="更新" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:8px;"><i data-lucide="refresh-cw" style="width:18px;height:18px;"></i></button>
   </div>
   <div class="chat-layout">
@@ -562,7 +562,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- PAYMENT -->
 <div class="page" id="payment" style="max-width:560px;">
-  <h2 class="section-title">支払い・決済</h2>
+  <h2 style="font-weight:700;font-size:18px;margin-bottom:16px;">支払い・決済</h2>
   <div class="pay-steps">
     <button class="pay-step active" id="ps1">① 内容確認</button>
     <button class="pay-step" id="ps2">② 支払い方法</button>
@@ -667,7 +667,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- DASHBOARD -->
 <div class="page" id="dashboard">
-  <h2 class="section-title">ダッシュボード</h2>
+  <h2 style="font-weight:700;font-size:18px;margin-bottom:16px;">ダッシュボード</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:28px;">
     <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="color:var(--accent);margin-bottom:6px;"><i data-lucide="banknote" style="width:24px;height:24px;"></i></div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-earned">¥0</div><div style="font-size:11px;color:var(--muted);">今月の収益</div></div>
     <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);"><div style="color:var(--accent);margin-bottom:6px;"><i data-lucide="graduation-cap" style="width:24px;height:24px;"></i></div><div style="font-size:22px;font-weight:900;margin-bottom:3px;" id="dash-taught">0</div><div style="font-size:11px;color:var(--muted);">教えた回数</div></div>
@@ -1264,14 +1264,14 @@ async function loadMySkills() {
 
 // ── STATIC DATA ──
 let teachers = [
-  {id:1,name:"田中 美咲",subject:"英語",rating:4.9,reviews:128,price:3500,tags:["TOEIC","ビジネス英語","初心者歓迎"],available:["月","水","金"],bio:"元外資系企業勤務。実践的な英語を楽しく教えます。",avatar:"TM",color:"#E8D5B7",dist:"0.4km"},
-  {id:2,name:"鈴木 健太",subject:"数学",rating:4.8,reviews:94,price:4000,tags:["大学受験","高校数学","微積分"],available:["火","木","土"],bio:"東大院卒。受験数学から大学数学まで丁寧に指導。",avatar:"SK",color:"#B7D5E8",dist:"0.7km"},
-  {id:3,name:"山田 花子",subject:"プログラミング",rating:5.0,reviews:67,price:5000,tags:["Python","Web開発","初心者歓迎"],available:["月","火","水","木","金"],bio:"現役エンジニア。実務で使えるスキルを基礎から。",avatar:"YH",color:"#D5E8B7",dist:"1.0km"},
-  {id:4,name:"佐藤 隆",subject:"ピアノ",rating:4.7,reviews:112,price:3000,tags:["ピアノ","楽典","作曲"],available:["土","日"],bio:"音大卒。クラシックからポップスまで幅広く対応。",avatar:"SR",color:"#E8B7D5",dist:"1.3km"},
-  {id:5,name:"伊藤 直樹",subject:"日本語",rating:4.9,reviews:203,price:2800,tags:["JLPT","ビジネス日本語","外国人向け"],available:["月","水","金","日"],bio:"日本語教師歴10年。N1合格者を多数輩出。",avatar:"IN",color:"#E8E0B7",dist:"1.6km"},
-  {id:6,name:"渡辺 彩",subject:"美術",rating:4.6,reviews:45,price:3200,tags:["デッサン","水彩","デジタルアート"],available:["火","木","土","日"],bio:"美大出身。基礎から丁寧に楽しく絵を学べます。",avatar:"WA",color:"#D5B7E8",dist:"2.0km"},
-  {id:7,name:"中村 拓海",subject:"サッカー",rating:4.6,reviews:58,price:2000,tags:["ドリブル","戦術","初心者歓迎"],available:["土","日"],bio:"元Jリーグ選手。基礎から戦術まで丁寧に指導。",avatar:"NT",color:"#B7E8D5",dist:"0.9km"},
-  {id:8,name:"小林 美咲",subject:"ヨガ",rating:4.8,reviews:73,price:2500,tags:["朝ヨガ","呼吸法","柔軟性"],available:["月","水","金"],bio:"RYT200取得。心と体のバランスを整えるヨガを。",avatar:"KM",color:"#E8D5E0",dist:"1.1km"},
+  {id:1,name:"田中 美咲",subject:"英語",rating:4.9,reviews:128,price:3500,tags:["TOEIC","ビジネス英語","初心者歓迎"],available:["月","水","金"],bio:"元外資系企業勤務。TOEIC960点。実践的な英語を楽しく教えます。",avatar:"TM",color:"#E8D5B7",dist:"渋谷",career:"外資IT企業 マーケティング部 5年",achievements:"TOEIC 960点\n英検1級\n海外在住3年",teaching_style:"friendly",lesson_formats:["online","cafe"]},
+  {id:2,name:"鈴木 健太",subject:"数学",rating:4.8,reviews:94,price:4000,tags:["大学受験","高校数学","微積分"],available:["火","木","土"],bio:"東大院卒。受験数学から大学数学まで丁寧に指導します。",avatar:"SK",color:"#B7D5E8",dist:"新宿",career:"東京大学大学院 数理科学研究科 修了",achievements:"数学オリンピック入賞\n東大理科三類合格",teaching_style:"structured",lesson_formats:["online","inperson"]},
+  {id:3,name:"山田 花子",subject:"プログラミング",rating:5.0,reviews:67,price:5000,tags:["Python","Web開発","初心者歓迎"],available:["月","火","水","木","金"],bio:"現役エンジニア10年目。実務で使えるスキルを基礎から教えます。",avatar:"YH",color:"#D5E8B7",dist:"オンライン",career:"大手IT企業 シニアエンジニア",achievements:"個人開発アプリ 10万DL\nAtCoder 黄色",teaching_style:"practical",lesson_formats:["online"]},
+  {id:4,name:"佐藤 隆",subject:"ピアノ",rating:4.7,reviews:112,price:3000,tags:["クラシック","ポップス","作曲"],available:["土","日"],bio:"音大卒。クラシックからポップスまで幅広く対応します。",avatar:"SR",color:"#E8B7D5",dist:"池袋",career:"東京音楽大学 ピアノ専攻 卒業",achievements:"全日本学生音楽コンクール入賞\nヤマハグレード5級",teaching_style:"patient",lesson_formats:["inperson"]},
+  {id:5,name:"伊藤 直樹",subject:"日本語",rating:4.9,reviews:203,price:2800,tags:["JLPT","ビジネス日本語","外国人向け"],available:["月","水","金","日"],bio:"日本語教師歴10年。N1合格者を多数輩出しています。",avatar:"IN",color:"#E8E0B7",dist:"秋葉原",career:"日本語学校 主任講師",achievements:"JLPT N1合格指導 200名以上\n日本語教育能力検定試験 合格",teaching_style:"structured",lesson_formats:["online","inperson"]},
+  {id:6,name:"渡辺 彩",subject:"美術",rating:4.6,reviews:45,price:3200,tags:["デッサン","水彩","デジタルアート"],available:["火","木","土","日"],bio:"美大出身。基礎から丁寧に楽しく絵を学べます。初心者大歓迎。",avatar:"WA",color:"#D5B7E8",dist:"吉祥寺",career:"多摩美術大学 絵画専攻 卒業",achievements:"個展開催 3回\nイラストレーター実績多数",teaching_style:"friendly",lesson_formats:["inperson","cafe"]},
+  {id:7,name:"中村 拓海",subject:"サッカー",rating:4.6,reviews:58,price:2000,tags:["ドリブル","戦術","初心者歓迎"],available:["土","日"],bio:"元Jリーグ選手。基礎から戦術まで丁寧に指導します。",avatar:"NT",color:"#B7E8D5",dist:"多摩川",career:"元J2リーガー / サッカースクールコーチ",achievements:"J2リーグ 3シーズン出場\nJFA公認C級コーチ",teaching_style:"intensive",lesson_formats:["inperson"]},
+  {id:8,name:"小林 美咲",subject:"ヨガ",rating:4.8,reviews:73,price:2500,tags:["朝ヨガ","呼吸法","柔軟性"],available:["月","水","金"],bio:"RYT200取得。心と体のバランスを整えるヨガを提供します。",avatar:"KM",color:"#E8D5E0",dist:"代々木",career:"全米ヨガアライアンスRYT200認定インストラクター",achievements:"指導歴5年\n受講者累計1000名以上",teaching_style:"patient",lesson_formats:["online","inperson"]},
 ];
 const defaultLocations = [
   {lat:35.6595,lng:139.7004},{lat:35.6611,lng:139.7036},{lat:35.6580,lng:139.6997},
@@ -2314,13 +2314,14 @@ function renderModal() {
     ${t.db_skill_id && t.db_user_id && currentUser && t.db_user_id !== currentUser.id ? `<button onclick="closeModal();startDirectChat('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="width:100%;margin-top:10px;padding:11px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージを送る</button>` : ''}`;
   } else if (bookStep === 1) {
     const slots = generateSlots(t.available);
-    html = `<h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">日程を選択</h2>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">${escapeHtml(t.name)}先生の空き時間</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;max-height:320px;overflow-y:auto;">
-      ${slots.map(s =>
-        `<button onclick="selSlot='${escapeHtml(s.iso)}';bookStep=2;renderModal();" style="padding:12px;border:1.5px solid var(--border);border-radius:10px;background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(s.label)}</button>`).join('')}
+    html = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+      <button onclick="bookStep=0;renderModal();" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:18px;height:18px;"></i></button>
+      <div><h2 style="font-size:20px;font-weight:700;">日程を選択</h2><p style="font-size:12px;color:var(--muted);">${escapeHtml(t.name)}の空き時間</p></div>
     </div>
-    <button class="btn btn-outline" onclick="bookStep=0;renderModal();" style="width:100%;">戻る</button>`;
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;max-height:340px;overflow-y:auto;padding:2px;">
+      ${slots.map(s =>
+        `<button onclick="selSlot='${escapeHtml(s.iso)}';bookStep=2;renderModal();" style="padding:14px 12px;border:1.5px solid var(--border);border-radius:12px;background:white;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;text-align:left;" onmouseover="this.style.borderColor='var(--dark)';this.style.background='var(--lighter)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='white'">${escapeHtml(s.label)}</button>`).join('')}
+    </div>`;
   } else {
     if (!t._bookingCreated) {
       t._bookingCreated = true;
