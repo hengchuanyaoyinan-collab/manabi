@@ -201,6 +201,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
 .cat-card{background:white;border-radius:16px;padding:20px 14px;border:1px solid var(--light);text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.04);}
 .cat-card:hover{border-color:var(--dark);box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-2px);}
+.cat-card:active{transform:scale(.97);}
 .cat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
 @media(max-width:640px){
   .cat-grid{grid-template-columns:repeat(2,1fr);gap:10px;}.cat-card{padding:16px 10px;}.cat-icon{width:40px;height:40px;border-radius:12px;margin-bottom:8px;}
@@ -1504,7 +1505,10 @@ function renderExplore() {
         <p style="font-size:12px;margin-bottom:16px;line-height:1.7;">検索キーワードを変更するか、<br>フィルターをリセットしてお試しください。</p>
         <button onclick="document.getElementById('explore-search').value='';curSubj='すべて';curDay=null;renderFilters();renderExplore();" class="btn btn-outline" style="padding:8px 20px;font-size:12px;">フィルターをリセット</button>
       </div>`;
-  document.getElementById('result-count').textContent = `${list.length}名の先生が見つかりました`;
+  const rc = document.getElementById('result-count');
+  rc.textContent = `${list.length}名の先生が見つかりました`;
+  rc.style.opacity = '0';
+  requestAnimationFrame(() => { rc.style.transition = 'opacity .3s'; rc.style.opacity = '1'; });
   refreshIcons();
 }
 
@@ -1876,7 +1880,13 @@ function renderChat(idx) {
         </div>`;
       }).join('');
   } else {
-    msgs.innerHTML = '<div style="margin:auto;color:var(--muted);font-size:12px;">まだメッセージはありません</div>';
+    const starters = ['はじめまして！よろしくお願いします。','レッスンについて質問があります。','空き状況を教えていただけますか？'];
+    msgs.innerHTML = `<div style="margin:auto;text-align:center;color:var(--muted);padding:20px;">
+      <div style="width:48px;height:48px;border-radius:14px;background:var(--lighter);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="message-circle" style="width:22px;height:22px;"></i></div>
+      <p style="font-size:13px;margin-bottom:14px;">${escapeHtml(o.name||'')}さんとの会話を始めましょう</p>
+      <div style="display:flex;flex-direction:column;gap:6px;max-width:260px;margin:0 auto;">${starters.map(s => `<button onclick="document.getElementById('chat-input').value='${escapeHtml(s)}';sendMsg();" style="padding:8px 14px;border:1px solid var(--border);border-radius:20px;background:white;cursor:pointer;font-size:12px;font-family:inherit;text-align:left;transition:all .15s;color:var(--mid);" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'">${escapeHtml(s)}</button>`).join('')}</div>
+    </div>`;
+    refreshIcons();
   }
   msgs.scrollTop = msgs.scrollHeight;
   renderChatList();
@@ -2691,6 +2701,8 @@ renderExplore();
 renderAiChips();
 renderNotifs();
 handlePaymentReturn();
+loadHeroStats();
+loadSkillsFromDB();
 if (location.hash) {
   const initPage = location.hash.replace('#','');
   const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy'];
