@@ -264,10 +264,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <button class="nav-btn" onclick="showPage('explore')">探す</button>
     <button class="nav-btn" onclick="showPage('map')">地図</button>
     <button class="nav-btn" onclick="showPage('register')">出品</button>
-    <button class="nav-btn" onclick="showPage('matching')">マッチング</button>
     <button class="nav-btn" onclick="showPage('chat')">メッセージ</button>
-    <button class="nav-btn" onclick="showPage('payment')">支払い</button>
-    <button class="nav-btn" onclick="showPage('dashboard')">履歴</button>
   </div>
   <div id="nav-auth-area" style="display:flex;align-items:center;gap:10px;">
     <div id="nav-logged-in" style="display:none;align-items:center;gap:10px;">
@@ -393,26 +390,27 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- EXPLORE -->
 <div class="page" id="explore">
-  <div class="ai-panel">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;"><i data-lucide="sparkles" style="width:18px;height:18px;"></i></div>
-      <div><div style="font-weight:700;font-size:14px;">AIスキルレコメンド</div><div style="font-size:11px;color:var(--muted);">興味を選ぶと最適な先生を提案</div></div>
+  <div style="background:white;border-radius:16px;padding:18px;border:1px solid var(--light);margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;"><i data-lucide="sparkles" style="width:15px;height:15px;"></i></div>
+      <div style="flex:1;"><span style="font-weight:700;font-size:13px;">AIレコメンド</span><span style="font-size:11px;color:var(--muted);margin-left:8px;">自然文で検索できます</span></div>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="ai-chips"></div>
-    <div id="ai-loading" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:10px;"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span><span style="margin-left:4px;">AIが分析中...</span></div>
-    <div id="ai-result" style="display:none;background:white;border-radius:12px;padding:14px;font-size:12px;line-height:1.8;margin-bottom:10px;"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="ai-chips"></div>
+    <div id="ai-loading" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:10px;"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span><span style="margin-left:4px;">分析中...</span></div>
+    <div id="ai-result" style="display:none;background:var(--bg);border-radius:12px;padding:14px;font-size:12px;line-height:1.8;margin-bottom:10px;"></div>
     <div style="display:flex;gap:8px;">
       <input id="ai-input" class="form-input" placeholder="例：週1回英語を学びたい、予算3500円以内" aria-label="AIに質問する" onkeydown="if(event.key==='Enter')aiChat()" style="flex:1;">
-      <button class="btn btn-accent" onclick="aiChat()">送信</button>
+      <button class="btn btn-dark" onclick="aiChat()" style="padding:10px 18px;">検索</button>
     </div>
   </div>
-  <div style="background:white;border-radius:16px;padding:16px 18px;border:1px solid var(--light);margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
-    <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;position:relative;">
-      <input type="text" id="explore-search" placeholder="科目・キーワードで検索..." aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.nextElementSibling.style.display=this.value?'flex':'none'" style="flex:1;padding:10px 14px;border:none;font-size:13px;font-family:inherit;outline:none;">
-      <button onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+  <div style="background:white;border-radius:16px;padding:16px 18px;border:1px solid var(--light);margin-bottom:16px;">
+    <div style="display:flex;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px;position:relative;transition:border-color .2s;" onfocusin="this.style.borderColor='var(--dark)'" onfocusout="this.style.borderColor='var(--border)'">
+      <span style="display:flex;align-items:center;padding:0 12px;color:var(--muted);"><i data-lucide="search" style="width:16px;height:16px;"></i></span>
+      <input type="text" id="explore-search" placeholder="科目・カテゴリ・キーワードで検索..." aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.parentElement.querySelector('.clear-btn').style.display=this.value?'flex':'none'" style="flex:1;padding:11px 0;border:none;font-size:13px;font-family:inherit;outline:none;">
+      <button class="clear-btn" onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;align-items:center;padding:0 12px;background:none;border:none;cursor:pointer;color:var(--muted);"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="subj-filters"></div>
-    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:11px;color:var(--muted);">曜日：</span><div id="day-filters"></div></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;" id="subj-filters"></div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="font-size:11px;color:var(--muted);font-weight:500;">曜日</span><div id="day-filters"></div></div>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
     <p id="result-count" style="font-size:12px;color:var(--muted);"></p>
@@ -431,7 +429,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- MAP -->
 <div class="page" id="map">
-  <h2 class="section-title" style="display:flex;align-items:center;gap:8px;"><i data-lucide="map" style="width:22px;height:22px;color:var(--accent);"></i>地図で先生を探す</h2>
+  <h2 style="font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px;margin-bottom:16px;"><i data-lucide="map" style="width:22px;height:22px;color:var(--accent);"></i>地図で探す</h2>
   <div style="background:white;border-radius:20px;border:1px solid var(--light);overflow:hidden;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <div style="padding:14px 16px;border-bottom:1px solid var(--light);display:flex;gap:10px;align-items:center;">
       <i data-lucide="map-pin" style="width:16px;height:16px;color:var(--muted);flex-shrink:0;"></i>
@@ -605,22 +603,29 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- PROFILE -->
 <div class="page" id="profile">
-  <div style="background:white;border-radius:20px;padding:26px;margin-bottom:20px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--light);">
-    <div style="position:relative;flex-shrink:0;">
-      <div id="prof-av" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:white;overflow:hidden;"></div>
-      <label for="avatar-upload" style="position:absolute;bottom:-2px;right:-2px;width:26px;height:26px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid white;"><i data-lucide="camera" style="width:12px;height:12px;"></i></label>
-      <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="uploadAvatar(this)">
-    </div>
-    <div>
-      <h2 style="font-size:22px;margin-bottom:4px;" id="prof-name">読み込み中...</h2>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="prof-email"></p>
-      <div style="display:inline-flex;align-items:center;gap:7px;background:var(--green-light);padding:6px 13px;border-radius:12px;border:1px solid #A5D6A7;">
-        <span style="font-size:20px;font-weight:900;color:var(--green);" id="prof-score">0</span>
-        <div><p style="font-size:11px;font-weight:700;color:var(--green);">信用スコア</p><p style="font-size:10px;color:var(--muted);">成長中</p></div>
+  <div style="background:white;border-radius:18px;padding:24px;margin-bottom:16px;border:1px solid var(--light);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(135deg,var(--accent),#9575CD);"></div>
+    <div style="position:relative;display:flex;gap:18px;align-items:flex-end;margin-bottom:16px;padding-top:20px;">
+      <div style="position:relative;flex-shrink:0;">
+        <div id="prof-av" style="width:80px;height:80px;border-radius:18px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:white;overflow:hidden;border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,.15);"></div>
+        <label for="avatar-upload" style="position:absolute;bottom:-4px;right:-4px;width:28px;height:28px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid white;"><i data-lucide="camera" style="width:12px;height:12px;"></i></label>
+        <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="uploadAvatar(this)">
+      </div>
+      <div style="flex:1;padding-bottom:4px;">
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:2px;" id="prof-name">読み込み中...</h2>
+        <p style="font-size:12px;color:var(--muted);" id="prof-email"></p>
       </div>
     </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;background:var(--green-light);padding:8px 14px;border-radius:12px;border:1px solid #A5D6A7;">
+        <span style="font-size:22px;font-weight:900;color:var(--green);" id="prof-score">0</span>
+        <div><p style="font-size:10px;font-weight:700;color:var(--green);">信用スコア</p></div>
+      </div>
+      <button onclick="showPage('matching')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);"><i data-lucide="calendar-check" style="width:14px;height:14px;"></i>予約管理</button>
+      <button onclick="showPage('dashboard')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:white;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);"><i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>ダッシュボード</button>
+    </div>
   </div>
-  <div id="prof-display" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px;display:none;">
+  <div id="prof-display" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);margin-bottom:16px;display:none;">
     <div id="prof-bio-block" style="display:none;margin-bottom:14px;">
       <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="user" style="width:13px;height:13px;"></i>自己紹介</p>
       <p id="prof-bio-text" style="font-size:14px;line-height:1.8;color:var(--mid);white-space:pre-wrap;"></p>
@@ -638,7 +643,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       <p id="prof-style-text" style="font-size:14px;color:var(--mid);"></p>
     </div>
   </div>
-  <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+  <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);">
     <p style="font-weight:700;font-size:14px;margin-bottom:16px;">プロフィールを編集</p>
     <div style="margin-bottom:14px;"><label for="edit-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="edit-name" placeholder="山田 花子" maxlength="50"></div>
     <div style="margin-bottom:14px;"><label for="edit-bio" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">自己紹介</label><textarea class="form-input" id="edit-bio" rows="3" placeholder="あなたのことを教えてください" maxlength="500" style="resize:vertical;" oninput="this.nextElementSibling.textContent=this.value.length+'/500'"></textarea><span style="font-size:10px;color:var(--muted);float:right;margin-top:4px;">0/500</span></div>
@@ -657,11 +662,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <p style="font-weight:700;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><i data-lucide="star" style="width:16px;height:16px;color:var(--gold);"></i>受け取ったレビュー</p>
     <div id="prof-reviews"><p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">レビューはまだありません</p></div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
-    <button class="btn btn-outline" onclick="showPage('matching')" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;"><i data-lucide="calendar-check" style="width:16px;height:16px;"></i>予約管理</button>
-    <button class="btn btn-outline" onclick="showPage('dashboard')" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;"><i data-lucide="bar-chart-3" style="width:16px;height:16px;"></i>ダッシュボード</button>
-  </div>
-  <button onclick="doLogout()" style="width:100%;margin-top:10px;padding:14px;background:transparent;border:1.5px solid var(--border);border-radius:12px;color:var(--muted);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">ログアウト</button>
+  <button onclick="doLogout()" style="width:100%;margin-top:16px;padding:13px;background:transparent;border:1.5px solid var(--border);border-radius:12px;color:var(--muted);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">ログアウト</button>
 </div>
 
 <!-- DASHBOARD -->
@@ -1315,11 +1316,12 @@ function showPage(id, pushHistory = true) {
   const el = document.getElementById(id);
   if (!el) { document.getElementById('home').classList.add('active'); return; }
   el.classList.add('active');
-  const pages = ['home','explore','map','register','matching','chat','payment','dashboard'];
-  const i = pages.indexOf(id);
-  if (i >= 0) {
+  const navPages = ['home','explore','map','register','chat'];
+  const navMap = {home:0,explore:1,map:2,register:3,matching:4,chat:4,payment:4,dashboard:4};
+  const navIdx = navMap[id];
+  if (navIdx != null) {
     const btns = document.querySelectorAll('.nav-btn');
-    if (btns[i]) btns[i].classList.add('active');
+    if (btns[navIdx]) btns[navIdx].classList.add('active');
   }
   const btmMap = { home:'home', explore:'explore', map:'explore', register:'register', matching:'chat', chat:'chat', payment:'chat', dashboard:'profile', profile:'profile' };
   const btmActive = btmMap[id] || id;
