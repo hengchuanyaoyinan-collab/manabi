@@ -649,6 +649,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         <span style="display:flex;align-items:center;padding:0 10px;color:var(--muted);"><i data-lucide="search" style="width:15px;height:15px;"></i></span>
         <input type="text" id="explore-search" placeholder="何を学びたい？" aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.closest('div').querySelector('.clear-btn').style.display=this.value?'flex':'none'" style="flex:1;padding:10px 0;border:none;font-size:13px;font-family:inherit;outline:none;">
         <button class="clear-btn" onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;align-items:center;padding:0 10px;background:none;border:none;cursor:pointer;color:var(--muted);"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+        <button id="voice-search-btn" onclick="startVoiceSearch()" aria-label="音声検索" style="display:none;align-items:center;padding:0 10px;background:none;border:none;cursor:pointer;color:var(--muted);transition:color .2s;"><i data-lucide="mic" style="width:16px;height:16px;"></i></button>
         <kbd class="search-kbd" style="display:none;align-items:center;padding:2px 6px;margin-right:8px;border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--muted);font-family:monospace;background:var(--lighter);flex-shrink:0;">/</kbd>
       </div>
       <button onclick="document.getElementById('ai-panel').style.display=document.getElementById('ai-panel').style.display==='none'?'':'none'" style="width:40px;height:40px;border-radius:12px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;transition:all .15s;" title="AI検索"><i data-lucide="sparkles" style="width:16px;height:16px;"></i></button>
@@ -1214,6 +1215,23 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 
 <!-- BACK TO TOP -->
 <button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="ページの先頭へ"><i data-lucide="chevron-up" style="width:20px;height:20px;"></i></button>
+
+<!-- COMPARE FAB -->
+<div id="compare-fab" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--accent);color:white;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;cursor:pointer;z-index:95;box-shadow:0 4px 20px rgba(93,107,188,.4);align-items:center;gap:8px;font-family:inherit;" onclick="openCompare()">
+  <i data-lucide="columns-2" style="width:16px;height:16px;"></i><span>2名を比較</span>
+  <button onclick="event.stopPropagation();clearCompare();" style="margin-left:8px;background:rgba(255,255,255,.2);border:none;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;font-size:14px;line-height:1;">×</button>
+</div>
+
+<!-- COMPARE MODAL -->
+<div id="compare-modal" class="modal-overlay" onclick="if(event.target===this)closeCompareModal()">
+  <div class="modal" style="max-width:600px;max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-size:18px;font-weight:700;">先生を比較</h2>
+      <button onclick="closeCompareModal()" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+    </div>
+    <div id="compare-modal-body"></div>
+  </div>
+</div>
 
 <!-- MODAL -->
 <div class="overlay" id="modal" onclick="if(event.target===this)closeModal()" role="dialog" aria-modal="true">
@@ -2092,8 +2110,10 @@ function makeCard(t) {
   const formats = (t.lesson_formats||[]).slice(0,2).map(f => fmtLabels[f]||f);
   const isLiked = getLikes().includes(t.id);
   const priceInd = getPriceIndicator(t);
+  const isCompared = typeof compareList !== 'undefined' && compareList.includes(t.id);
   return `<div class="card" onclick="openModal(${t.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openModal(${t.id})" style="position:relative;">
     <button class="card-fav${isLiked?' liked':''}" onclick="event.stopPropagation();toggleLike(${t.id},this)" aria-label="お気に入り"><i data-lucide="heart" style="width:16px;height:16px;"></i></button>
+    <button class="compare-check${isCompared?' active':''}" data-tid="${t.id}" onclick="event.stopPropagation();toggleCompare(${t.id},event)" style="position:absolute;top:10px;right:44px;width:24px;height:24px;border-radius:6px;border:1.5px solid rgba(255,255,255,.8);background:${isCompared?'var(--accent)':'rgba(0,0,0,.3)'};cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s;backdrop-filter:blur(4px);color:white;font-size:12px;">${isCompared?'✓':''}</button>
     ${sampleBadge}
     ${popularBadge}
     <div class="card-photo" onclick="event.stopPropagation();handleCardDoubleTap(event,${t.id})" style="background:linear-gradient(135deg,${t.color},${t.color}cc);">
@@ -2417,6 +2437,29 @@ function selectSuggestion(val) {
   renderExplore();
 }
 document.addEventListener('click', (e) => { if (!e.target.closest('#hero-search') && !e.target.closest('#search-suggestions')) hideSearchSuggestions(); });
+
+function startVoiceSearch() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('お使いのブラウザは音声検索に対応していません', 'var(--gold)'); return; }
+  const recognition = new SR();
+  recognition.lang = 'ja-JP';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  const btn = document.getElementById('voice-search-btn');
+  if (btn) btn.style.color = 'var(--red)';
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    const input = document.getElementById('explore-search');
+    input.value = transcript;
+    const cb = input.closest('div')?.querySelector('.clear-btn');
+    if (cb) cb.style.display = 'flex';
+    renderExplore();
+    showToast(`"${transcript}" で検索`, 'var(--accent)');
+  };
+  recognition.onerror = () => { if (btn) btn.style.color = 'var(--muted)'; };
+  recognition.onend = () => { if (btn) btn.style.color = 'var(--muted)'; };
+  recognition.start();
+}
 function aiChat() {
   const inp = document.getElementById('ai-input');
   const q = inp.value.trim(); if (!q) return; inp.value = '';
@@ -3361,6 +3404,54 @@ function renderPayMethods() {
 }
 
 let selTeacher = null, bookStep = 0, selSlot = null;
+let compareList = [];
+function toggleCompare(id, e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  const idx = compareList.indexOf(id);
+  if (idx >= 0) { compareList.splice(idx, 1); }
+  else { if (compareList.length >= 3) { showToast('比較は最大3名まで', 'var(--gold)'); return; } compareList.push(id); }
+  updateCompareUI();
+}
+function updateCompareUI() {
+  const fab = document.getElementById('compare-fab');
+  if (!fab) return;
+  if (compareList.length >= 2) {
+    fab.style.display = 'flex';
+    fab.querySelector('span').textContent = `${compareList.length}名を比較`;
+  } else {
+    fab.style.display = 'none';
+  }
+  document.querySelectorAll('.compare-check').forEach(el => {
+    const id = parseInt(el.dataset.tid);
+    el.classList.toggle('active', compareList.includes(id));
+  });
+}
+function openCompare() {
+  if (compareList.length < 2) return;
+  const ts = compareList.map(id => teachers.find(t => t.id === id)).filter(Boolean);
+  const cols = ts.map(t => {
+    const safeAv = safeImgUrl(t.avatar_url);
+    const avHtml = safeAv ? `<img src="${escapeHtml(safeAv)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : `<span style="font-weight:700;color:white;font-size:16px;">${escapeHtml(t.avatar)}</span>`;
+    return `<div style="flex:1;min-width:0;text-align:center;">
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,${t.color},${t.color}cc);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">${avHtml}</div>
+      <p style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.name)}</p>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:12px;">${escapeHtml(t.subject)}</p>
+      <div style="text-align:left;font-size:12px;">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);"><span style="color:var(--muted);">料金</span><span style="font-weight:700;">¥${t.price.toLocaleString()}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);"><span style="color:var(--muted);">評価</span><span style="font-weight:700;">${t.rating > 0 ? t.rating + ' ★' : '—'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);"><span style="color:var(--muted);">レビュー</span><span style="font-weight:700;">${t.reviews}件</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);"><span style="color:var(--muted);">曜日</span><span style="font-weight:600;font-size:11px;">${t.available.join('')}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:var(--muted);">形式</span><span style="font-weight:600;font-size:11px;">${(t.lesson_formats||[]).map(f=>({online:'オン',inperson:'対面',cafe:'カフェ'}[f]||f)).join(', ')||'—'}</span></div>
+      </div>
+      <button class="btn btn-dark" onclick="closeCompareModal();openModal(${t.id});" style="width:100%;margin-top:12px;padding:10px;font-size:12px;">詳細を見る</button>
+    </div>`;
+  }).join('<div style="width:1px;background:var(--light);flex-shrink:0;margin:0 4px;"></div>');
+  document.getElementById('compare-modal-body').innerHTML = `<div style="display:flex;gap:10px;overflow-x:auto;padding:4px;">${cols}</div>`;
+  document.getElementById('compare-modal').classList.add('open');
+  refreshIcons();
+}
+function closeCompareModal() { document.getElementById('compare-modal').classList.remove('open'); }
+function clearCompare() { compareList = []; updateCompareUI(); closeCompareModal(); }
 
 function generateSlots(availableDays) {
   const dayLabels = ['日','月','火','水','木','金','土'];
@@ -4068,6 +4159,30 @@ if (filterBar) {
   fbObserver.observe(filterBar);
 }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+
+// Voice search init
+if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+  const vb = document.getElementById('voice-search-btn');
+  if (vb) vb.style.display = 'flex';
+}
+
+// Onboarding for first-time visitors
+(function onboardingTour() {
+  if (localStorage.getItem('manabi_onboarded')) return;
+  setTimeout(() => {
+    const tips = [
+      { text: 'スキルを教えたい方は「出品」から始めましょう 🎓', duration: 4000 },
+      { text: '気になる先生はダブルタップで ♡ できます', duration: 3500 },
+    ];
+    let i = 0;
+    function showNext() {
+      if (i >= tips.length) { localStorage.setItem('manabi_onboarded', '1'); return; }
+      showToast(tips[i].text, 'var(--accent)');
+      setTimeout(() => { i++; showNext(); }, tips[i].duration);
+    }
+    showNext();
+  }, 3000);
+})();
 
 </script>
 </body>
