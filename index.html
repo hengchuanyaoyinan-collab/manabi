@@ -649,6 +649,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         <span style="display:flex;align-items:center;padding:0 10px;color:var(--muted);"><i data-lucide="search" style="width:15px;height:15px;"></i></span>
         <input type="text" id="explore-search" placeholder="何を学びたい？" aria-label="科目・キーワードで検索" oninput="debouncedExplore();this.closest('div').querySelector('.clear-btn').style.display=this.value?'flex':'none'" style="flex:1;padding:10px 0;border:none;font-size:13px;font-family:inherit;outline:none;">
         <button class="clear-btn" onclick="document.getElementById('explore-search').value='';this.style.display='none';renderExplore()" aria-label="検索をクリア" style="display:none;align-items:center;padding:0 10px;background:none;border:none;cursor:pointer;color:var(--muted);"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+        <button onclick="saveCurrentSearch()" aria-label="検索を保存" style="display:flex;align-items:center;padding:0 8px;background:none;border:none;cursor:pointer;color:var(--muted);transition:color .2s;" title="この検索を保存"><i data-lucide="bookmark" style="width:14px;height:14px;"></i></button>
         <button id="voice-search-btn" onclick="startVoiceSearch()" aria-label="音声検索" style="display:none;align-items:center;padding:0 10px;background:none;border:none;cursor:pointer;color:var(--muted);transition:color .2s;"><i data-lucide="mic" style="width:16px;height:16px;"></i></button>
         <kbd class="search-kbd" style="display:none;align-items:center;padding:2px 6px;margin-right:8px;border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--muted);font-family:monospace;background:var(--lighter);flex-shrink:0;">/</kbd>
       </div>
@@ -693,6 +694,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <span style="font-size:11px;color:var(--muted);font-weight:500;flex-shrink:0;">曜日</span>
       <div style="display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex:1;" id="day-filters"></div>
     </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+      <span style="font-size:11px;color:var(--muted);font-weight:500;flex-shrink:0;">価格帯</span>
+      <input type="range" id="price-min-slider" min="0" max="10000" step="500" value="0" oninput="updatePriceFilter()" style="flex:1;accent-color:var(--accent);height:4px;">
+      <span id="price-range-label" style="font-size:11px;color:var(--muted);min-width:60px;text-align:right;">全て</span>
+    </div>
     <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-top:8px;padding-bottom:2px;" id="quick-filters">
       <button class="pill-sm" onclick="applyQuickFilter('cheap')" style="white-space:nowrap;">💰 1000円以下</button>
       <button class="pill-sm" onclick="applyQuickFilter('top')" style="white-space:nowrap;">⭐ 高評価</button>
@@ -700,6 +706,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <button class="pill-sm" onclick="applyQuickFilter('new')" style="white-space:nowrap;">🆕 新着</button>
       <button class="pill-sm" onclick="applyQuickFilter('weekend')" style="white-space:nowrap;">📅 土日OK</button>
     </div>
+    <div id="saved-searches" style="display:none;margin-top:8px;"></div>
   </div>
   <div class="cards-grid" id="explore-cards"></div>
 </div>
@@ -1897,8 +1904,9 @@ async function loadDashboardHistory() {
     const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
     const s = statusMap[p.status] || p.status;
     const sc = statusColors[p.status] || 'var(--muted)';
+    const reviewBtn = isStudent && p.status === 'paid' ? `<button onclick="event.stopPropagation();openReviewModal('${b?.teacher_id||''}','${escapeHtml(other)}')" style="font-size:10px;color:var(--accent);background:var(--accent-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;font-family:inherit;margin-top:4px;">レビューを書く</button>` : '';
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--light);">
-      <div><p style="font-weight:600;font-size:13px;">${escapeHtml(subject)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(other)} · ${dateStr}</p></div>
+      <div><p style="font-weight:600;font-size:13px;">${escapeHtml(subject)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(other)} · ${dateStr}</p>${reviewBtn}</div>
       <div style="text-align:right;"><p style="font-weight:700;font-size:13px;">¥${(p.amount||0).toLocaleString()}</p><span style="font-size:11px;color:${sc};font-weight:500;">${s}</span></div>
     </div>`;
   }).join('');
@@ -2000,7 +2008,7 @@ function playNotifSound() {
 }
 let subjects = ["すべて","英語","数学","プログラミング","ピアノ","日本語","美術","サッカー","ヨガ"];
 const days = ["月","火","水","木","金","土","日"];
-let curSubj = "すべて", curDay = null, curChat = null;
+let curSubj = "すべて", curDay = null, curChat = null, curMaxPrice = 0;
 const catMapping = {'英語':'勉強','数学':'勉強','プログラミング':'勉強','日本語':'勉強','物理':'勉強','化学':'勉強','サッカー':'スポーツ','テニス':'スポーツ','ヨガ':'スポーツ','水泳':'スポーツ','バスケ':'スポーツ','ピアノ':'音楽','ギター':'音楽','ボーカル':'音楽','ドラム':'音楽','美術':'趣味','写真':'趣味','料理':'趣味','園芸':'趣味','ビジネス':'スキル','デザイン':'スキル','動画編集':'スキル','マーケティング':'スキル','引越し手伝い':'依頼','掃除':'依頼','修理':'依頼','買い物代行':'依頼'};
 function getCatForSubject(s) { return catMapping[s] || 'その他'; }
 const mainCategories = [
@@ -2260,6 +2268,7 @@ function renderExplore() {
   _exploreList = base.filter(t =>
     (curSubj === 'すべて' || t.subject === curSubj) &&
     (!curDay || t.available.includes(curDay)) &&
+    (!curMaxPrice || t.price <= curMaxPrice) &&
     (!q || t.name.toLowerCase().includes(q) || t.subject.toLowerCase().includes(q) || getCatForSubject(t.subject).toLowerCase().includes(q) || t.bio.toLowerCase().includes(q) || t.tags.some(g => g.toLowerCase().includes(q)))
   );
   if (sortBy === 'price-asc') _exploreList.sort((a,b) => a.price - b.price);
@@ -2330,6 +2339,13 @@ function setSubj(s) {
   setTimeout(() => { cards.style.transition = ''; }, 350);
 }
 function toggleDay(d) { curDay = curDay === d ? null : d; renderFilters(); renderExplore(); }
+function updatePriceFilter() {
+  const slider = document.getElementById('price-min-slider');
+  const label = document.getElementById('price-range-label');
+  curMaxPrice = parseInt(slider.value);
+  label.textContent = curMaxPrice > 0 ? `〜¥${curMaxPrice.toLocaleString()}` : '全て';
+  renderExplore();
+}
 
 function applyQuickFilter(type) {
   document.getElementById('explore-search').value = '';
@@ -2437,6 +2453,41 @@ function selectSuggestion(val) {
   renderExplore();
 }
 document.addEventListener('click', (e) => { if (!e.target.closest('#hero-search') && !e.target.closest('#search-suggestions')) hideSearchSuggestions(); });
+
+function getSavedSearches() { try { return JSON.parse(localStorage.getItem('manabi_saved_searches') || '[]'); } catch { return []; } }
+function saveCurrentSearch() {
+  const q = document.getElementById('explore-search')?.value?.trim();
+  if (!q) { showToast('検索キーワードを入力してください', 'var(--gold)'); return; }
+  let saved = getSavedSearches();
+  if (saved.includes(q)) { showToast('既に保存済みです', 'var(--muted)'); return; }
+  saved.unshift(q);
+  if (saved.length > 8) saved = saved.slice(0, 8);
+  localStorage.setItem('manabi_saved_searches', JSON.stringify(saved));
+  renderSavedSearches();
+  showToast('検索を保存しました', 'var(--accent)');
+}
+function removeSavedSearch(q) {
+  let saved = getSavedSearches().filter(s => s !== q);
+  localStorage.setItem('manabi_saved_searches', JSON.stringify(saved));
+  renderSavedSearches();
+}
+function applySavedSearch(q) {
+  const input = document.getElementById('explore-search');
+  input.value = q;
+  const cb = input.closest('div')?.querySelector('.clear-btn');
+  if (cb) cb.style.display = 'flex';
+  renderExplore();
+}
+function renderSavedSearches() {
+  const el = document.getElementById('saved-searches');
+  if (!el) return;
+  const saved = getSavedSearches();
+  if (!saved.length) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  el.style.cssText += 'gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:center;';
+  el.innerHTML = '<span style="font-size:10px;color:var(--muted);flex-shrink:0;margin-right:2px;"><i data-lucide="bookmark" style="width:11px;height:11px;vertical-align:-2px;"></i></span>' + saved.map(s => `<button onclick="applySavedSearch('${escapeHtml(s)}')" class="pill-sm" style="white-space:nowrap;display:inline-flex;align-items:center;gap:4px;padding-right:4px;">${escapeHtml(s)}<span onclick="event.stopPropagation();removeSavedSearch('${escapeHtml(s)}')" style="width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--border);font-size:9px;cursor:pointer;">×</span></button>`).join('');
+  refreshIcons();
+}
 
 function startVoiceSearch() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -3710,6 +3761,54 @@ async function createBookingInDB(t) {
   if (error) throw new Error('予約の作成に失敗しました');
   payCart.booking_id = data.id;
 }
+
+function openReviewModal(teacherId, teacherName) {
+  let selectedRating = 0;
+  const overlay = document.getElementById('modal');
+  document.getElementById('modal-body').innerHTML = `
+    <div style="text-align:center;padding:10px 0 20px;">
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--green));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="message-square-heart" style="width:24px;height:24px;color:white;"></i></div>
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">${escapeHtml(teacherName)}のレビュー</h2>
+      <p style="font-size:12px;color:var(--muted);">あなたの体験を共有しましょう</p>
+    </div>
+    <div id="review-stars" style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
+      ${[1,2,3,4,5].map(n => `<button onclick="document.querySelectorAll('#review-stars button').forEach((b,i)=>{b.style.color=i<${n}?'var(--gold)':'var(--border)';b.querySelector('i').style.fill=i<${n}?'var(--gold)':'none'});document.getElementById('review-rating').value=${n};" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--border);transition:all .15s;"><i data-lucide="star" style="width:32px;height:32px;fill:none;"></i></button>`).join('')}
+    </div>
+    <input type="hidden" id="review-rating" value="0">
+    <textarea id="review-comment" rows="4" placeholder="レッスンはいかがでしたか？（任意）" style="width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;resize:none;transition:border-color .2s;background:var(--bg);color:var(--dark);" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-outline" onclick="closeModal()" style="flex:1;">キャンセル</button>
+      <button class="btn btn-dark" id="submit-review-btn" onclick="submitReview('${teacherId}')" style="flex:2;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="send" style="width:14px;height:14px;"></i>送信する</button>
+    </div>`;
+  overlay.classList.add('open');
+  refreshIcons();
+}
+
+async function submitReview(teacherId) {
+  if (!currentUser) { showToast('ログインが必要です', 'var(--red)'); return; }
+  const rating = parseInt(document.getElementById('review-rating').value);
+  const comment = document.getElementById('review-comment').value.trim();
+  if (!rating || rating < 1) { showToast('星を選択してください', 'var(--gold)'); return; }
+  const btn = document.getElementById('submit-review-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;"></span>';
+  try {
+    const { error } = await sb.from('reviews').insert({
+      reviewer_id: currentUser.id,
+      reviewee_id: teacherId,
+      rating,
+      comment: comment || null,
+    });
+    if (error) throw error;
+    closeModal();
+    showToast('レビューを投稿しました！ありがとうございます', 'var(--green)');
+    celebrateBooking();
+  } catch(e) {
+    showToast('レビューの送信に失敗しました', 'var(--red)');
+    btn.disabled = false; btn.innerHTML = '<i data-lucide="send" style="width:14px;height:14px;"></i>送信する';
+    refreshIcons();
+  }
+}
+
 function renderModal() {
   const t = selTeacher; if (!t) return;
   let html = '<div class="modal-handle" style="width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 12px;"></div>';
@@ -4113,6 +4212,7 @@ updateNavAuth();
 renderHome();
 renderFilters();
 renderExplore();
+renderSavedSearches();
 renderAiChips();
 renderNotifs();
 handlePaymentReturn();
