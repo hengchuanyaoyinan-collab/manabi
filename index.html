@@ -583,6 +583,24 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
       </div>
     </div>
   </div>
+  <div id="prof-display" style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px;display:none;">
+    <div id="prof-bio-block" style="display:none;margin-bottom:14px;">
+      <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="user" style="width:13px;height:13px;"></i>自己紹介</p>
+      <p id="prof-bio-text" style="font-size:14px;line-height:1.8;color:var(--mid);white-space:pre-wrap;"></p>
+    </div>
+    <div id="prof-career-block" style="display:none;margin-bottom:14px;">
+      <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="briefcase" style="width:13px;height:13px;"></i>経歴・職業</p>
+      <p id="prof-career-text" style="font-size:14px;color:var(--mid);"></p>
+    </div>
+    <div id="prof-ach-block" style="display:none;margin-bottom:14px;">
+      <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="award" style="width:13px;height:13px;"></i>実績・資格</p>
+      <p id="prof-ach-text" style="font-size:14px;line-height:1.8;color:var(--mid);white-space:pre-wrap;"></p>
+    </div>
+    <div id="prof-style-block" style="display:none;">
+      <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="sparkles" style="width:13px;height:13px;"></i>教え方のスタイル</p>
+      <p id="prof-style-text" style="font-size:14px;color:var(--mid);"></p>
+    </div>
+  </div>
   <div style="background:white;border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <p style="font-weight:700;font-size:14px;margin-bottom:16px;">プロフィールを編集</p>
     <div style="margin-bottom:14px;"><label for="edit-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="edit-name" placeholder="山田 花子" maxlength="50"></div>
@@ -808,6 +826,24 @@ async function loadProfile() {
       if (data.career) document.getElementById('edit-career').value = data.career;
       if (data.achievements) document.getElementById('edit-achievements').value = data.achievements;
       if (data.teaching_style) document.getElementById('edit-style').value = data.teaching_style;
+      const styleMap = { friendly:'フレンドリー・楽しく', structured:'体系的・カリキュラム重視', practical:'実践的・ハンズオン', patient:'じっくり丁寧', intensive:'集中・短期上達' };
+      const display = document.getElementById('prof-display');
+      let anyShown = false;
+      const setBlock = (blockId, textId, val) => {
+        const block = document.getElementById(blockId);
+        if (val) {
+          document.getElementById(textId).textContent = val;
+          block.style.display = '';
+          anyShown = true;
+        } else {
+          block.style.display = 'none';
+        }
+      };
+      setBlock('prof-bio-block', 'prof-bio-text', data.bio);
+      setBlock('prof-career-block', 'prof-career-text', data.career);
+      setBlock('prof-ach-block', 'prof-ach-text', data.achievements);
+      setBlock('prof-style-block', 'prof-style-text', styleMap[data.teaching_style]);
+      if (display) display.style.display = anyShown ? '' : 'none';
     } else {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
@@ -1557,22 +1593,61 @@ async function loadChatThreads() {
   const listEl = document.getElementById('chat-list-items');
   if (listEl && !chatThreads.length) listEl.innerHTML = '<div style="padding:20px;text-align:center;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:20px;height:20px;"></span></div>';
   try {
-  const { data: bookings } = await sb.from('bookings')
-    .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(id,name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(id,name,avatar_url)')
-    .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
-    .order('created_at', { ascending: false });
+  const preserved = (chatThreads || []).filter(t => t._pending).map(t => t.other);
+  const [bookingsRes, messagesRes] = await Promise.all([
+    sb.from('bookings')
+      .select('id, student_id, teacher_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(id,name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(id,name,avatar_url)')
+      .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
+      .order('created_at', { ascending: false }),
+    sb.from('messages')
+      .select('sender_id, receiver_id, created_at')
+      .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+      .order('created_at', { ascending: false }),
+  ]);
   const map = new Map();
-  for (const b of (bookings || [])) {
+  for (const b of (bookingsRes.data || [])) {
     const other = b.student_id === currentUser.id ? b.teacher : b.student;
     if (!other?.id) continue;
     if (!map.has(other.id)) map.set(other.id, { other, bookings: [] });
     map.get(other.id).bookings.push(b);
+  }
+  const otherIdsFromMsgs = new Set();
+  for (const m of (messagesRes.data || [])) {
+    const otherId = m.sender_id === currentUser.id ? m.receiver_id : m.sender_id;
+    if (otherId && !map.has(otherId)) otherIdsFromMsgs.add(otherId);
+  }
+  for (const p of preserved) {
+    if (p?.id && !map.has(p.id)) otherIdsFromMsgs.add(p.id);
+  }
+  if (otherIdsFromMsgs.size) {
+    const { data: profs } = await sb.from('profiles').select('id, name, avatar_url').in('id', Array.from(otherIdsFromMsgs));
+    for (const p of (profs || [])) {
+      map.set(p.id, { other: p, bookings: [] });
+    }
   }
   chatThreads = Array.from(map.values());
   await Promise.allSettled(chatThreads.map(t => loadMsgsFor(t.other.id)));
   renderChatList();
   if (chatThreads.length && curChat == null) renderChat(0);
   } catch(e) { console.error('loadChatThreads error:', e); addNotif({ text: 'チャットの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
+}
+
+async function startDirectChat(userId, userName) {
+  if (!currentUser) { openAuthModal('login'); return; }
+  if (userId === currentUser.id) return;
+  showPage('chat');
+  try {
+    let existing = chatThreads.findIndex(t => t.other?.id === userId);
+    if (existing < 0) {
+      const { data: prof } = await sb.from('profiles').select('id, name, avatar_url').eq('id', userId).maybeSingle();
+      const other = prof || { id: userId, name: userName || '名前未設定', avatar_url: null };
+      chatThreads.unshift({ other, bookings: [], _pending: true });
+      chatMsgs[userId] = chatMsgs[userId] || [];
+      existing = 0;
+    }
+    renderChatList();
+    renderChat(existing);
+  } catch(e) { console.error('startDirectChat error:', e); }
 }
 
 async function loadMsgsFor(otherId) {
@@ -1625,7 +1700,7 @@ function renderChat(idx) {
   if (safeChatHeaderAv) av.innerHTML = `<img src="${escapeHtml(safeChatHeaderAv)}" alt="${escapeHtml(o.name||'')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
   else { av.textContent = (o.name || '?').substring(0,2).toUpperCase(); av.style.background = 'linear-gradient(135deg,var(--accent),#9575CD)'; av.style.color = 'white'; }
   document.getElementById('chat-name').textContent = o.name || '名前未設定';
-  document.getElementById('chat-status').textContent = (t.bookings[0]?.status === 'confirmed') ? '予約確定済み' : '予約あり';
+  document.getElementById('chat-status').textContent = t.bookings.length ? ((t.bookings[0]?.status === 'confirmed') ? '予約確定済み' : '予約あり') : 'ダイレクトメッセージ';
   document.getElementById('chat-status').style.color = 'var(--muted)';
   const msgs = document.getElementById('chat-msgs');
   const list = chatMsgs[o.id] || [];
@@ -1844,7 +1919,7 @@ async function loadLearningRequests() {
         ${r.detail ? `<p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:10px;">${escapeHtml(r.detail)}</p>` : ''}
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <span class="tag">${formatMap[r.format] || r.format}</span>
-          ${!isMine ? `<button class="btn btn-dark" style="font-size:12px;padding:6px 14px;margin-left:auto;" onclick="showPage('chat')">メッセージを送る</button>` : `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;margin-left:auto;color:var(--red);border-color:var(--red);" onclick="closeLearningRequest('${r.id}',this)">取り下げ</button>`}
+          ${!isMine ? `<button class="btn btn-dark" style="font-size:12px;padding:6px 14px;margin-left:auto;" onclick="startDirectChat(${JSON.stringify(r.user_id)},${JSON.stringify(name)})">メッセージを送る</button>` : `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;margin-left:auto;color:var(--red);border-color:var(--red);" onclick="closeLearningRequest('${r.id}',this)">取り下げ</button>`}
         </div>
       </div>`;
     }).join('');
@@ -2114,6 +2189,9 @@ function renderModal() {
       <div><h2 style="font-size:20px;margin-bottom:2px;">${escapeHtml(t.name)}</h2><p style="font-size:13px;color:var(--muted);">${escapeHtml(t.subject)}</p><div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:13px;font-weight:600;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件)</span></div>${verified}</div>
     </div>
     <p style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:16px;">${escapeHtml(t.bio)}</p>
+    ${t.career ? `<div style="margin-bottom:12px;"><p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="briefcase" style="width:12px;height:12px;"></i>経歴</p><p style="font-size:13px;color:var(--mid);">${escapeHtml(t.career)}</p></div>` : ''}
+    ${t.achievements ? `<div style="margin-bottom:12px;"><p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="award" style="width:12px;height:12px;"></i>実績・資格</p><p style="font-size:13px;color:var(--mid);line-height:1.7;white-space:pre-wrap;">${escapeHtml(t.achievements)}</p></div>` : ''}
+    ${t.teaching_style ? `<div style="margin-bottom:16px;"><p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="sparkles" style="width:12px;height:12px;"></i>教え方</p><p style="font-size:13px;color:var(--mid);">${escapeHtml({friendly:'フレンドリー・楽しく',structured:'体系的・カリキュラム重視',practical:'実践的・ハンズオン',patient:'じっくり丁寧',intensive:'集中・短期上達'}[t.teaching_style] || '')}</p></div>` : ''}
     ${tagsHtml}
     <div style="background:var(--bg);border-radius:12px;padding:16px;margin-bottom:20px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="font-size:12px;color:var(--muted);">授業料</span><span style="font-weight:700;font-size:15px;color:var(--accent);">¥${t.price.toLocaleString()} <span style="font-size:11px;color:var(--muted);font-weight:400;">/ 50分</span></span></div>
@@ -2262,7 +2340,7 @@ async function loadSkillsFromDB() {
   if (homeEl && !homeEl.children.length) homeEl.innerHTML = makeSkeletonCards(4);
   if (exploreEl && !exploreEl.children.length) exploreEl.innerHTML = makeSkeletonCards(6);
   try {
-    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url, score)');
+    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url, score, career, achievements, teaching_style)');
     if (error || !data || data.length === 0) return;
     const userIds = [...new Set(data.map(s => s.user_id).filter(Boolean))];
     let reviewStats = {};
@@ -2296,6 +2374,9 @@ async function loadSkillsFromDB() {
         db_user_id: s.user_id,
         db_skill_id: s.id,
         lesson_formats: s.lesson_formats || [],
+        career: s.profiles?.career || '',
+        achievements: s.profiles?.achievements || '',
+        teaching_style: s.profiles?.teaching_style || '',
       };
     });
     teachers = teachers.filter(t => !t.db_skill_id);
