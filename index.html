@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Manabi — 誰でも先生になれる、誰でも生徒になれる。スキルを教え合うマーケットプレイス。">
+<meta name="description" content="Manabi — スキルのマーケットプレイス。勉強・スポーツ・音楽・趣味、何でも教え合える。AIが最適な先生を自動マッチング。登録無料・Stripe安全決済。">
+<link rel="canonical" href="https://manabi-bay.vercel.app">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Manabi","url":"https://manabi-bay.vercel.app","description":"スキルのマーケットプレイス。勉強・スポーツ・音楽・趣味を教え合う。AIマッチング搭載。","applicationCategory":"EducationalApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY","description":"登録・出品無料"},"creator":{"@type":"Organization","name":"Manabi"}}</script>
 <meta name="theme-color" content="#2D2D2D">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -475,43 +477,29 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px;" id="recent-cards"></div>
   </div>
 
-  <!-- Testimonials -->
+  <!-- Why Manabi -->
   <div style="margin-top:36px;margin-bottom:36px;" class="fade-up">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-      <h2 style="font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px;"><i data-lucide="message-circle-heart" style="width:18px;height:18px;color:var(--accent);"></i>ユーザーの声</h2>
-    </div>
-    <div class="testimonial-scroll">
-      <div class="testimonial-card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#5C6BC0,#7C4DFF);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;">YT</div>
-          <div><p style="font-weight:700;font-size:13px;">田中 悠太</p><p style="font-size:11px;color:var(--muted);">英語を学習中</p></div>
-        </div>
-        <div style="display:flex;gap:2px;margin-bottom:8px;color:var(--gold);"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i></div>
-        <p style="font-size:13px;color:var(--mid);line-height:1.8;">「マンツーマンなので自分のペースで学べるのが最高。先生も優しくて毎回楽しみです！」</p>
+    <h2 style="font-weight:700;font-size:16px;margin-bottom:16px;text-align:center;">Manabiが選ばれる理由</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:white;border-radius:14px;padding:20px 16px;border:1px solid var(--light);">
+        <div style="width:36px;height:36px;border-radius:10px;background:#E8EAF6;color:#5C6BC0;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><i data-lucide="zap" style="width:18px;height:18px;"></i></div>
+        <p style="font-weight:700;font-size:13px;margin-bottom:4px;">即マッチ</p>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;">登録から最短30秒で先生とつながれる</p>
       </div>
-      <div class="testimonial-card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#26A69A,#4CAF50);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;">AS</div>
-          <div><p style="font-weight:700;font-size:13px;">佐藤 あかり</p><p style="font-size:11px;color:var(--muted);">ピアノの先生として活動</p></div>
-        </div>
-        <div style="display:flex;gap:2px;margin-bottom:8px;color:var(--gold);"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i></div>
-        <p style="font-size:13px;color:var(--mid);line-height:1.8;">「趣味のピアノを教えて副収入に。生徒さんの成長を見るのが嬉しくて、今では週に5人教えています。」</p>
+      <div style="background:white;border-radius:14px;padding:20px 16px;border:1px solid var(--light);">
+        <div style="width:36px;height:36px;border-radius:10px;background:#E0F2F1;color:#26A69A;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><i data-lucide="wallet" style="width:18px;height:18px;"></i></div>
+        <p style="font-weight:700;font-size:13px;margin-bottom:4px;">自由な価格</p>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;">先生が自分で料金を設定。交渉も可能</p>
       </div>
-      <div class="testimonial-card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#EF5350,#FF7043);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;">KN</div>
-          <div><p style="font-weight:700;font-size:13px;">中村 健太</p><p style="font-size:11px;color:var(--muted);">プログラミングを学習中</p></div>
-        </div>
-        <div style="display:flex;gap:2px;margin-bottom:8px;color:var(--gold);"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--border);fill:none;"></i></div>
-        <p style="font-size:13px;color:var(--mid);line-height:1.8;">「独学で挫折したプログラミングが、現役エンジニアの先生に教わって理解できるように。転職にも成功しました！」</p>
+      <div style="background:white;border-radius:14px;padding:20px 16px;border:1px solid var(--light);">
+        <div style="width:36px;height:36px;border-radius:10px;background:#FBE9E7;color:#FF7043;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><i data-lucide="repeat" style="width:18px;height:18px;"></i></div>
+        <p style="font-weight:700;font-size:13px;margin-bottom:4px;">教える＝学ぶ</p>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;">誰でも先生、誰でも生徒。両方の立場が持てる</p>
       </div>
-      <div class="testimonial-card">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#AB47BC,#7C4DFF);display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;">MS</div>
-          <div><p style="font-weight:700;font-size:13px;">鈴木 麻衣</p><p style="font-size:11px;color:var(--muted);">ヨガの先生として活動</p></div>
-        </div>
-        <div style="display:flex;gap:2px;margin-bottom:8px;color:var(--gold);"><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i><i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);"></i></div>
-        <p style="font-size:13px;color:var(--mid);line-height:1.8;">「スタジオを持たなくても自由な時間に教えられる。Stripeで決済も安心です。」</p>
+      <div style="background:white;border-radius:14px;padding:20px 16px;border:1px solid var(--light);">
+        <div style="width:36px;height:36px;border-radius:10px;background:#F3E5F5;color:#AB47BC;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><i data-lucide="trending-up" style="width:18px;height:18px;"></i></div>
+        <p style="font-weight:700;font-size:13px;margin-bottom:4px;">信頼が資産に</p>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;">レビューとスコアが積み上がり信用になる</p>
       </div>
     </div>
   </div>
@@ -528,9 +516,9 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
     <div style="background:white;border-radius:18px;padding:28px 22px;text-align:center;border:1px solid var(--light);position:relative;overflow:hidden;">
       <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),#FFB74D);"></div>
       <div style="color:var(--gold);display:flex;justify-content:center;margin-bottom:12px;"><i data-lucide="megaphone" style="width:32px;height:32px;"></i></div>
-      <h3 style="font-size:17px;font-weight:700;margin-bottom:6px;">学びたいをリクエスト</h3>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.7;">先生が見つからない？<br>あなたから学びたいことを募集しよう。</p>
-      <button class="btn btn-outline" onclick="showPage('matching');setTimeout(()=>switchMatchTab('requests'),50);" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;width:100%;justify-content:center;padding:13px;border-width:2px;"><i data-lucide="message-square-plus" style="width:14px;height:14px;"></i>リクエストを投稿</button>
+      <h3 style="font-size:17px;font-weight:700;margin-bottom:6px;">AIが先生を見つける</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.7;">学びたいことを入力するだけ。<br>AIが最適な先生を自動でマッチング。</p>
+      <button class="btn btn-outline" onclick="showPage('matching');setTimeout(()=>switchMatchTab('ai'),50);" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;width:100%;justify-content:center;padding:13px;border-width:2px;"><i data-lucide="sparkles" style="width:14px;height:14px;"></i>AIマッチングで探す</button>
     </div>
   </div>
 
@@ -538,7 +526,7 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
   <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:40px;padding:20px 0;border-top:1px solid var(--light);border-bottom:1px solid var(--light);" class="fade-up">
     <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);"><i data-lucide="shield-check" style="width:16px;height:16px;color:var(--green);"></i>SSL暗号化通信</div>
     <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);"><i data-lucide="lock" style="width:16px;height:16px;color:var(--accent);"></i>Stripe安全決済</div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);"><i data-lucide="message-circle" style="width:16px;height:16px;color:var(--gold);"></i>24時間チャットサポート</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);"><i data-lucide="users" style="width:16px;height:16px;color:var(--gold);"></i>先生と直接チャット</div>
     <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);"><i data-lucide="undo-2" style="width:16px;height:16px;color:var(--red);"></i>キャンセル無料</div>
   </div>
 
@@ -1727,11 +1715,31 @@ let teachers = [
   {id:7,name:"中村 拓海",subject:"サッカー",rating:4.6,reviews:58,price:2000,tags:["ドリブル","戦術","初心者歓迎"],available:["土","日"],bio:"元Jリーグ選手。基礎から戦術まで丁寧に指導します。",avatar:"NT",color:"#B7E8D5",dist:"多摩川",career:"元J2リーガー / サッカースクールコーチ",achievements:"J2リーグ 3シーズン出場\nJFA公認C級コーチ",teaching_style:"intensive",lesson_formats:["inperson"]},
   {id:8,name:"小林 美咲",subject:"ヨガ",rating:4.8,reviews:73,price:2500,tags:["朝ヨガ","呼吸法","柔軟性"],available:["月","水","金"],bio:"RYT200取得。心と体のバランスを整えるヨガを提供します。",avatar:"KM",color:"#E8D5E0",dist:"代々木",career:"全米ヨガアライアンスRYT200認定インストラクター",achievements:"指導歴5年\n受講者累計1000名以上",teaching_style:"patient",lesson_formats:["online","inperson"]},
 ];
-const defaultLocations = [
-  {lat:35.6595,lng:139.7004},{lat:35.6611,lng:139.7036},{lat:35.6580,lng:139.6997},
-  {lat:35.6638,lng:139.7104},{lat:35.6712,lng:139.7103},{lat:35.6627,lng:139.7140},
-  {lat:35.6851,lng:139.7103},{lat:35.6648,lng:139.7120},
-];
+const areaGeocode = {
+  '渋谷':{lat:35.6580,lng:139.7016},'新宿':{lat:35.6938,lng:139.7034},'池袋':{lat:35.7295,lng:139.7109},
+  '秋葉原':{lat:35.6984,lng:139.7731},'吉祥寺':{lat:35.7031,lng:139.5795},'代々木':{lat:35.6833,lng:139.7020},
+  '多摩川':{lat:35.5899,lng:139.6632},'品川':{lat:35.6284,lng:139.7387},'六本木':{lat:35.6627,lng:139.7307},
+  '表参道':{lat:35.6653,lng:139.7121},'恵比寿':{lat:35.6467,lng:139.7100},'目黒':{lat:35.6337,lng:139.7158},
+  '上野':{lat:35.7141,lng:139.7774},'銀座':{lat:35.6717,lng:139.7649},'東京':{lat:35.6812,lng:139.7671},
+  '横浜':{lat:35.4437,lng:139.6380},'大宮':{lat:35.9064,lng:139.6238},'千葉':{lat:35.6074,lng:140.1065},
+  '立川':{lat:35.6978,lng:139.4146},'町田':{lat:35.5429,lng:139.4466},'下北沢':{lat:35.6613,lng:139.6680},
+  '中目黒':{lat:35.6441,lng:139.6988},'自由が丘':{lat:35.6078,lng:139.6686},'三軒茶屋':{lat:35.6437,lng:139.6710},
+  '二子玉川':{lat:35.6110,lng:139.6262},'武蔵小杉':{lat:35.5707,lng:139.6596},'川崎':{lat:35.5309,lng:139.7030},
+  '浦和':{lat:35.8592,lng:139.6455},'藤沢':{lat:35.3384,lng:139.4901},'船橋':{lat:35.7015,lng:139.9856},
+  '柏':{lat:35.8618,lng:139.9752},'八王子':{lat:35.6554,lng:139.3240},'大阪':{lat:34.6937,lng:135.5023},
+  '梅田':{lat:34.7024,lng:135.4959},'名古屋':{lat:35.1815,lng:136.9066},'福岡':{lat:33.5904,lng:130.4017},
+  '札幌':{lat:43.0621,lng:141.3544},'仙台':{lat:38.2604,lng:140.8828},'広島':{lat:34.3853,lng:132.4553},
+  'オンライン':{lat:35.6812,lng:139.7671},
+};
+function geocodeArea(area) {
+  if (!area) return null;
+  const exact = areaGeocode[area];
+  if (exact) return exact;
+  for (const [k,v] of Object.entries(areaGeocode)) {
+    if (area.includes(k) || k.includes(area)) return v;
+  }
+  return null;
+}
 let leafletMap = null;
 let mapMarkers = [];
 let chatThreads = [];
@@ -2046,10 +2054,15 @@ function renderMap() {
   const colorPalette = ['#5C6BC0','#26A69A','#EF5350','#AB47BC','#42A5F5','#66BB6A','#FFA726','#EC407A'];
   let ci = 0;
   list.forEach((t, i) => {
-    const loc = defaultLocations[i % defaultLocations.length];
     if (!t._mapLat) {
-      t._mapLat = loc.lat + (Math.random() - 0.5) * 0.006;
-      t._mapLng = loc.lng + (Math.random() - 0.5) * 0.006;
+      const geo = geocodeArea(t.dist || t.area || '');
+      if (geo) {
+        t._mapLat = geo.lat + (Math.random() - 0.5) * 0.004;
+        t._mapLng = geo.lng + (Math.random() - 0.5) * 0.004;
+      } else {
+        t._mapLat = 35.6812 + (Math.random() - 0.5) * 0.02;
+        t._mapLng = 139.7671 + (Math.random() - 0.5) * 0.02;
+      }
     }
     const lat = t._mapLat;
     const lng = t._mapLng;
@@ -2065,7 +2078,7 @@ function renderMap() {
     const gmapUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
     const popupContent = `<div class="map-popup-inner">
       <div class="popup-name">${escapeHtml(t.name)}</div>
-      <div class="popup-subject">${escapeHtml(t.subject)}</div>
+      <div class="popup-subject">${escapeHtml(t.subject)}${t.dist ? ' · ' + escapeHtml(t.dist) : ''}</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
         <span class="popup-price">¥${t.price.toLocaleString()}〜</span>
         <span class="popup-rating"><i data-lucide="star" style="width:12px;height:12px;fill:var(--gold);color:var(--gold);"></i> ${t.rating}</span>
@@ -2082,6 +2095,10 @@ function renderMap() {
     legendEl.innerHTML = Object.entries(subjectColors).map(([subj, color]) =>
       `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);"><div style="width:10px;height:10px;border-radius:50%;background:${color};"></div>${subj}</div>`
     ).join('');
+  }
+  if (mapMarkers.length > 0) {
+    const group = L.featureGroup(mapMarkers);
+    leafletMap.fitBounds(group.getBounds().pad(0.15), { maxZoom: 14 });
   }
   document.getElementById('map-cards').innerHTML = list.slice(0,6).map(makeCard).join('');
   refreshIcons();
