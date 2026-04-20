@@ -602,7 +602,10 @@ nav{background:white;border-bottom:1px solid var(--border);padding:0 max(20px, c
 
 <!-- PAYMENT -->
 <div class="page" id="payment" style="max-width:560px;">
-  <h2 style="font-weight:700;font-size:18px;margin-bottom:16px;">支払い・決済</h2>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+    <button onclick="showPage('matching')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+    <h2 style="font-weight:700;font-size:18px;">支払い・決済</h2>
+  </div>
   <div class="pay-steps">
     <button class="pay-step active" id="ps1">① 内容確認</button>
     <button class="pay-step" id="ps2">② 支払い方法</button>
