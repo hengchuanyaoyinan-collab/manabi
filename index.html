@@ -61,6 +61,8 @@
 [data-theme="dark"] .wiz-back,[data-theme="dark"] .wiz-reset{background:var(--lighter);border-color:var(--border);color:var(--mid);}
 [data-theme="dark"] .auth-tab.active{background:var(--lighter);color:var(--dark);}
 [data-theme="dark"] .leaflet-control-zoom a{background:var(--white)!important;color:var(--dark)!important;border-color:var(--border)!important;}
+[data-theme="dark"] .cat-icon{opacity:.85;}
+[data-theme="dark"] .feature-card div:first-child{opacity:.85;}
 [data-theme="dark"] select.form-input{background:var(--lighter);border-color:var(--border);color:var(--dark);}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html{scroll-behavior:smooth;}
@@ -428,7 +430,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <button class="btm-tab active" data-page="home" onclick="showPage('home')"><span class="btm-icon"><i data-lucide="home" style="width:22px;height:22px;"></i></span><span class="btm-label">ホーム</span></button>
     <button class="btm-tab" data-page="explore" onclick="showPage('explore')"><span class="btm-icon"><i data-lucide="search" style="width:22px;height:22px;"></i></span><span class="btm-label">さがす</span></button>
     <button class="btm-tab" data-page="matching" onclick="showPage('matching')"><span class="btm-icon"><i data-lucide="sparkles" style="width:22px;height:22px;"></i></span><span class="btm-label">マッチ</span></button>
-    <button class="btm-tab" data-page="chat" onclick="showPage('chat')"><span class="btm-icon"><i data-lucide="message-circle" style="width:22px;height:22px;"></i></span><span class="btm-label">メッセージ</span></button>
+    <button class="btm-tab" data-page="chat" onclick="showPage('chat')" style="position:relative;"><span class="btm-icon"><i data-lucide="message-circle" style="width:22px;height:22px;"></i></span><span class="btm-label">メッセージ</span><span id="chat-badge" style="display:none;position:absolute;top:2px;right:calc(50% - 16px);min-width:16px;height:16px;background:var(--red);border-radius:8px;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;padding:0 4px;"></span></button>
     <button class="btm-tab" data-page="profile" onclick="showPage('profile')"><span class="btm-icon"><i data-lucide="user" style="width:22px;height:22px;"></i></span><span class="btm-label">マイページ</span></button>
   </div>
 </div>
@@ -1938,6 +1940,17 @@ let mapMarkers = [];
 let chatThreads = [];
 let chatMsgs = {};
 let realtimeCh = null, realtimeRetries = 0;
+let unreadChatCount = 0;
+function updateChatBadge() {
+  unreadChatCount++;
+  const badge = document.getElementById('chat-badge');
+  if (badge) { badge.textContent = unreadChatCount > 9 ? '9+' : unreadChatCount; badge.style.display = 'flex'; }
+}
+function clearChatBadge() {
+  unreadChatCount = 0;
+  const badge = document.getElementById('chat-badge');
+  if (badge) badge.style.display = 'none';
+}
 function playNotifSound() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2003,7 +2016,7 @@ function showPage(id, pushHistory = true) {
   document.querySelectorAll('.btm-tab').forEach(b => {
     b.classList.toggle('active', b.dataset.page === btmActive);
   });
-  if (id === 'chat') loadChatThreads();
+  if (id === 'chat') { loadChatThreads(); clearChatBadge(); }
   if (id === 'matching') { loadPreviousAIRequests(); }
   if (id === 'map') renderMap();
   if (id === 'profile' || id === 'dashboard') loadProfile();
@@ -2730,6 +2743,7 @@ function subscribeRealtimeMessages() {
         const name = chatThreads[idx].other.name || '相手';
         addNotif({ text: `${name}さんからメッセージ`, time:'たった今', unread:true, color:'var(--accent)' });
         playNotifSound();
+        updateChatBadge();
       } else {
         loadChatThreads();
       }
