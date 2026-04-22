@@ -31,6 +31,10 @@ UA = "PunpunChannelBot/0.1 (educational; contact: punpun@example.com)"
 HEADERS = {"User-Agent": UA}
 
 
+# 同一 run 内で一度失敗したキーワードは再試行しない (速度対策)
+_FAILED_KEYWORDS: set[str] = set()
+
+
 def _hash(s: str) -> str:
     return hashlib.sha1(s.encode("utf-8")).hexdigest()[:16]
 
@@ -49,6 +53,9 @@ def fetch_wikipedia_image(keyword: str) -> Path | None:
     cache = _cache_path("wiki", keyword, "png")
     if cache.exists():
         return cache
+    fail_key = f"wiki:{keyword}"
+    if fail_key in _FAILED_KEYWORDS:
+        return None
 
     # Step 1: ページ情報を取得
     params = {
@@ -60,10 +67,11 @@ def fetch_wikipedia_image(keyword: str) -> Path | None:
         "redirects": 1,
     }
     try:
-        r = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=10)
+        r = requests.get(WIKI_API, params=params, headers=HEADERS, timeout=3)
         r.raise_for_status()
         data = r.json()
     except Exception:
+        _FAILED_KEYWORDS.add(fail_key)
         return None
 
     pages = data.get("query", {}).get("pages", {})
@@ -105,14 +113,18 @@ def fetch_irasutoya(keyword: str) -> Path | None:
     cache = _cache_path("iras", keyword, "png")
     if cache.exists():
         return cache
+    fail_key = f"iras:{keyword}"
+    if fail_key in _FAILED_KEYWORDS:
+        return None
 
     url = IRASUTOYA_SEARCH.format(query=urllib.parse.quote(keyword))
     try:
-        time.sleep(1.0)  # rate limit
-        r = requests.get(url, headers=HEADERS, timeout=10)
+        time.sleep(0.5)  # rate limit
+        r = requests.get(url, headers=HEADERS, timeout=3)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "lxml")
     except Exception:
+        _FAILED_KEYWORDS.add(fail_key)
         return None
 
     # 検索結果の最初の記事リンクを取得

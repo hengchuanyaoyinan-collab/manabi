@@ -73,6 +73,18 @@ def _ease_out(t: float) -> float:
     return 1 - (1 - t) ** 3
 
 
+def _apply_fade(img: Image.Image, alpha: float) -> Image.Image:
+    """alpha=1 そのまま、alpha=0 全黒 に補間。"""
+    if alpha >= 0.999:
+        return img
+    if alpha <= 0.001:
+        return Image.new("RGB", img.size, (0, 0, 0))
+    # numpy で高速に
+    import numpy as np
+    arr = np.asarray(img, dtype=np.float32) * alpha
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB")
+
+
 def _draw_speech_bubble_scaled(
     canvas: Image.Image,
     text: str,
@@ -116,8 +128,12 @@ def render_scene_frames(
     width: int = 1920,
     height: int = 1080,
     ken_burns: bool = True,
+    fade_in: float = 0.15,
+    fade_out: float = 0.10,
 ) -> list[Image.Image]:
-    """1 シーンの全フレームを返す。"""
+    """1 シーンの全フレームを返す。
+    fade_in/fade_out 秒数で黒フェード。
+    """
     cfg = style_config()
     font = _find_font(cfg["speechBubble"]["fontSize"])
     char_size = (cfg["character"]["size"]["width"], cfg["character"]["size"]["height"])
@@ -126,58 +142,50 @@ def render_scene_frames(
     pop_frames = min(total_frames, int(0.35 * fps))  # 0.35 秒でポップイン
     frames: list[Image.Image] = []
 
-    # 背景を少し大きくして (115%) Ken Burns 用
-    ken_start_scale = 1.0
-    ken_end_scale = 1.10 if ken_burns else 1.0
-    bg_w, bg_h = background.size
-    # 一旦ベースサイズに合わせる
-    if (bg_w, bg_h) != (width, height):
-        ratio = max(width / bg_w, height / bg_h) * ken_end_scale
-        base = background.resize(
-            (int(bg_w * ratio), int(bg_h * ratio)),
-            Image.LANCZOS,
-        )
-    else:
-        ratio = ken_end_scale
-        base = background.resize(
-            (int(width * ratio), int(height * ratio)),
-            Image.LANCZOS,
-        )
+    # 背景を 1 回だけ大サイズにスケール (毎フレーム resize すると遅い)
+    ken_max_scale = 1.10 if ken_burns else 1.0
+    ratio = max(width / background.width, height / background.height) * ken_max_scale
+    max_bg = background.resize(
+        (int(background.width * ratio), int(background.height * ratio)),
+        Image.LANCZOS,
+    ).convert("RGBA")
 
     for frame_idx in range(total_frames):
         t = frame_idx / max(1, total_frames - 1)
 
         canvas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
 
-        # Ken Burns: 徐々に拡大・少しパン
+        # Ken Burns: max_bg から徐々にタイト化する viewport を切り出す
         if ken_burns:
-            cur_scale = ken_start_scale + (ken_end_scale - ken_start_scale) * t
-            cur_bg = base.resize(
-                (int(width * cur_scale), int(height * cur_scale)),
-                Image.LANCZOS,
-            )
-            # 中心から少しパン (右下方向)
-            pan_x = int((cur_bg.width - width) * (0.3 + 0.4 * t))
-            pan_y = int((cur_bg.height - height) * (0.3 + 0.4 * t))
-            pan_x = max(0, min(cur_bg.width - width, pan_x))
-            pan_y = max(0, min(cur_bg.height - height, pan_y))
-            cropped = cur_bg.crop((pan_x, pan_y, pan_x + width, pan_y + height))
-            canvas.paste(cropped.convert("RGBA"), (0, 0))
+            # t=0 で最大視野 (max_bg 全体に近い) → t=1 で狭い視野 (拡大)
+            # 仮想ズーム = 1.0 → 1.10
+            cur_zoom = 1.0 + (ken_max_scale - 1.0) * t
+            # viewport サイズ = max_bg size / cur_zoom * (ken_max_scale)
+            # シンプルに: viewport 幅 = width * (ken_max_scale / cur_zoom)
+            vp_scale = ken_max_scale / cur_zoom
+            vp_w = int(width * vp_scale)
+            vp_h = int(height * vp_scale)
+            pan_x = int((max_bg.width - vp_w) * (0.3 + 0.4 * t))
+            pan_y = int((max_bg.height - vp_h) * (0.3 + 0.4 * t))
+            pan_x = max(0, min(max_bg.width - vp_w, pan_x))
+            pan_y = max(0, min(max_bg.height - vp_h, pan_y))
+            cropped = max_bg.crop((pan_x, pan_y, pan_x + vp_w, pan_y + vp_h))
+            if (vp_w, vp_h) != (width, height):
+                cropped = cropped.resize((width, height), Image.BILINEAR)
+            canvas.paste(cropped, (0, 0))
         else:
-            # 中央クロップ
-            left = (base.width - width) // 2
-            top = (base.height - height) // 2
-            canvas.paste(
-                base.crop((left, top, left + width, top + height)).convert("RGBA"),
-                (0, 0),
-            )
+            left = (max_bg.width - width) // 2
+            top = (max_bg.height - height) // 2
+            canvas.paste(max_bg.crop((left, top, left + width, top + height)), (0, 0))
 
         # 吹き出し (ポップイン)
         bubble_progress = min(1.0, frame_idx / pop_frames) if pop_frames > 0 else 1.0
         _draw_speech_bubble_scaled(canvas, text, font, _ease_out(bubble_progress))
 
         # ぷんぷん (口パク + ふわふわ)
-        amp = audio_envelope[frame_idx] if frame_idx < len(audio_envelope) else 0.0
+        # 口パクを少しスムーズに (前後 3 フレームの最大を採用して flicker 回避)
+        window = audio_envelope[max(0, frame_idx - 2) : frame_idx + 3]
+        amp = max(window) if window else 0.0
         mouth = get_mouth_frame_for_audio(amp)
         bob = int(4 * math.sin(frame_idx / fps * 2 * math.pi * 1.3))  # ~1.3Hz
         punpun = get_punpun(size=char_size, mouth=mouth)
@@ -186,7 +194,19 @@ def render_scene_frames(
         cy = height - char_size[1] - cfg["character"]["offset"]["y"] + bob
         canvas.alpha_composite(punpun, (cx, cy))
 
-        frames.append(canvas.convert("RGB"))
+        rgb = canvas.convert("RGB")
+
+        # フェード (シーン頭尾に黒からのフェードを入れて繋ぎを自然に)
+        fade_in_frames = int(fade_in * fps)
+        fade_out_frames = int(fade_out * fps)
+        if frame_idx < fade_in_frames and fade_in_frames > 0:
+            alpha = frame_idx / fade_in_frames
+            rgb = _apply_fade(rgb, alpha)
+        elif frame_idx >= total_frames - fade_out_frames and fade_out_frames > 0:
+            alpha = max(0.0, (total_frames - 1 - frame_idx) / fade_out_frames)
+            rgb = _apply_fade(rgb, alpha)
+
+        frames.append(rgb)
 
     return frames
 
@@ -247,6 +267,21 @@ def render_scene_video(
     return out_path
 
 
+def _render_one_scene_wrapper(args: tuple) -> str:
+    """multiprocessing 用の thin wrapper (pickle できる引数で受ける)。"""
+    (bg_bytes, bg_mode, bg_size, text, audio_path, duration,
+     out_path, fps, width, height) = args
+    from io import BytesIO
+    bg = Image.frombytes(bg_mode, bg_size, bg_bytes)
+    render_scene_video(
+        bg, text, Path(audio_path),
+        duration=duration,
+        out_path=Path(out_path),
+        fps=fps, width=width, height=height,
+    )
+    return str(out_path)
+
+
 def render_animated_video(
     script: VideoScript,
     backgrounds: list[Image.Image],
@@ -256,28 +291,44 @@ def render_animated_video(
     width: int = 1920,
     height: int = 1080,
     work_dir: Path | None = None,
+    parallel: int = 3,
 ) -> Path:
     """全シーンをアニメ付きで連結した MP4 を作る。
 
     各シーンごとに小さい MP4 を作り、最後に concat 多重化。
+    parallel > 1 で multiprocessing 並列化。
     """
     if work_dir is None:
         work_dir = out_path.parent / "_anim_work"
     work_dir.mkdir(parents=True, exist_ok=True)
 
+    # 未生成のシーンを洗い出し
+    tasks: list[tuple] = []
     scene_videos: list[Path] = []
     for scene, bg in zip(script.scenes, backgrounds, strict=True):
         if not scene.audio_path or scene.duration_seconds is None:
             raise RuntimeError(f"scene {scene.index} has no audio")
         mp4 = work_dir / f"scene_{scene.index:04d}.mp4"
-        if not mp4.exists():
-            render_scene_video(
-                bg, scene.text, Path(scene.audio_path),
-                duration=scene.duration_seconds,
-                out_path=mp4,
-                fps=fps, width=width, height=height,
-            )
         scene_videos.append(mp4)
+        if not mp4.exists():
+            # pickle 可能な形に変換 (Image は mp に渡しにくい)
+            bg_converted = bg.convert("RGBA")
+            tasks.append((
+                bg_converted.tobytes(), bg_converted.mode, bg_converted.size,
+                scene.text, scene.audio_path, scene.duration_seconds,
+                str(mp4), fps, width, height,
+            ))
+
+    if tasks:
+        if parallel > 1:
+            from concurrent.futures import ProcessPoolExecutor, as_completed
+            with ProcessPoolExecutor(max_workers=parallel) as ex:
+                futures = {ex.submit(_render_one_scene_wrapper, t): t for t in tasks}
+                for f in as_completed(futures):
+                    f.result()
+        else:
+            for t in tasks:
+                _render_one_scene_wrapper(t)
 
     # concat
     list_file = work_dir / "scenes_list.txt"
