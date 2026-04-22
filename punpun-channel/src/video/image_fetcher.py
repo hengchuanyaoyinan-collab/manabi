@@ -203,10 +203,30 @@ _BLANK_PALETTE = [
 
 
 def make_themed_blank(seed: str = "") -> Path:
-    """単なる白よりマシな、淡い色の背景。キーワードごとに色が決まる。"""
+    """単なる白よりマシな、淡い色のグラデーション背景。キーワードごとに色が決まる。"""
     import hashlib
+    from PIL import ImageFilter
+    import numpy as np
     idx = int(hashlib.sha1(seed.encode("utf-8")).hexdigest(), 16) % len(_BLANK_PALETTE)
-    return make_blank(_BLANK_PALETTE[idx])
+    base_color = _BLANK_PALETTE[idx]
+    cache = _cache_path("grad", f"{idx}_{base_color}", "png")
+    if cache.exists():
+        return cache
+
+    # 縦方向グラデーション (明→同色)
+    w, h = 1920, 1080
+    r, g, b = base_color
+    top = (min(255, r + 15), min(255, g + 15), min(255, b + 15))
+    bot = (max(0, r - 10), max(0, g - 10), max(0, b - 10))
+    gradient = np.zeros((h, w, 3), dtype=np.uint8)
+    for y in range(h):
+        t = y / (h - 1)
+        gradient[y, :, 0] = int(top[0] + (bot[0] - top[0]) * t)
+        gradient[y, :, 1] = int(top[1] + (bot[1] - top[1]) * t)
+        gradient[y, :, 2] = int(top[2] + (bot[2] - top[2]) * t)
+    img = Image.fromarray(gradient).filter(ImageFilter.GaussianBlur(radius=1))
+    img.save(cache, "PNG")
+    return cache
 
 
 # --- 統合インターフェース --------------------------------------------
