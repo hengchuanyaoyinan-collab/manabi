@@ -24,9 +24,12 @@
 - ✅ **地図 + 肖像 合成** (`overlay_keyword` で右上に肖像を重ねる)
 
 見られるもの:
-- `demo/elizabeth_bathory_short_animated.mp4`: 1:17 の動作確認版
-- `demo/elizabeth_bathory_demo.mp4`: 9:55 の v1 版 (静止画)
-- `demo/elizabeth_bathory_full_animated.mp4`: 9:55 の v2 アニメ版 (生成中 or 生成済み)
+- `demo/elizabeth_bathory_full_animated.mp4` ← **これが最新・最高品質** (9:54)
+- `demo/elizabeth_bathory_short_animated.mp4` ← 1:17 の動作確認版
+- `demo/elizabeth_bathory_demo.mp4` ← 9:55 の v1 版 (静止画、比較用)
+
+**GitHub 直リンク (ブラウザ再生):**
+https://github.com/hengchuanyaoyinan-collab/manabi/blob/claude/add-video-creation-gZ3Et/punpun-channel/demo/elizabeth_bathory_full_animated.mp4
 
 ## まず何を読むか
 
