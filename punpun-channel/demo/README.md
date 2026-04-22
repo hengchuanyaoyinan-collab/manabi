@@ -6,8 +6,11 @@
 
 | ファイル | 内容 |
 |---|---|
-| `elizabeth_bathory_demo.mp4` | エリザベート・バートリ 9 分 55 秒 (1920x1080) |
-| `elizabeth_bathory_thumbnail.png` | 同サムネ (1280x720) |
+| `elizabeth_bathory_short_animated.mp4` | **[v2] アニメ付き** 1 分 17 秒版。Ken Burns・口パク・実地図あり |
+| `elizabeth_bathory_short_animated_thumb.png` | 同サムネ |
+| `elizabeth_bathory_full_animated.mp4` | **[v2] アニメ付き** 9 分 55 秒フル版 (生成中 or 生成済) |
+| `elizabeth_bathory_demo.mp4` | [v1] 静止画版 9 分 55 秒 (比較用) |
+| `elizabeth_bathory_thumbnail.png` | [v1] サムネ (1280x720) |
 
 ## 見方
 
