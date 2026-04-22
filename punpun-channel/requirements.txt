@@ -26,6 +26,12 @@ google-auth-httplib2>=0.2.0
 # Wikipedia / data fetching
 wikipedia-api>=0.6.0
 
+# Map rendering (Natural Earth via Cartopy)
+matplotlib>=3.9.0
+geopandas>=1.0.0
+cartopy>=0.24.0
+pyogrio>=0.8.0
+
 # Utilities
 click>=8.1.0
 rich>=13.7.0
