@@ -56,6 +56,8 @@ def run_pipeline(
     publish_at: str | None = None,
     use_voicevox: bool = True,
     animate: bool = True,
+    fps: int = 24,
+    parallel: int = 3,
 ) -> dict:
     """1 本のパイプライン実行。
     返り値はレポート (生成物のパス、所要時間、エラー等)。
@@ -136,10 +138,12 @@ def run_pipeline(
     # --- 4. 動画アセンブル ---------------------------------------------
     try:
         if animate:
-            logger.info("Assembling ANIMATED video (Ken Burns + lip-sync)...")
+            logger.info(f"Assembling ANIMATED video (fps={fps}, parallel={parallel})...")
             video_path = render_animated_video(
                 script, backgrounds, work_dir / "video.mp4",
                 work_dir=work_dir / "_anim_work",
+                fps=fps,
+                parallel=parallel,
             )
         else:
             logger.info("Assembling static video...")
@@ -210,6 +214,8 @@ def main() -> int:
     p.add_argument("--test", action="store_true", help="アップロードしない")
     p.add_argument("--no-voicevox", action="store_true", help="open-jtalk を使う (テスト用)")
     p.add_argument("--no-animate", action="store_true", help="静止画動画にする (高速)")
+    p.add_argument("--fps", type=int, default=24, help="動画の fps (デフォ 24、速度優先なら 15)")
+    p.add_argument("--parallel", type=int, default=3, help="並列レンダリングのワーカー数")
     p.add_argument("--publish-at", help="公開時刻 (ISO8601)")
     args = p.parse_args()
 
@@ -220,6 +226,8 @@ def main() -> int:
         publish_at=args.publish_at,
         use_voicevox=not args.no_voicevox,
         animate=not args.no_animate,
+        fps=args.fps,
+        parallel=args.parallel,
     )
     if report["errors"]:
         for err in report["errors"]:
