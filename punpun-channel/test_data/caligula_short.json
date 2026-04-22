@@ -1,0 +1,28 @@
+{
+  "topic": "カリグラ帝",
+  "title": "【閲覧注意】ローマ最狂の皇帝カリグラのやばすぎる人生",
+  "description": "古代ローマ帝国第3代皇帝カリグラ。即位当初は名君として愛されたが、わずか数年で歴史に残る暴君と化した男の狂気の人生を辿る。\n\n00:00 オープニング\n00:15 第1章 期待の若き皇帝\n00:30 第2章 異変\n00:45 第3章 神を名乗る男\n01:00 第4章 暗殺\n\n#歴史 #世界史 #カリグラ #ローマ帝国 #暴君",
+  "tags": ["歴史", "世界史", "カリグラ", "ローマ帝国", "暴君", "古代ローマ", "やばい人生", "ぷんぷんの世事見聞録", "歴史解説"],
+  "thumbnail_text": "馬を / 元老院議員に",
+  "chapters": [
+    {"index": 0, "title": "オープニング", "summary": ""},
+    {"index": 1, "title": "期待の若き皇帝", "summary": ""},
+    {"index": 2, "title": "異変", "summary": ""},
+    {"index": 3, "title": "神を名乗る男", "summary": ""},
+    {"index": 4, "title": "暗殺", "summary": ""}
+  ],
+  "scenes": [
+    {"index": 0, "chapter": 0, "text": "どうもこんにちは。ぷんぷんの世事見聞録です。", "image_hint": {"type": "blank", "keyword": "OP", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 1, "chapter": 0, "text": "今回はローマ最狂の皇帝、カリグラのやばすぎる人生を見ていきます。", "image_hint": {"type": "blank", "keyword": "OP", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 2, "chapter": 1, "text": "舞台は紀元37年、古代ローマ帝国です。", "image_hint": {"type": "map_world", "keyword": "ローマ帝国", "highlight": "ローマ帝国", "overlay_keyword": null, "annotation": null}},
+    {"index": 3, "chapter": 1, "text": "若くして皇帝になったカリグラは、市民から熱狂的に歓迎されました。", "image_hint": {"type": "blank", "keyword": "歓迎", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 4, "chapter": 2, "text": "ところが即位から半年後、カリグラは謎の重病に倒れます。", "image_hint": {"type": "blank", "keyword": "病気", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 5, "chapter": 2, "text": "回復した彼は別人のような暴君に変貌していました。", "image_hint": {"type": "blank", "keyword": "変貌", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 6, "chapter": 3, "text": "自らを神と称し、神殿に自分の像を立てさせます。", "image_hint": {"type": "blank", "keyword": "神", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 7, "chapter": 3, "text": "愛馬インキタトゥスを元老院議員にしようとしたとも伝えられています。", "image_hint": {"type": "blank", "keyword": "馬", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 8, "chapter": 3, "text": "気に入らない者は次々に処刑し、財政も枯渇しました。", "image_hint": {"type": "blank", "keyword": "処刑", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 9, "chapter": 4, "text": "ついに紀元41年、近衛兵の手で暗殺されます。在位わずか4年でした。", "image_hint": {"type": "blank", "keyword": "暗殺", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 10, "chapter": 4, "text": "権力が人を狂わす典型例ですね。チャンネル登録お願いします。", "image_hint": {"type": "blank", "keyword": "まとめ", "highlight": null, "overlay_keyword": null, "annotation": null}}
+  ],
+  "estimated_duration_seconds": 50.0
+}

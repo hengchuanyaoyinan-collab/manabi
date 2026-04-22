@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 from src.config import TEMPLATES_DIR
-from src.types import VideoScript
+from src.models import VideoScript
 
 
 CLAUDE_BIN_ENV = "CLAUDE_BIN"

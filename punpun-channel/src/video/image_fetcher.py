@@ -21,7 +21,7 @@ from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw, ImageFont
 
 from src.config import ASSETS_DIR
-from src.types import BackgroundType, ImageHint
+from src.models import BackgroundType, ImageHint
 
 
 CACHE_DIR = ASSETS_DIR / "cache"

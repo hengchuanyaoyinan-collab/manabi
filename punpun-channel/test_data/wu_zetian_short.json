@@ -1,0 +1,28 @@
+{
+  "topic": "則天武后",
+  "title": "中国史上唯一の女帝・則天武后のやばすぎる人生",
+  "description": "中国の長い歴史でただ一人、自ら皇帝を名乗った女性、武則天。皇后から皇帝へと駆け上がるために行った粛清の数々を見ていく。\n\n00:00 オープニング\n00:15 第1章 女官として宮廷へ\n00:30 第2章 皇后への道\n00:45 第3章 粛清の嵐\n01:00 第4章 即位、そして晩年\n\n#歴史 #世界史 #則天武后 #武則天 #中国史",
+  "tags": ["歴史", "世界史", "則天武后", "武則天", "中国史", "唐", "女帝", "やばい人生", "ぷんぷんの世事見聞録", "歴史解説"],
+  "thumbnail_text": "中国唯一の / 女帝の闇",
+  "chapters": [
+    {"index": 0, "title": "オープニング", "summary": ""},
+    {"index": 1, "title": "女官として宮廷へ", "summary": ""},
+    {"index": 2, "title": "皇后への道", "summary": ""},
+    {"index": 3, "title": "粛清の嵐", "summary": ""},
+    {"index": 4, "title": "即位、そして晩年", "summary": ""}
+  ],
+  "scenes": [
+    {"index": 0, "chapter": 0, "text": "どうもこんにちは。ぷんぷんの世事見聞録です。", "image_hint": {"type": "blank", "keyword": "OP", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 1, "chapter": 0, "text": "今回は中国史上唯一の女帝、則天武后のやばすぎる人生です。", "image_hint": {"type": "blank", "keyword": "OP", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 2, "chapter": 1, "text": "舞台は7世紀、中国の唐王朝です。", "image_hint": {"type": "map_world", "keyword": "中国", "highlight": "中国", "overlay_keyword": null, "annotation": null}},
+    {"index": 3, "chapter": 1, "text": "武照という女性が14歳で皇帝の側室として宮廷に入ります。", "image_hint": {"type": "blank", "keyword": "宮廷", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 4, "chapter": 2, "text": "彼女は次の皇帝、高宗の寵愛を受け、皇后にまで上り詰めます。", "image_hint": {"type": "blank", "keyword": "皇后", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 5, "chapter": 2, "text": "そのために、自分の娘を絞め殺して前皇后に罪を着せたとも言われています。", "image_hint": {"type": "blank", "keyword": "陰謀", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 6, "chapter": 3, "text": "高宗の死後、息子を傀儡として操り、政敵を次々と粛清。", "image_hint": {"type": "blank", "keyword": "粛清", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 7, "chapter": 3, "text": "密告制度を作り、貴族・官僚を恐怖で支配しました。", "image_hint": {"type": "blank", "keyword": "恐怖政治", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 8, "chapter": 4, "text": "ついに690年、自ら皇帝として即位、国号を「周」と改めます。", "image_hint": {"type": "blank", "keyword": "即位", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 9, "chapter": 4, "text": "晩年はクーデターで退位、その年に82歳で亡くなりました。", "image_hint": {"type": "blank", "keyword": "晩年", "highlight": null, "overlay_keyword": null, "annotation": null}},
+    {"index": 10, "chapter": 4, "text": "残虐な手段ながら、政治家としては有能だった複雑な存在です。チャンネル登録お願いします。", "image_hint": {"type": "blank", "keyword": "まとめ", "highlight": null, "overlay_keyword": null, "annotation": null}}
+  ],
+  "estimated_duration_seconds": 55.0
+}

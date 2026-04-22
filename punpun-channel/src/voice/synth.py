@@ -7,7 +7,7 @@ import json
 import subprocess
 from pathlib import Path
 
-from src.types import VideoScript
+from src.models import VideoScript
 from src.voice.voicevox_client import VoiceVoxClient
 from src.voice.openjtalk_fallback import is_available as has_openjtalk
 from src.voice.openjtalk_fallback import speak_to_file as openjtalk_speak
