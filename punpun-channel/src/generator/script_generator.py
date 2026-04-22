@@ -55,10 +55,10 @@ def call_claude_cli(prompt: str, *, model: str = "claude-opus-4-7") -> str:
         "--model", model,
         "--output-format", "text",
         "--disallowedTools", "Bash,Read,Write,Edit,Grep,Glob,WebSearch,WebFetch,Task,TodoWrite,NotebookEdit",
-        "--max-turns", "1",
     ]
     proc = subprocess.run(
-        cmd, check=False, capture_output=True, text=True, timeout=900
+        cmd, check=False, capture_output=True, text=True, timeout=900,
+        stdin=subprocess.DEVNULL,
     )
     if proc.returncode != 0:
         raise ScriptGenerationError(
