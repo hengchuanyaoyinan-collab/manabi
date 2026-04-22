@@ -1,0 +1,45 @@
+{
+  "_comment": "動画パフォーマンス記録。ぷんぷんの過去動画も初期データとして登録",
+  "videos": [
+    {
+      "videoId": null,
+      "topic": "チンギスハン",
+      "title": "【歴史紙芝居】チンギスハンのやばすぎる人生",
+      "thumbnailText": null,
+      "publishedAt": "2024-04-22",
+      "durationSeconds": 253,
+      "tags": [],
+      "metrics": {
+        "views": [{"at": "2026-04-22T00:00:00", "value": 3511}],
+        "likes": [],
+        "comments": [],
+        "subscribers": [],
+        "averageViewDurationSeconds": []
+      },
+      "note": "海外題材で日本人視聴者に新鮮、競合少なめ。サムネは肖像画使用。"
+    },
+    {
+      "videoId": null,
+      "topic": "織田信長",
+      "title": "【歴史紙芝居】織田信長のやばすぎる人生",
+      "thumbnailText": null,
+      "publishedAt": "2024-04-22",
+      "durationSeconds": 263,
+      "tags": [],
+      "metrics": {
+        "views": [{"at": "2026-04-22T00:00:00", "value": 573}],
+        "likes": [],
+        "comments": [],
+        "subscribers": [],
+        "averageViewDurationSeconds": []
+      },
+      "note": "国内定番題材。競合チャンネル多数で埋もれた可能性大。"
+    }
+  ],
+  "lastFetchedAt": null,
+  "learnings": [
+    "海外人物題材は日本人 YouTube で競合が少なく、伸びやすい (チンギスハン 3511 vs 織田信長 573 = 6倍差)",
+    "同じフォーマット・同じ尺でも、題材によって 6倍以上の差が出る = 題材選定が最重要",
+    "今後は海外人物 (特に日本で語られにくい中近世東欧・中東・東南アジア) を優先"
+  ]
+}

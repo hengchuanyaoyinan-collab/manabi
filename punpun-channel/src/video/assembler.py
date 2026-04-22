@@ -113,16 +113,22 @@ def _draw_speech_bubble(
     text: str,
     *,
     font: ImageFont.FreeTypeFont,
-    width: int = 1300,
+    width: int = 1400,
     pad: int = 40,
     max_lines: int = 3,
 ) -> None:
     """吹き出しを左下に描画 (背景画像の上に重ねる)。"""
     if not text:
         return
-    # 行ごとに折り返し (フォントサイズから 1 文字幅をだいたい計算)
-    char_px = font.size * 1.05  # 日本語はだいたい正方形
-    chars_per_line = max(8, int(width / char_px) - 2)
+    # 各行の実測幅を見ながら、(width - pad*2) に収まる最大文字数を求める
+    # safety margin を 1 文字分取って端ギリギリを避ける
+    inner_w = width - pad * 2 - int(font.size * 1.0)
+    chars_per_line = 8
+    while chars_per_line < 60:
+        sample = "あ" * (chars_per_line + 1)
+        if int(font.getlength(sample)) > inner_w:
+            break
+        chars_per_line += 1
     lines = _wrap_text(text, chars_per_line)[:max_lines]
 
     # 行高さ

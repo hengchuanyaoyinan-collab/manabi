@@ -26,6 +26,11 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
+# プロジェクトルートを sys.path に追加 (どこから呼んでも src.* を import できるように)
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 from src.config import OUTPUT_DIR, channel_config
 from src.generator import topic_selector
 from src.generator.script_generator import generate_script, load_script
