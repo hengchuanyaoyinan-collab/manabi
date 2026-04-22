@@ -42,13 +42,27 @@ Chapter 6 (まとめ): 1〜2 分 - 学び・教訓 + 次回予告 + チャンネ
 
 ### 5. 各シーンに「背景ヒント」を付ける
 画面に表示する画像の指示。以下のタイプから選ぶ:
-- `portrait`: 人物の肖像画 (Wikipedia)
-- `map_world`: 世界地図 (国を緑などで強調)
-- `map_region`: 地域地図 (アジア、ヨーロッパなど)
+- `portrait`: 人物の肖像画 (Wikipedia。人物名を keyword に)
+- `map_world`: 世界地図 (国を緑で強調。keyword に何の国か、highlight に強調する国名)
+- `map_region`: 地域地図 (アジア/ヨーロッパの範囲)
 - `map_historical`: 歴史地図 (例: 13 世紀の世界)
-- `illustration`: いらすとや (感情表現、抽象概念)
-- `photo`: 写真 (建造物、遺跡)
-- `blank`: 単色 (まとめ部分など)
+- `illustration`: いらすとや (感情表現・日常シーン。keyword はいらすとや検索語。例: "驚く人"、"戦士"、"王様")
+- `photo`: 写真 (建造物、遺跡。keyword は Wikipedia ページ名)
+- `blank`: 単色 (オープニングやまとめだけ。極力使わない)
+
+**推奨分布 (20 分 / 約 100 シーン):**
+- 冒頭/導入: map_world or map_region (5-10 シーン)
+- 生い立ち〜台頭: portrait (主役) + illustration (日常シーン) (30-40 シーン)
+- 全盛期の出来事: illustration + map_region (40-50 シーン)
+- まとめ: blank or portrait (5-10 シーン)
+
+**overlay_keyword を積極的に使う:**
+地図シーンで人物の肖像を右上に小さく重ねる場合、`overlay_keyword` に人名を入れる。
+例:
+```json
+{"type": "map_region", "keyword": "モンゴル", "highlight": "モンゴル", "overlay_keyword": "チンギス・カン"}
+```
+過去動画ではこれが多用されていた。
 
 ### 6. SEO 最適化
 - タイトル: 「【〇〇】〇〇のやばすぎる人生」or 類似形式

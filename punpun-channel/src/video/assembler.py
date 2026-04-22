@@ -43,43 +43,12 @@ def _find_font(size: int) -> ImageFont.FreeTypeFont:
 
 
 # ---------- ぷんぷんキャラ ----------------------------------------------
+# 互換用: 古い呼び出しをリダイレクト
 
 def _make_punpun_placeholder(size: tuple[int, int]) -> Image.Image:
-    """ぷんぷんの代替画像を生成。
-    本物のぷんぷん画像 (assets/characters/punpun.png) があればそれを使う。
-    無ければ簡易キャラを生成。
-    """
-    real = ASSETS_DIR / "characters" / "punpun.png"
-    if real.exists():
-        try:
-            return Image.open(real).convert("RGBA").resize(size, Image.LANCZOS)
-        except Exception:
-            pass
-
-    # 代替キャラを描画 (白丸顔 + 黒い目 + 赤い唇)
-    w, h = size
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-    cx, cy = w // 2, h // 2
-    r = min(w, h) // 2 - 4
-    # 白い顔
-    draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill="white", outline="black", width=4)
-    # 目 (左右)
-    eye_r = r // 6
-    eye_y = cy - r // 4
-    draw.ellipse((cx - r // 3 - eye_r, eye_y - eye_r, cx - r // 3 + eye_r, eye_y + eye_r), fill="black")
-    draw.ellipse((cx + r // 3 - eye_r, eye_y - eye_r, cx + r // 3 + eye_r, eye_y + eye_r), fill="black")
-    # 赤い唇
-    lip_w = r // 2
-    lip_h = r // 4
-    lip_y = cy + r // 3
-    draw.ellipse((cx - lip_w // 2, lip_y - lip_h // 2, cx + lip_w // 2, lip_y + lip_h // 2),
-                 fill=(220, 50, 50), outline="black", width=2)
-    # 細眉
-    brow_y = cy - r // 2
-    draw.arc((cx - r // 3 - 30, brow_y - 20, cx - r // 3 + 30, brow_y + 20), 200, 340, fill="black", width=4)
-    draw.arc((cx + r // 3 - 30, brow_y - 20, cx + r // 3 + 30, brow_y + 20), 200, 340, fill="black", width=4)
-    return img
+    """(互換) キャラ画像取得。新しい実装は src/video/character.py。"""
+    from src.video.character import get_punpun
+    return get_punpun(size=size, mouth="closed")
 
 
 # ---------- 吹き出し ----------------------------------------------------

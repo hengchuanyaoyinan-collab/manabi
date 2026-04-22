@@ -157,25 +157,19 @@ ASIA_BLANK = ASSETS_DIR / "backgrounds" / "asia_blank.png"
 
 
 def make_world_map(highlight: str | None = None) -> Path:
-    """白地図 (世界) に highlight の国を緑で塗る。
-    現状: assets が無ければ単色の代替画像を返す。
-    本実装はあとで Pillow + GeoPandas で正確に塗る予定。
-    """
-    cache = _cache_path("map_world", highlight or "", "png")
-    if cache.exists():
-        return cache
-    img = Image.new("RGB", (1920, 1080), (245, 245, 245))
-    draw = ImageDraw.Draw(img)
-    msg = f"World Map (highlight: {highlight or '-'})"
-    try:
-        font = ImageFont.truetype(
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 48
-        )
-    except OSError:
-        font = ImageFont.load_default()
-    draw.text((40, 40), msg, fill=(60, 60, 60), font=font)
-    img.save(cache, "PNG")
-    return cache
+    """白地図 (世界) に highlight の国を緑で塗る。"""
+    from src.video.map_renderer import render_world_map
+    return render_world_map(highlight=highlight)
+
+
+def make_asia_map(highlight: str | None = None) -> Path:
+    from src.video.map_renderer import render_asia_map
+    return render_asia_map(highlight=highlight)
+
+
+def make_europe_map(highlight: str | None = None) -> Path:
+    from src.video.map_renderer import render_europe_map
+    return render_europe_map(highlight=highlight)
 
 
 def make_blank(color: tuple[int, int, int] = (255, 255, 255)) -> Path:
@@ -186,30 +180,86 @@ def make_blank(color: tuple[int, int, int] = (255, 255, 255)) -> Path:
     return cache
 
 
+# パステル背景 (blank よりマシに見える代替)
+_BLANK_PALETTE = [
+    (252, 239, 225),   # クリーム
+    (230, 242, 253),   # 淡い空色
+    (245, 235, 245),   # ラベンダー
+    (232, 245, 232),   # ミント
+    (253, 236, 230),   # ピンク
+]
+
+
+def make_themed_blank(seed: str = "") -> Path:
+    """単なる白よりマシな、淡い色の背景。キーワードごとに色が決まる。"""
+    import hashlib
+    idx = int(hashlib.sha1(seed.encode("utf-8")).hexdigest(), 16) % len(_BLANK_PALETTE)
+    return make_blank(_BLANK_PALETTE[idx])
+
+
 # --- 統合インターフェース --------------------------------------------
 
-def fetch_for_hint(hint: ImageHint) -> Path | None:
-    """シーンの ImageHint に対応する画像パスを返す。失敗時は blank。"""
+def _resolve_main(hint: ImageHint) -> Path | None:
+    """overlay を考えずにメイン背景だけ取る。"""
+    if hint.type in (BackgroundType.PORTRAIT, BackgroundType.PHOTO):
+        p = fetch_wikipedia_image(hint.keyword)
+        if p:
+            return p
+    elif hint.type == BackgroundType.ILLUSTRATION:
+        p = fetch_irasutoya(hint.keyword)
+        if p:
+            return p
+    elif hint.type == BackgroundType.MAP_WORLD:
+        return make_world_map(hint.highlight or hint.keyword)
+    elif hint.type == BackgroundType.MAP_REGION:
+        kw = hint.highlight or hint.keyword or ""
+        if any(w in kw for w in ("中国", "モンゴル", "日本", "韓国", "朝鮮", "アジア", "唐", "宋", "明", "清", "元")):
+            return make_asia_map(hint.highlight or hint.keyword)
+        if any(w in kw for w in ("ハンガリー", "ヨーロッパ", "ドイツ", "フランス", "イタリア", "オーストリア", "ローマ", "ロシア", "イギリス")):
+            return make_europe_map(hint.highlight or hint.keyword)
+        return make_world_map(hint.highlight or hint.keyword)
+    elif hint.type == BackgroundType.MAP_HISTORICAL:
+        return make_world_map(hint.highlight or hint.keyword)
+    elif hint.type == BackgroundType.BLANK:
+        return make_blank()
+    return None
+
+
+def _compose_overlay(main_path: Path, overlay_keyword: str) -> Path:
+    """main 画像の上に overlay (肖像/イラスト) を右上あたりに小さく合成。"""
     try:
-        if hint.type in (BackgroundType.PORTRAIT, BackgroundType.PHOTO):
-            p = fetch_wikipedia_image(hint.keyword)
-            if p:
-                return p
-        elif hint.type == BackgroundType.ILLUSTRATION:
-            p = fetch_irasutoya(hint.keyword)
-            if p:
-                return p
-        elif hint.type in (
-            BackgroundType.MAP_WORLD,
-            BackgroundType.MAP_REGION,
-            BackgroundType.MAP_HISTORICAL,
-        ):
-            return make_world_map(hint.highlight or hint.keyword)
-        elif hint.type == BackgroundType.BLANK:
-            return make_blank()
+        overlay_path = fetch_wikipedia_image(overlay_keyword) or fetch_irasutoya(overlay_keyword)
+        if not overlay_path:
+            return main_path
+        base = Image.open(main_path).convert("RGBA")
+        ovl = Image.open(overlay_path).convert("RGBA")
+        # サイズ: 横 30% 程度
+        target_w = int(base.width * 0.30)
+        ratio = target_w / ovl.width
+        ovl = ovl.resize((target_w, int(ovl.height * ratio)), Image.LANCZOS)
+        # 位置: 右上 (10% マージン)
+        x = base.width - ovl.width - int(base.width * 0.08)
+        y = int(base.height * 0.08)
+        base.alpha_composite(ovl, (x, y))
+        cache = CACHE_DIR / f"compose_{_hash(str(main_path) + overlay_keyword)}.png"
+        base.convert("RGB").save(cache, "PNG")
+        return cache
+    except Exception:
+        return main_path
+
+
+def fetch_for_hint(hint: ImageHint) -> Path | None:
+    """シーンの ImageHint に対応する画像パスを返す。失敗時は themed blank。"""
+    try:
+        main = _resolve_main(hint)
+        if main is None:
+            return make_themed_blank(hint.keyword or hint.type.value)
+        if hint.overlay_keyword:
+            return _compose_overlay(main, hint.overlay_keyword)
+        return main
     except Exception:
         pass
-    return make_blank((250, 250, 250))
+    return make_themed_blank(hint.keyword or "blank")
 
 
 if __name__ == "__main__":

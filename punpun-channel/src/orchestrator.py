@@ -35,6 +35,7 @@ from src.config import OUTPUT_DIR, channel_config
 from src.generator import topic_selector
 from src.generator.script_generator import generate_script, load_script
 from src.models import VideoScript
+from src.video.animation import render_animated_video
 from src.video.assembler import assemble_video, render_scene_image
 from src.video.image_fetcher import fetch_for_hint
 from src.video.thumbnail_generator import generate_thumbnail
@@ -54,6 +55,7 @@ def run_pipeline(
     test_mode: bool = True,
     publish_at: str | None = None,
     use_voicevox: bool = True,
+    animate: bool = True,
 ) -> dict:
     """1 本のパイプライン実行。
     返り値はレポート (生成物のパス、所要時間、エラー等)。
@@ -110,14 +112,18 @@ def run_pipeline(
         report["stages"]["audio"] = "failed"
         return report
 
-    # --- 3. 画像取得 + シーン画像生成 -----------------------------------
+    # --- 3. 画像取得 -----------------------------------------------------
     try:
-        logger.info("Fetching images and rendering scenes...")
+        logger.info("Fetching background images...")
+        from PIL import Image as _PIL
+        backgrounds: list = []
         scene_images: list[Path] = []
         for scene in script.scenes:
-            bg = fetch_for_hint(scene.image_hint)
+            bg_path = fetch_for_hint(scene.image_hint)
+            backgrounds.append(_PIL.open(bg_path).convert("RGBA"))
+            # 従来互換: 静止画も 1 枚書き出しておく (サムネ等で使う)
             scene_img = render_scene_image(
-                bg, scene.text, work_dir / "scenes" / f"scene_{scene.index:04d}.png"
+                bg_path, scene.text, work_dir / "scenes" / f"scene_{scene.index:04d}.png"
             )
             scene_images.append(scene_img)
         report["stages"]["scenes"] = "ok"
@@ -129,10 +135,17 @@ def run_pipeline(
 
     # --- 4. 動画アセンブル ---------------------------------------------
     try:
-        logger.info("Assembling video...")
-        video_path = assemble_video(
-            script, scene_images, narration, work_dir / "video.mp4"
-        )
+        if animate:
+            logger.info("Assembling ANIMATED video (Ken Burns + lip-sync)...")
+            video_path = render_animated_video(
+                script, backgrounds, work_dir / "video.mp4",
+                work_dir=work_dir / "_anim_work",
+            )
+        else:
+            logger.info("Assembling static video...")
+            video_path = assemble_video(
+                script, scene_images, narration, work_dir / "video.mp4"
+            )
         report["stages"]["video"] = "ok"
         report["video"] = str(video_path)
     except Exception as e:
@@ -196,6 +209,7 @@ def main() -> int:
     p.add_argument("--script", help="既存の台本 JSON から動画だけ作る")
     p.add_argument("--test", action="store_true", help="アップロードしない")
     p.add_argument("--no-voicevox", action="store_true", help="open-jtalk を使う (テスト用)")
+    p.add_argument("--no-animate", action="store_true", help="静止画動画にする (高速)")
     p.add_argument("--publish-at", help="公開時刻 (ISO8601)")
     args = p.parse_args()
 
@@ -205,6 +219,7 @@ def main() -> int:
         test_mode=args.test or bool(args.script),
         publish_at=args.publish_at,
         use_voicevox=not args.no_voicevox,
+        animate=not args.no_animate,
     )
     if report["errors"]:
         for err in report["errors"]:

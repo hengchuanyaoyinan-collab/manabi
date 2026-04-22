@@ -18,7 +18,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from src.config import ASSETS_DIR
-from src.video.assembler import _find_font, _make_punpun_placeholder
+from src.video.assembler import _find_font
+from src.video.character import get_punpun
 
 
 THUMB_W = 1280
@@ -95,9 +96,9 @@ def generate_thumbnail(
         color = title_color if i == 0 else accent_color
         _stroke_text(draw, (x, y), line, font, fill=color, stroke_fill=(0, 0, 0), stroke_width=10)
 
-    # ぷんぷんを右下に
-    char_size = (240, 240)
-    punpun = _make_punpun_placeholder(char_size)
+    # ぷんぷんを右下に (口を開けた驚き顔にして視線誘導)
+    char_size = (260, 260)
+    punpun = get_punpun(size=char_size, mouth="open")
     canvas.alpha_composite(punpun, (width - char_size[0] - 20, height - char_size[1] - 20))
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
