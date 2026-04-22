@@ -30,9 +30,22 @@
 ### 2. Python インストール
 
 1. https://www.python.org/downloads/ へアクセス
-2. 最新安定版をダウンロード
+2. **3.11 または 3.12** をダウンロード (cartopy の対応版)
 3. インストーラ実行時、**必ず「Add Python to PATH」にチェック**
 4. 確認: `python --version` → 3.11.x 等
+
+### 2.1 Python 依存関係のインストール (初回のみ)
+
+```powershell
+cd C:\Users\%USERNAME%\punpun-channel
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+この時:
+- `cartopy`, `geopandas`, `matplotlib` のインストールに数分
+- 初回の地図レンダリング実行時、Natural Earth データ (~5MB) が自動ダウンロードされる (アマゾン S3 から)
 
 ### 3. FFmpeg インストール
 
