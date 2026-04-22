@@ -23,14 +23,28 @@ from src.models import VideoScript
 
 # ---------- フォント解決 ------------------------------------------------
 
-def _find_font(size: int) -> ImageFont.FreeTypeFont:
-    """日本語フォントを順番に探す。"""
+def _find_font(size: int, prefer_bold: bool = False) -> ImageFont.FreeTypeFont:
+    """日本語フォントを順番に探す。
+    assets/fonts/ にユーザー提供フォントがあれば最優先 (例: あずきフォント)。
+    無ければ Noto Sans CJK JP の Medium を使う (手書き風 - ほどの柔らかさはないが、
+    IPAGothic より見栄えが良い)。
+    """
     candidates = [
+        # ユーザー提供の手書き風フォント (最優先)
         ASSETS_DIR / "fonts" / "azuki.ttf",
         ASSETS_DIR / "fonts" / "PunpunFont.ttf",
-        Path("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf"),
+        ASSETS_DIR / "fonts" / "handwriting.ttf",
+    ]
+    if prefer_bold:
+        candidates += [
+            Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc"),
+            Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"),
+        ]
+    candidates += [
+        # 柔らかめ・中太。吹き出しに最適
+        Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc"),
         Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
-        Path("/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"),
+        Path("/usr/share/fonts/truetype/fonts-japanese-gothic.ttf"),
         Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
     ]
     for p in candidates:

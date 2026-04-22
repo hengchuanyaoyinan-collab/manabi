@@ -80,7 +80,7 @@ def generate_thumbnail(
         font_size = 110
     else:
         font_size = 90
-    font = _find_font(font_size)
+    font = _find_font(font_size, prefer_bold=True)
 
     lines = _split_for_thumbnail(text)
     line_h = font.size + 20
