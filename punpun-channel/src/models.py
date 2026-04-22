@@ -6,7 +6,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class BackgroundType(str, Enum):
@@ -25,10 +25,15 @@ class ImageHint(BaseModel):
     """シーンの背景を作るためのヒント。台本生成 AI が出力する。"""
 
     type: BackgroundType
-    keyword: str = Field(..., description="検索キーワード")
+    keyword: str = Field(default="", description="検索キーワード (blank なら不要)")
     highlight: str | None = Field(None, description="強調したい地域・人物 (地図の場合)")
     overlay_keyword: str | None = Field(None, description="背景の上に重ねる小画像")
     annotation: str | None = Field(None, description="赤丸などの強調")
+
+    @field_validator("keyword", mode="before")
+    @classmethod
+    def _none_to_empty(cls, v):
+        return "" if v is None else v
 
 
 class Scene(BaseModel):

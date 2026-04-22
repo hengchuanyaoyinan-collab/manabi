@@ -44,11 +44,21 @@ def render_prompt(topic: str, template_path: Path | None = None) -> str:
 
 
 def call_claude_cli(prompt: str, *, model: str = "claude-opus-4-7") -> str:
-    """`claude -p <prompt>` を呼んで標準出力を返す。"""
+    """`claude -p <prompt>` を呼んで標準出力を返す。
+
+    ツール (Bash 等) を全部無効化することで、フック起動を防ぎテキスト生成だけ
+    させる。これで session の制約に引っかからずに JSON が得られる。
+    """
     cli = _resolve_claude()
-    cmd = [cli, "-p", prompt, "--model", model, "--output-format", "text"]
+    cmd = [
+        cli, "-p", prompt,
+        "--model", model,
+        "--output-format", "text",
+        "--disallowedTools", "Bash,Read,Write,Edit,Grep,Glob,WebSearch,WebFetch,Task,TodoWrite,NotebookEdit",
+        "--max-turns", "1",
+    ]
     proc = subprocess.run(
-        cmd, check=False, capture_output=True, text=True, timeout=600
+        cmd, check=False, capture_output=True, text=True, timeout=900
     )
     if proc.returncode != 0:
         raise ScriptGenerationError(
