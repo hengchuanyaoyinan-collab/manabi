@@ -1,0 +1,34 @@
+{
+  "name": "punpun-channel",
+  "version": "0.1.0",
+  "description": "ぷんぷんの世事見聞録 - 完全自動化動画制作パイプライン",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "python3 src/orchestrator.py",
+    "generate:test": "python3 src/orchestrator.py --test",
+    "voicevox:test": "python3 src/voice/voicevox_client.py --test",
+    "script:generate": "python3 src/generator/generate_script.py",
+    "remotion:preview": "npx remotion preview src/video/index.ts",
+    "remotion:render": "npx remotion render src/video/index.ts MainComp out/video.mp4",
+    "youtube:auth": "python3 src/upload/youtube_oauth.py",
+    "youtube:upload": "python3 src/upload/upload_video.py",
+    "thumbnail:test": "python3 src/video/thumbnail_generator.py --test"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/bundler": "^4.0.0",
+    "@remotion/renderer": "^4.0.0",
+    "remotion": "^4.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

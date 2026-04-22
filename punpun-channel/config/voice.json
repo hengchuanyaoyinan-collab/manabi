@@ -1,0 +1,42 @@
+{
+  "engine": "voicevox",
+  "engineUrl": "http://localhost:50021",
+  "speaker": {
+    "id": null,
+    "name": "未選定",
+    "candidates": [
+      {
+        "id": 8,
+        "name": "春日部つむぎ ノーマル",
+        "note": "高め・少女っぽい・親しみやすい"
+      },
+      {
+        "id": 2,
+        "name": "四国めたん ノーマル",
+        "note": "高め・元気"
+      },
+      {
+        "id": 16,
+        "name": "九州そら ノーマル",
+        "note": "落ち着き・少し低め"
+      }
+    ],
+    "avoid": [
+      {
+        "id": 3,
+        "name": "ずんだもん ノーマル",
+        "reason": "競合チャンネルで飽和"
+      }
+    ]
+  },
+  "params": {
+    "speedScale": 1.05,
+    "pitchScale": 0.0,
+    "intonationScale": 1.1,
+    "volumeScale": 1.0,
+    "prePhonemeLength": 0.1,
+    "postPhonemeLength": 0.1
+  },
+  "outputFormat": "mp3",
+  "sampleRate": 44100
+}

@@ -1,0 +1,40 @@
+# Node
+node_modules/
+*.log
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Env / Secrets
+.env
+.env.local
+*.key
+*credentials*.json
+youtube-token.json
+
+# Output (generated videos can be huge)
+output/
+!output/.gitkeep
+
+# Cache
+.cache/
+assets/cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Temporary
+tmp/
+temp/
+*.tmp

@@ -1,0 +1,56 @@
+{
+  "character": {
+    "name": "ぷんぷん",
+    "imagePath": "assets/characters/punpun.png",
+    "position": "bottom-right",
+    "size": {
+      "width": 280,
+      "height": 280
+    },
+    "offset": {
+      "x": 30,
+      "y": 30
+    },
+    "lipSync": {
+      "enabled": true,
+      "openMouthImagePath": "assets/characters/punpun-mouth-open.png",
+      "intervalMs": 150
+    }
+  },
+  "speechBubble": {
+    "fontFamily": "あずきフォント",
+    "fontSize": 56,
+    "color": "#000000",
+    "backgroundColor": "#FFFFFF",
+    "borderColor": "#000000",
+    "borderWidth": 4,
+    "borderRadius": 30,
+    "padding": 30,
+    "tailDirection": "right",
+    "position": {
+      "x": 80,
+      "y": "auto-bottom"
+    },
+    "maxWidth": 1100,
+    "lineHeight": 1.4
+  },
+  "background": {
+    "defaultColor": "#FFFFFF",
+    "imageScale": "cover",
+    "imagePosition": "center"
+  },
+  "transition": {
+    "type": "fade",
+    "durationMs": 200
+  },
+  "animation": {
+    "characterBob": true,
+    "imageZoom": "ken-burns",
+    "speechBubbleAppear": "pop"
+  },
+  "scene": {
+    "minDurationMs": 2000,
+    "maxDurationMs": 8000,
+    "defaultDurationMs": 4000
+  }
+}

@@ -1,0 +1,31 @@
+# Core
+requests>=2.32.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+pyyaml>=6.0
+tqdm>=4.66.0
+
+# Audio processing
+pydub>=0.25.1
+soundfile>=0.12.1
+numpy>=1.26.0
+
+# Speech-to-text (subtitle timing)
+openai-whisper>=20231117
+
+# Image processing
+Pillow>=10.4.0
+beautifulsoup4>=4.12.0
+lxml>=5.2.0
+
+# YouTube
+google-api-python-client>=2.140.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+
+# Wikipedia / data fetching
+wikipedia-api>=0.6.0
+
+# Utilities
+click>=8.1.0
+rich>=13.7.0
