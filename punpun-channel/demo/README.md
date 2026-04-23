@@ -1,16 +1,31 @@
 # 🎬 デモ動画
 
-寝てる間に生成された実物のサンプル。
+生成された実物のサンプル。
 
-## ファイル
+## ファイル (最新から)
 
+### v3 (ドラマ仕立て + 歴史地図 + 表情豊かキャラ)
 | ファイル | 内容 |
 |---|---|
-| `elizabeth_bathory_short_animated.mp4` | **[v2] アニメ付き** 1 分 17 秒版。Ken Burns・口パク・実地図あり |
-| `elizabeth_bathory_short_animated_thumb.png` | 同サムネ |
-| `elizabeth_bathory_full_animated.mp4` | **[v2] アニメ付き** 9 分 55 秒フル版 (生成中 or 生成済) |
-| `elizabeth_bathory_demo.mp4` | [v1] 静止画版 9 分 55 秒 (比較用) |
-| `elizabeth_bathory_thumbnail.png` | [v1] サムネ (1280x720) |
+| `chinghis_khan_v3.mp4` | チンギスハン (生成中 or 生成済) |
+| `chinghis_khan_v3_thumb.png` | 同サムネ |
+
+**v3 で変わったもの:**
+- 台本が情報羅列 → ドラマ仕立て (驚き・ツッコミ・サスペンス付き)
+- 地図が Natural Earth → 13 世紀歴史地図 (28 国色分け + 日本語ラベル)
+- キャラ 1 表情 → 6 表情 (normal/shock/angry/laugh/sad/think)
+- 静的シーン → フラッシュ / シェイク / パルスエフェクト
+
+### v2 (Ken Burns + 口パク)
+| ファイル | 内容 |
+|---|---|
+| `elizabeth_bathory_short_animated.mp4` | 1:17 の短編アニメ |
+| `elizabeth_bathory_full_animated.mp4` | 9:54 フルアニメ |
+
+### v1 (静止画)
+| ファイル | 内容 |
+|---|---|
+| `elizabeth_bathory_demo.mp4` | 9:55 静止画版 |
 
 ## 見方
 
