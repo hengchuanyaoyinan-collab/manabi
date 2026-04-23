@@ -1,0 +1,822 @@
+{
+  "topic": "チンギスハン",
+  "title": "【衝撃】9歳で父が毒殺された少年が、地球の4分の1を支配した話",
+  "description": "どうも、ぷんぷんの世事見聞録です。今回は史上最大の帝国を築いた男の壮絶な人生。9歳で父を失い、奴隷に転落した少年がなぜ世界を征服できたのか。そこには想像を絶する苦難と、鬼のような執念がありました。\n\n【目次】\n0:00 オープニング\n0:30 Chapter 1: 貴族の子、その後奴隷に\n3:15 Chapter 2: 絶望の中で見つけた仲間\n6:45 Chapter 3: 戦いの天才、現る\n11:30 Chapter 4: 欲望のままに暴走\n15:00 Chapter 5: 伝説の最期\n18:30 Chapter 6: 歴史に刻まれた名",
+  "tags": [
+    "歴史",
+    "チンギスハン",
+    "モンゴル帝国",
+    "世界史",
+    "衝撃",
+    "ドキュメンタリー"
+  ],
+  "chapters": [
+    {
+      "index": 0,
+      "title": "衝撃フック",
+      "summary": ""
+    },
+    {
+      "index": 1,
+      "title": "貴族の子、その後奴隷に",
+      "summary": ""
+    },
+    {
+      "index": 2,
+      "title": "絶望の中で見つけた仲間",
+      "summary": ""
+    },
+    {
+      "index": 3,
+      "title": "戦いの天才、現る",
+      "summary": ""
+    },
+    {
+      "index": 4,
+      "title": "欲望のままに暴走",
+      "summary": ""
+    },
+    {
+      "index": 5,
+      "title": "伝説の最期",
+      "summary": ""
+    },
+    {
+      "index": 6,
+      "title": "歴史に刻まれた名",
+      "summary": ""
+    }
+  ],
+  "scenes": [
+    {
+      "index": 0,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "世界地図の4分の1。そこを支配した男がいます。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_world",
+        "keyword": "モンゴル帝国 世界最大",
+        "highlight": "全世界",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 1,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "でも、この人…9歳で父親を毒殺されました。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "泣く少年 夜明け",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 2,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "奴隷にされて…ここから人生が始まったんです。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "奴隷 鎖 グレーの背景",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 3,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "どうも、ぷんぷんの世事見聞録です。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 4,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "1162年、モンゴル高原。テムジンという少年が生まれました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "モンゴル高原1162年",
+        "highlight": "モンゴル",
+        "overlay_keyword": "テムジン",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 5,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "父親は、けっこう有力な部族長。悪くない出発点ですよ。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "テムジン幼少期 馬上の貴族",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 6,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "ところがこの時代、モンゴル高原は無法地帯。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "12世紀モンゴル高原 部族抗争",
+        "highlight": "モンゴル",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 7,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "部族同士が常に戦ってた。今の感覚で言うと…修羅場です。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "戦う部族兵士 馬戦 砂漠",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 8,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "その時、テムジンはまだ9歳。普通の子供です。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "遊ぶ子供 モンゴル草原",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 9,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "ところがある日…父親が敵の部族に毒で殺されました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "倒れる男 毒杯",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 10,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "父を失った途端、族長の息子の身分も失いました。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "孤立した少年 黒い背景",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 11,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "次の章…テムジン、人生で最悪の経験をします。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 12,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "敵の部族に捕虜として連れ去られました。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "拘束された少年 檻",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 13,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "身分も、自由も、すべてを奪われたんです。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "奴隷 重い鎖 夜明け",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 14,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "でも…この少年、ここで終わらなかった。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "少年 夜空 星 希望",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 15,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "奴隷状態から脱出します。いやいや、待ってください。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "逃げる少年 馬 夜間",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 16,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "この頃、テムジンは…もう 18歳。十年間、奴隷でした。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "若年の戦士 テムジン",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 17,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "その間、妻が奪われ、子供も産まれ…人生最悪の時代です。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "泣く女性 別れ",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 18,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "だけど、この苦しみが…後に武器になるんです。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "剣を握る戦士 決意の顔",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 19,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "自分を助けてくれた貴族に恩を返すため…動きます。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "握手 二人の男",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 20,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "次章…とんでもない才能が花開きます。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 21,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "20代のテムジンが、やったこと…聞いてください。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "テムジン壮年 真顔",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 22,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "バラバラだったモンゴル部族を…次々とまとめていった。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "モンゴル部族統一 12世紀末",
+        "highlight": "モンゴル",
+        "overlay_keyword": "テムジン",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 23,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "で、1206年。宣言します。『俺が全てを支配する』と。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "玉座の男 王冠 宣言",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 24,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "この年、彼は『チンギスハン』という名をもらいます。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "チンギスハン 正装",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 25,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "それは『全ての海を支配する王』という意味。いや待ってください。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "海 王冠 地図",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 26,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "モンゴルは内陸です。海なんてありません。笑えない。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "モンゴル高原 内陸",
+        "highlight": "モンゴル",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 27,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "その後…金国という当時の大国を侵略。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "金国侵略 1205年",
+        "highlight": "金国",
+        "overlay_keyword": "チンギスハン",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 28,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "で、西に進軍。ホラズム帝国も滅ぼした。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ホラズム帝国 征服",
+        "highlight": "ホラズム",
+        "overlay_keyword": "チンギスハン",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 29,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "領土…今の中国全体より大きい。想像できます?",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_world",
+        "keyword": "モンゴル帝国領土",
+        "highlight": "モンゴル帝国",
+        "overlay_keyword": "チンギスハン",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 30,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "次は…もっとヤバいやつです。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 31,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "敵の全員を殺す。これが彼の方針でした。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "戦場 兵士 槍",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 32,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "で、妻と娘を奴隷にした。いや、どういう神経してるんですか。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "奴隷 女性 力",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 33,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "この人、50代で…さらにやばいことを始めます。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "老年チンギスハン 厳しい表情",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 34,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "1204年から1226年…22年間ずっと戦い続けた。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "モンゴル帝国拡大 1204-1226年",
+        "highlight": "モンゴル",
+        "overlay_keyword": "チンギスハン",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 35,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "犠牲者…600万人以上と言われています。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "亡き人々 影 墓地",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 36,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "東京ドーム…満員で50万人。その12倍です。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "人混み 群衆 壮大",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 37,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "で、息子たちに全員…帝国の領地を分け与えた。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "分割 地図 四人の王",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 38,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "今で言うと…子供全員が東大総長みたいな立場。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "子供 王冠 玉座",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 39,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "次章…伝説の人物の…最後です。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 40,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "1227年。チンギスハン…死亡します。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "老年の顔 静寂",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 41,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "65歳。いや、当時としては…すごい長生きです。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "老人 寝台",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 42,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "その遺言…『息子たちよ。次は世界を取れ』。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "病床 王 言葉",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 43,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "後にこの帝国は…孫たちに引き継がれます。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "map_world",
+        "keyword": "モンゴル帝国継承 13世紀",
+        "highlight": "モンゴル帝国",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 44,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "さらにデカくなります。地球の4分の1を超える。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_world",
+        "keyword": "最大帝国領土",
+        "highlight": "全世界",
+        "overlay_keyword": "モンゴル帝国",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 45,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "9歳で奴隷にされた少年が…歴史最大の帝国を築いた。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "チンギスハン 威厳",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 46,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "逆境は弱さじゃない。強さの土台になる。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "上昇 光 強さ",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 47,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "歴史って、本当に面白い。次回もお楽しみに。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "笑顔 視聴者へ 光",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    }
+  ],
+  "thumbnail_text": "奴隷少年が地球制覇？",
+  "estimated_duration_seconds": 0.0
+}
