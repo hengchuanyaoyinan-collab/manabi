@@ -130,9 +130,13 @@ def render_scene_frames(
     ken_burns: bool = True,
     fade_in: float = 0.15,
     fade_out: float = 0.10,
+    emotion: str = "normal",
+    effect: str = "none",  # none/shake/flash/pulse
 ) -> list[Image.Image]:
     """1 シーンの全フレームを返す。
     fade_in/fade_out 秒数で黒フェード。
+    emotion: キャラの感情表情
+    effect: 強調演出 (shock のシーンで使う)
     """
     cfg = style_config()
     font = _find_font(cfg["speechBubble"]["fontSize"])
@@ -182,17 +186,38 @@ def render_scene_frames(
         bubble_progress = min(1.0, frame_idx / pop_frames) if pop_frames > 0 else 1.0
         _draw_speech_bubble_scaled(canvas, text, font, _ease_out(bubble_progress))
 
-        # ぷんぷん (口パク + ふわふわ)
+        # ぷんぷん (口パク + ふわふわ + 感情)
         # 口パクを少しスムーズに (前後 3 フレームの最大を採用して flicker 回避)
         window = audio_envelope[max(0, frame_idx - 2) : frame_idx + 3]
         amp = max(window) if window else 0.0
         mouth = get_mouth_frame_for_audio(amp)
         bob = int(4 * math.sin(frame_idx / fps * 2 * math.pi * 1.3))  # ~1.3Hz
-        punpun = get_punpun(size=char_size, mouth=mouth)
+        punpun = get_punpun(size=char_size, mouth=mouth, emotion=emotion)
 
-        cx = width - char_size[0] - cfg["character"]["offset"]["x"]
-        cy = height - char_size[1] - cfg["character"]["offset"]["y"] + bob
+        # 効果: シェイク・フラッシュ・パルス
+        char_offset_x = 0
+        char_offset_y = 0
+        if effect == "shake" and frame_idx < int(0.4 * fps):
+            char_offset_x = int(6 * math.sin(frame_idx * 1.8))
+            char_offset_y = int(4 * math.cos(frame_idx * 1.8))
+        elif effect == "pulse" and frame_idx < int(0.5 * fps):
+            pulse_t = frame_idx / max(1, int(0.5 * fps))
+            pulse_scale = 1.0 + 0.15 * math.sin(pulse_t * math.pi)
+            pulse_size = (int(char_size[0] * pulse_scale), int(char_size[1] * pulse_scale))
+            punpun = get_punpun(size=pulse_size, mouth=mouth, emotion=emotion)
+            char_offset_x = (char_size[0] - pulse_size[0]) // 2
+            char_offset_y = (char_size[1] - pulse_size[1]) // 2
+
+        cx = width - char_size[0] - cfg["character"]["offset"]["x"] + char_offset_x
+        cy = height - char_size[1] - cfg["character"]["offset"]["y"] + bob + char_offset_y
         canvas.alpha_composite(punpun, (cx, cy))
+
+        # フラッシュ効果 (shock 瞬間に白いフェードイン)
+        if effect == "flash" and frame_idx < int(0.15 * fps):
+            flash_t = 1 - (frame_idx / max(1, int(0.15 * fps)))
+            flash_alpha = int(200 * flash_t)
+            flash = Image.new("RGBA", (width, height), (255, 255, 255, flash_alpha))
+            canvas.alpha_composite(flash)
 
         rgb = canvas.convert("RGB")
 
@@ -221,12 +246,15 @@ def render_scene_video(
     fps: int = 30,
     width: int = 1920,
     height: int = 1080,
+    emotion: str = "normal",
+    effect: str = "none",
 ) -> Path:
     """1 シーンのアニメーション付き動画 (音声入り) を作る。"""
     envelope = _audio_envelope(audio_path, fps=fps)
     frames = render_scene_frames(
         background, text, envelope,
         fps=fps, duration=duration, width=width, height=height,
+        emotion=emotion, effect=effect,
     )
 
     # 一時 PNG 連番にしてから ffmpeg で MP4 化
@@ -270,14 +298,14 @@ def render_scene_video(
 def _render_one_scene_wrapper(args: tuple) -> str:
     """multiprocessing 用の thin wrapper (pickle できる引数で受ける)。"""
     (bg_bytes, bg_mode, bg_size, text, audio_path, duration,
-     out_path, fps, width, height) = args
-    from io import BytesIO
+     out_path, fps, width, height, emotion, effect) = args
     bg = Image.frombytes(bg_mode, bg_size, bg_bytes)
     render_scene_video(
         bg, text, Path(audio_path),
         duration=duration,
         out_path=Path(out_path),
         fps=fps, width=width, height=height,
+        emotion=emotion, effect=effect,
     )
     return str(out_path)
 
@@ -302,6 +330,16 @@ def render_animated_video(
         work_dir = out_path.parent / "_anim_work"
     work_dir.mkdir(parents=True, exist_ok=True)
 
+    # 感情から自動的にエフェクトを決める
+    _EFFECT_BY_EMOTION = {
+        "shock": "flash",
+        "angry": "shake",
+        "laugh": "pulse",
+        "sad": "none",
+        "think": "none",
+        "normal": "none",
+    }
+
     # 未生成のシーンを洗い出し
     tasks: list[tuple] = []
     scene_videos: list[Path] = []
@@ -311,12 +349,13 @@ def render_animated_video(
         mp4 = work_dir / f"scene_{scene.index:04d}.mp4"
         scene_videos.append(mp4)
         if not mp4.exists():
-            # pickle 可能な形に変換 (Image は mp に渡しにくい)
+            emotion = getattr(scene, "emotion", None) or "normal"
+            effect = _EFFECT_BY_EMOTION.get(emotion, "none")
             bg_converted = bg.convert("RGBA")
             tasks.append((
                 bg_converted.tobytes(), bg_converted.mode, bg_converted.size,
                 scene.text, scene.audio_path, scene.duration_seconds,
-                str(mp4), fps, width, height,
+                str(mp4), fps, width, height, emotion, effect,
             ))
 
     if tasks:

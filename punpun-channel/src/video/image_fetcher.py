@@ -231,6 +231,15 @@ def make_themed_blank(seed: str = "") -> Path:
 
 # --- 統合インターフェース --------------------------------------------
 
+def _find_historical_map_key(keyword: str) -> str | None:
+    """「モンゴル帝国1215年」等のキーワードから歴史地図キーを推定。"""
+    kw = (keyword or "").lower()
+    if "1215" in kw or "チンギス" in keyword or "モンゴル帝国" in keyword:
+        return "1215_mongol_empire"
+    # TODO: 他の時代
+    return None
+
+
 def _resolve_main(hint: ImageHint) -> Path | None:
     """overlay を考えずにメイン背景だけ取る。"""
     if hint.type in (BackgroundType.PORTRAIT, BackgroundType.PHOTO):
@@ -251,6 +260,10 @@ def _resolve_main(hint: ImageHint) -> Path | None:
             return make_europe_map(hint.highlight or hint.keyword)
         return make_world_map(hint.highlight or hint.keyword)
     elif hint.type == BackgroundType.MAP_HISTORICAL:
+        key = _find_historical_map_key(hint.keyword or hint.highlight or "")
+        if key:
+            from src.video.historical_maps import render_historical_map
+            return render_historical_map(key)
         return make_world_map(hint.highlight or hint.keyword)
     elif hint.type == BackgroundType.BLANK:
         return make_blank()

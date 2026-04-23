@@ -40,14 +40,27 @@ class Scene(BaseModel):
     """1 シーン = 1 セリフ。動画の最小単位。"""
 
     index: int
-    chapter: int = Field(..., description="所属する章番号 (0=OP, 1-4=本編, 5=まとめ)")
+    chapter: int = Field(..., description="所属する章番号 (0=OP, 1-5=本編, 6=まとめ)")
     chapter_title: str = ""
     text: str = Field(..., description="ぷんぷんが喋るセリフ")
+    emotion: str = Field(
+        default="normal",
+        description="キャラの感情: normal/shock/angry/laugh/sad/think",
+    )
     image_hint: ImageHint
     duration_seconds: float | None = Field(
         None, description="音声合成後に確定する。null のうちは未確定"
     )
     audio_path: str | None = Field(None, description="生成された音声ファイル")
+
+    @field_validator("emotion", mode="before")
+    @classmethod
+    def _normalize_emotion(cls, v):
+        if not v:
+            return "normal"
+        valid = {"normal", "shock", "angry", "laugh", "sad", "think"}
+        v = str(v).lower().strip()
+        return v if v in valid else "normal"
 
 
 class Chapter(BaseModel):
