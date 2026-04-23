@@ -128,37 +128,38 @@ def _draw_punpun(
     size: tuple[int, int] = (280, 280),
     mouth: str = MOUTH_CLOSED,
     emotion: str = "normal",
-    angle: float = -8.0,
+    angle: float = 0.0,  # 過去動画は傾いてないので 0 に
 ) -> Image.Image:
-    """ぷんぷんを描画。"""
+    """ぷんぷんを描画 (過去動画の見た目を再現)。"""
     w, h = size
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     cx, cy = w // 2, h // 2
-    r = int(min(w, h) * 0.42)
+    # 顔は画像にぴったり (マージン少なめ)
+    r = int(min(w, h) * 0.46)
 
-    # 白い顔
+    # 白い顔 (輪郭は太めだが過剰でない)
     draw.ellipse(
         (cx - r, cy - r, cx + r, cy + r),
         fill="white",
         outline=(0, 0, 0, 255),
-        width=5,
+        width=4,
     )
 
-    # 眉
-    brow_y = cy - int(r * 0.55)
-    _draw_eyebrow(draw, cx - int(r * 0.45), brow_y, r // 4, emotion, "L")
-    _draw_eyebrow(draw, cx + int(r * 0.45), brow_y, r // 4, emotion, "R")
+    # 眉 (高い位置、細く、緩やか)
+    brow_y = cy - int(r * 0.48)
+    _draw_eyebrow(draw, cx - int(r * 0.40), brow_y, r // 5, emotion, "L")
+    _draw_eyebrow(draw, cx + int(r * 0.40), brow_y, r // 5, emotion, "R")
 
-    # 目
-    eye_r = max(8, r // 9)
-    eye_y = cy - int(r * 0.18)
-    _draw_eye(draw, cx - int(r * 0.45), eye_y, eye_r, emotion, "L")
-    _draw_eye(draw, cx + int(r * 0.45), eye_y, eye_r, emotion, "R")
+    # 目 (小さめ、中央寄り)
+    eye_r = max(7, int(r * 0.10))
+    eye_y = cy - int(r * 0.08)
+    _draw_eye(draw, cx - int(r * 0.30), eye_y, eye_r, emotion, "L")
+    _draw_eye(draw, cx + int(r * 0.30), eye_y, eye_r, emotion, "R")
 
-    # 涙 (sad のみ)
+    # 涙 (sad)
     if emotion == "sad":
-        tear_x = cx + int(r * 0.55)
+        tear_x = cx + int(r * 0.42)
         tear_y = eye_y + eye_r
         draw.polygon(
             [(tear_x, tear_y), (tear_x - 6, tear_y + 14), (tear_x + 6, tear_y + 14)],
@@ -166,23 +167,21 @@ def _draw_punpun(
             outline=(60, 130, 200),
         )
 
-    # 怒りマーク (angry のみ)
+    # 怒りマーク (angry)
     if emotion == "angry":
-        mark_x = cx + int(r * 0.9)
-        mark_y = cy - int(r * 0.85)
+        mark_x = cx + int(r * 0.85)
+        mark_y = cy - int(r * 0.75)
         mark_r = 14
-        # ギザギザ (4 本線)
         for a in (0, 90, 180, 270):
             rad = a * math.pi / 180
             x2 = mark_x + int(math.cos(rad) * mark_r)
             y2 = mark_y + int(math.sin(rad) * mark_r)
             draw.line((mark_x, mark_y, x2, y2), fill=(220, 50, 50), width=4)
 
-    # 考え中マーク (think のみ)
+    # ?マーク (think)
     if emotion == "think":
-        # ?マーク右上
-        q_x = cx + int(r * 0.9)
-        q_y = cy - int(r * 0.85)
+        q_x = cx + int(r * 0.85)
+        q_y = cy - int(r * 0.75)
         from PIL import ImageFont
         try:
             f = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 36)
@@ -190,21 +189,58 @@ def _draw_punpun(
             f = ImageFont.load_default()
         draw.text((q_x - 10, q_y - 20), "?", font=f, fill=(50, 100, 200))
 
-    # 汗 (shock のみ)
+    # 汗 (shock)
     if emotion == "shock":
-        sweat_x = cx + int(r * 0.75)
-        sweat_y = cy - int(r * 0.35)
+        sweat_x = cx + int(r * 0.70)
+        sweat_y = cy - int(r * 0.30)
         draw.polygon(
             [(sweat_x, sweat_y), (sweat_x - 8, sweat_y + 20), (sweat_x + 8, sweat_y + 20)],
             fill=(100, 200, 240),
             outline=(60, 150, 210),
         )
 
-    # 口
-    lip_cy = cy + int(r * 0.38)
-    _draw_mouth(draw, cx, lip_cy, r, mouth, emotion)
+    # 口 (過去動画風: 大きめの赤い楕円)
+    lip_cy = cy + int(r * 0.34)
+    _draw_mouth_punpun(draw, cx, lip_cy, r, mouth, emotion)
 
-    return img.rotate(angle, resample=Image.BICUBIC, expand=False)
+    if angle != 0.0:
+        return img.rotate(angle, resample=Image.BICUBIC, expand=False)
+    return img
+
+
+def _draw_mouth_punpun(
+    draw: ImageDraw.ImageDraw,
+    cx: int, cy: int, r: int,
+    mouth: str, emotion: str,
+):
+    """過去動画風の口 (シンプルな赤い楕円)。emotion 別のバリエーション。"""
+    if mouth == MOUTH_CLOSED:
+        lw, lh = int(r * 0.42), int(r * 0.24)
+    elif mouth == MOUTH_HALF:
+        lw, lh = int(r * 0.46), int(r * 0.36)
+    else:
+        lw, lh = int(r * 0.50), int(r * 0.48)
+
+    if emotion == "angry":
+        # への字
+        draw.arc((cx - lw, cy - lh, cx + lw, cy + lh), 180, 360, fill=(200, 40, 40), width=6)
+    elif emotion == "sad":
+        # 逆 U
+        draw.arc((cx - lw, cy - lh * 2 // 3, cx + lw, cy + lh // 2), 180, 360, fill=(200, 40, 40), width=5)
+    elif emotion == "laugh":
+        # 大きな U (笑い)
+        draw.chord((cx - lw, cy - lh, cx + lw, cy + lh), 0, 180, fill=(220, 50, 50),
+                   outline=(150, 30, 30), width=3)
+    elif emotion == "think":
+        # 小さく
+        small_lw = lw // 2
+        small_lh = lh // 2
+        draw.ellipse((cx - small_lw, cy - small_lh, cx + small_lw, cy + small_lh),
+                     fill=(220, 50, 50), outline=(150, 30, 30), width=2)
+    else:
+        # 通常: 赤い楕円 (過去動画の特徴)
+        draw.ellipse((cx - lw, cy - lh, cx + lw, cy + lh),
+                     fill=(220, 50, 50), outline=(150, 30, 30), width=2)
 
 
 @lru_cache(maxsize=64)
