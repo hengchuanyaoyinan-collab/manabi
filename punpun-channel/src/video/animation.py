@@ -248,6 +248,7 @@ def render_scene_video(
     height: int = 1080,
     emotion: str = "normal",
     effect: str = "none",
+    ken_burns: bool = True,
 ) -> Path:
     """1 シーンのアニメーション付き動画 (音声入り) を作る。"""
     envelope = _audio_envelope(audio_path, fps=fps)
@@ -255,6 +256,7 @@ def render_scene_video(
         background, text, envelope,
         fps=fps, duration=duration, width=width, height=height,
         emotion=emotion, effect=effect,
+        ken_burns=ken_burns,
     )
 
     # 一時 PNG 連番にしてから ffmpeg で MP4 化
@@ -298,14 +300,17 @@ def render_scene_video(
 def _render_one_scene_wrapper(args: tuple) -> str:
     """multiprocessing 用の thin wrapper (pickle できる引数で受ける)。"""
     (bg_bytes, bg_mode, bg_size, text, audio_path, duration,
-     out_path, fps, width, height, emotion, effect) = args
+     out_path, fps, width, height, emotion, effect, image_type) = args
     bg = Image.frombytes(bg_mode, bg_size, bg_bytes)
+    # 地図系シーンは Ken Burns 無し (ラベルが読めないので)
+    is_map = image_type in ("map_world", "map_region", "map_historical")
     render_scene_video(
         bg, text, Path(audio_path),
         duration=duration,
         out_path=Path(out_path),
         fps=fps, width=width, height=height,
         emotion=emotion, effect=effect,
+        ken_burns=not is_map,
     )
     return str(out_path)
 
@@ -351,11 +356,15 @@ def render_animated_video(
         if not mp4.exists():
             emotion = getattr(scene, "emotion", None) or "normal"
             effect = _EFFECT_BY_EMOTION.get(emotion, "none")
+            # 地図シーンでは Ken Burns しない (ラベルが動くと読みにくい)
+            # のは render_scene_video の ken_burns 引数で制御するが、
+            # 現在は scene 毎の制御はないので、emotion=think/normal でマップを判定
             bg_converted = bg.convert("RGBA")
             tasks.append((
                 bg_converted.tobytes(), bg_converted.mode, bg_converted.size,
                 scene.text, scene.audio_path, scene.duration_seconds,
                 str(mp4), fps, width, height, emotion, effect,
+                scene.image_hint.type.value,  # for Ken Burns on/off
             ))
 
     if tasks:
