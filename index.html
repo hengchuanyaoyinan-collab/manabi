@@ -927,6 +927,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <button class="auth-tab active" id="match-tab-ai" onclick="switchMatchTab('ai')">✦ AIマッチ</button>
     <button class="auth-tab" id="match-tab-bookings" onclick="switchMatchTab('bookings')">予約一覧</button>
     <button class="auth-tab" id="match-tab-requests" onclick="switchMatchTab('requests')">リクエスト</button>
+    <button class="auth-tab" id="match-tab-proposals" onclick="switchMatchTab('proposals')" style="position:relative;">提案<span id="proposal-badge" style="display:none;position:absolute;top:2px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--red);"></span></button>
   </div>
 
   <!-- AI MATCH TAB -->
@@ -979,6 +980,35 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
   <!-- REQUESTS TAB -->
   <div id="matching-requests" style="display:none;">
     <div id="request-list"></div>
+  </div>
+
+  <!-- PROPOSALS TAB -->
+  <div id="matching-proposals" style="display:none;">
+    <div id="proposals-list"></div>
+  </div>
+</div>
+
+<!-- PROPOSAL MODAL -->
+<div id="proposal-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeProposalModal()">
+  <div style="background:var(--white);border-radius:20px 20px 0 0;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;padding:24px;animation:slideUp .3s;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-weight:700;font-size:16px;">提案を送る</h3>
+      <button onclick="closeProposalModal()" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+    </div>
+    <div id="proposal-request-info" style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid var(--light);"></div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;">提案メッセージ</label>
+      <textarea id="proposal-message" class="form-input" rows="6" maxlength="2000" placeholder="自己紹介と、なぜこの生徒さんにぴったりか伝えましょう..." style="resize:vertical;line-height:1.7;"></textarea>
+      <p style="font-size:10px;color:var(--muted);text-align:right;margin-top:4px;"><span id="proposal-char-count">0</span>/2000</p>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;">提案単価（円/時）</label>
+      <input id="proposal-price" class="form-input" type="number" min="0" max="1000000" step="500" placeholder="例: 3000">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button id="btn-generate-proposal" class="btn btn-outline" style="flex:1;padding:12px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="generateProposalTemplate()"><i data-lucide="sparkles" style="width:14px;height:14px;"></i>AI下書き</button>
+      <button id="btn-send-proposal" class="btn btn-dark" style="flex:2;padding:12px;font-size:14px;" onclick="sendProposal()">提案を送信</button>
+    </div>
   </div>
 </div>
 
@@ -1398,7 +1428,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
     authLoading = true;
     try {
       await Promise.all([loadProfile(), loadSkillsFromDB()]);
-      Promise.allSettled([loadHeroStats(), loadNotificationsFromDB()]);
+      Promise.allSettled([loadHeroStats(), loadNotificationsFromDB(), checkProposalBadge()]);
       subscribeRealtimeMessages();
     } finally {
       authLoading = false;
@@ -3141,12 +3171,15 @@ function switchMatchTab(tab) {
   document.getElementById('matching-ai').style.display = tab === 'ai' ? '' : 'none';
   document.getElementById('matching-list').style.display = tab === 'bookings' ? '' : 'none';
   document.getElementById('matching-requests').style.display = tab === 'requests' ? '' : 'none';
+  document.getElementById('matching-proposals').style.display = tab === 'proposals' ? '' : 'none';
   document.getElementById('match-tab-ai').classList.toggle('active', tab === 'ai');
   document.getElementById('match-tab-bookings').classList.toggle('active', tab === 'bookings');
   document.getElementById('match-tab-requests').classList.toggle('active', tab === 'requests');
+  document.getElementById('match-tab-proposals').classList.toggle('active', tab === 'proposals');
   if (tab === 'bookings') renderMatching();
   if (tab === 'requests') loadLearningRequests();
   if (tab === 'ai') loadPreviousAIRequests();
+  if (tab === 'proposals') loadProposals();
 }
 
 // ── AI MATCHING ──
@@ -3451,12 +3484,19 @@ async function loadLearningRequests() {
       </div>`;
       return;
     }
+    let myProposals = new Set();
+    if (currentUser) {
+      const { data: pData } = await sb.from('proposals').select('request_id').eq('teacher_id', currentUser.id);
+      if (pData) pData.forEach(p => myProposals.add(p.request_id));
+    }
     const formatMap = { any: 'こだわらない', online: 'オンライン', inperson: '対面' };
     el.innerHTML = data.map(r => {
       const isMine = r.user_id === currentUser?.id;
+      const alreadyProposed = myProposals.has(r.id);
       const name = r.profiles?.name || '匿名';
       const dt = new Date(r.created_at);
       const ago = getTimeAgo(dt);
+      const levelLabel = r.ai_structured?.skill_level === 'beginner' ? '初心者' : r.ai_structured?.skill_level === 'advanced' ? '上級者' : '';
       return `<div style="background:var(--white);border-radius:16px;padding:18px;margin-bottom:10px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
           <div><p style="font-weight:700;font-size:15px;margin-bottom:2px;">${escapeHtml(r.subject)}</p>
@@ -3466,10 +3506,17 @@ async function loadLearningRequests() {
         ${r.detail ? `<p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:10px;">${escapeHtml(r.detail)}</p>` : ''}
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <span class="tag">${formatMap[r.format] || r.format}</span>
-          ${!isMine ? `<button class="btn btn-dark" style="font-size:12px;padding:6px 14px;margin-left:auto;" onclick="startDirectChat('${escapeHtml(r.user_id)}','${escapeHtml(name)}')">メッセージを送る</button>` : `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;margin-left:auto;color:var(--red);border-color:var(--red);" onclick="closeLearningRequest('${r.id}',this)">取り下げ</button>`}
+          ${levelLabel ? `<span class="tag">${levelLabel}</span>` : ''}
+          ${isMine
+            ? `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;margin-left:auto;color:var(--red);border-color:var(--red);" onclick="closeLearningRequest('${r.id}',this)">取り下げ</button>`
+            : alreadyProposed
+              ? `<span style="font-size:12px;color:var(--green);font-weight:600;margin-left:auto;display:flex;align-items:center;gap:4px;"><i data-lucide="check-circle" style="width:14px;height:14px;"></i>提案済み</span>`
+              : `<button class="btn btn-dark" style="font-size:12px;padding:6px 14px;margin-left:auto;display:flex;align-items:center;gap:5px;" onclick="openProposalModal('${r.id}','${escapeHtml(r.subject)}','${escapeHtml(r.detail || '')}','${escapeHtml(name)}',${r.budget || 0})"><i data-lucide="send" style="width:12px;height:12px;"></i>提案を送る</button>`
+          }
         </div>
       </div>`;
     }).join('');
+    refreshIcons();
   } catch(e) { console.error('loadLearningRequests error:', e); el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">読み込みに失敗しました</div>'; }
 }
 
@@ -3491,6 +3538,221 @@ async function closeLearningRequest(id, btn) {
     await sb.from('learning_requests').update({ status: 'closed' }).eq('id', id).eq('user_id', currentUser.id);
     loadLearningRequests();
   } catch(e) { console.error(e); btn.disabled = false; btn.innerHTML = '取り下げ'; }
+}
+
+// ── PROPOSALS (ゼヒトモ方式: 先生→生徒 提案) ──
+let _proposalRequestId = null;
+let _proposalSubject = '';
+let _proposalDetail = '';
+let _proposalStudentName = '';
+
+function openProposalModal(requestId, subject, detail, studentName, budget) {
+  _proposalRequestId = requestId;
+  _proposalSubject = subject;
+  _proposalDetail = detail;
+  _proposalStudentName = studentName;
+  document.getElementById('proposal-request-info').innerHTML = `
+    <p style="font-weight:700;font-size:14px;margin-bottom:4px;">${escapeHtml(subject)}</p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:6px;">${escapeHtml(studentName)}さんのリクエスト</p>
+    ${detail ? `<p style="font-size:13px;color:var(--mid);line-height:1.6;">${escapeHtml(detail)}</p>` : ''}`;
+  document.getElementById('proposal-message').value = '';
+  document.getElementById('proposal-price').value = budget || '';
+  document.getElementById('proposal-char-count').textContent = '0';
+  const modal = document.getElementById('proposal-modal');
+  modal.style.display = 'flex';
+  refreshIcons();
+}
+
+function closeProposalModal() {
+  document.getElementById('proposal-modal').style.display = 'none';
+  _proposalRequestId = null;
+}
+
+document.getElementById('proposal-message')?.addEventListener('input', function() {
+  document.getElementById('proposal-char-count').textContent = this.value.length;
+});
+
+async function generateProposalTemplate() {
+  if (!currentUser) return;
+  const btn = document.getElementById('btn-generate-proposal');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>生成中...';
+  try {
+    const { data: prof } = await sb.from('profiles').select('name, bio, career, teaching_style').eq('id', currentUser.id).single();
+    const { data: skills } = await sb.from('skills').select('subject, description, price_min').eq('user_id', currentUser.id).limit(3);
+    const myName = prof?.name || '先生';
+    const mySkills = (skills || []).map(s => s.subject).join('、');
+    const myCareer = prof?.career || '';
+    const myStyle = prof?.teaching_style || '';
+    const myPrice = skills?.[0]?.price_min || '';
+    const template = `${escapeHtml(myName)}と申します。${escapeHtml(_proposalSubject)}のリクエストを拝見しました。\n\n` +
+      (myCareer ? `【経歴】${myCareer}\n` : '') +
+      (mySkills ? `【対応科目】${mySkills}\n` : '') +
+      (myStyle ? `【指導スタイル】${myStyle}\n` : '') +
+      `\n${escapeHtml(_proposalDetail ? `「${_proposalDetail}」というご要望について、` : '')}私の経験を活かしてしっかりサポートさせていただきます。\n\nまずはお気軽にメッセージでご相談ください。よろしくお願いいたします。`;
+    document.getElementById('proposal-message').value = template;
+    document.getElementById('proposal-char-count').textContent = template.length;
+    if (myPrice) document.getElementById('proposal-price').value = myPrice;
+  } catch(e) { console.error('generateProposalTemplate error:', e); showToast('テンプレート生成に失敗しました', 'var(--red)'); }
+  btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:14px;height:14px;"></i>AI下書き'; refreshIcons();
+}
+
+async function sendProposal() {
+  if (!currentUser || !_proposalRequestId) return;
+  const message = document.getElementById('proposal-message').value.trim();
+  const price = parseInt(document.getElementById('proposal-price').value) || null;
+  if (message.length < 10) { showToast('提案メッセージは10文字以上で入力してください', 'var(--red)'); return; }
+  const btn = document.getElementById('btn-send-proposal');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>送信中...';
+  try {
+    const mySkills = await sb.from('skills').select('id').eq('user_id', currentUser.id).limit(1);
+    const skillId = mySkills.data?.[0]?.id || null;
+    const { error } = await sb.from('proposals').insert({
+      request_id: _proposalRequestId,
+      teacher_id: currentUser.id,
+      skill_id: skillId,
+      message,
+      proposed_price: price,
+      status: 'pending',
+    });
+    if (error) {
+      if (error.message?.includes('unique') || error.code === '23505') {
+        showToast('このリクエストには既に提案済みです', 'var(--gold)');
+      } else if (error.message?.includes('Rate limit')) {
+        showToast('提案の送信制限に達しました（1時間に5件まで）', 'var(--red)');
+      } else {
+        showToast('提案の送信に失敗しました', 'var(--red)');
+      }
+      btn.disabled = false; btn.innerHTML = '提案を送信'; return;
+    }
+    closeProposalModal();
+    addNotif({ text: `「${escapeHtml(_proposalSubject)}」に提案を送りました`, time: 'たった今', unread: false, color: 'var(--green)' });
+    showToast('提案を送信しました！', 'var(--green)');
+    loadLearningRequests();
+  } catch(e) { console.error('sendProposal error:', e); showToast('提案の送信に失敗しました', 'var(--red)'); btn.disabled = false; btn.innerHTML = '提案を送信'; }
+}
+
+async function loadProposals() {
+  if (!currentUser) return;
+  const el = document.getElementById('proposals-list');
+  el.innerHTML = '<div style="text-align:center;padding:20px;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:20px;height:20px;"></span></div>';
+  try {
+    const { data: myRequests } = await sb.from('learning_requests').select('id').eq('user_id', currentUser.id).eq('status', 'open');
+    const reqIds = (myRequests || []).map(r => r.id);
+    const { data: sent } = await sb.from('proposals')
+      .select('*, learning_requests(subject, detail, profiles(name))')
+      .eq('teacher_id', currentUser.id)
+      .order('created_at', { ascending: false }).limit(20);
+    let received = [];
+    if (reqIds.length > 0) {
+      const { data: recv } = await sb.from('proposals')
+        .select('*, profiles!proposals_teacher_id_fkey(name, avatar_url, bio, career), skills(subject, price_min), learning_requests(subject)')
+        .in('request_id', reqIds)
+        .order('created_at', { ascending: false }).limit(20);
+      received = recv || [];
+    }
+    const badge = document.getElementById('proposal-badge');
+    const pendingCount = received.filter(p => p.status === 'pending').length;
+    if (badge) badge.style.display = pendingCount > 0 ? '' : 'none';
+
+    if (!received.length && !(sent || []).length) {
+      el.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--muted);">
+        <div style="width:56px;height:56px;border-radius:16px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--accent);"><i data-lucide="mail" style="width:24px;height:24px;"></i></div>
+        <p style="font-weight:600;font-size:14px;color:var(--dark);margin-bottom:4px;">提案はまだありません</p>
+        <p style="font-size:12px;line-height:1.7;">リクエストを投稿すると先生から<br>提案が届きます。</p>
+      </div>`;
+      refreshIcons(); return;
+    }
+
+    let html = '';
+    if (received.length) {
+      html += `<p style="font-weight:700;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><i data-lucide="inbox" style="width:16px;height:16px;color:var(--accent);"></i>届いた提案</p>`;
+      html += received.map(p => {
+        const teacher = p.profiles || {};
+        const safeAv = safeImgUrl(teacher.avatar_url);
+        const avHtml = safeAv
+          ? `<img src="${escapeHtml(safeAv)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none'">`
+          : escapeHtml((teacher.name || '?').substring(0,2).toUpperCase());
+        const statusMap = { pending: ['新着', 'var(--accent)'], accepted: ['承認済み', 'var(--green)'], declined: ['辞退', 'var(--muted)'] };
+        const [statusLabel, statusColor] = statusMap[p.status] || ['', 'var(--muted)'];
+        const ago = getTimeAgo(new Date(p.created_at));
+        const subj = p.learning_requests?.subject || '';
+        return `<div style="background:var(--white);border-radius:16px;padding:18px;margin-bottom:10px;border:1px solid ${p.status === 'pending' ? 'var(--accent)' : 'var(--light)'};box-shadow:0 2px 12px rgba(0,0,0,.06);${p.status === 'pending' ? 'border-width:2px;' : ''}">
+          <div style="display:flex;gap:12px;margin-bottom:12px;">
+            <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden;">${avHtml}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <p style="font-weight:700;font-size:14px;">${escapeHtml(teacher.name || '先生')}</p>
+                <span style="font-size:11px;font-weight:600;color:${statusColor};background:${statusColor}15;padding:2px 8px;border-radius:6px;">${statusLabel}</span>
+              </div>
+              <p style="font-size:11px;color:var(--muted);">${escapeHtml(subj)}への提案 · ${ago}</p>
+              ${teacher.career ? `<p style="font-size:11px;color:var(--accent);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i data-lucide="briefcase" style="width:10px;height:10px;vertical-align:-1px;margin-right:3px;"></i>${escapeHtml(teacher.career)}</p>` : ''}
+            </div>
+          </div>
+          <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;white-space:pre-wrap;">${escapeHtml(p.message)}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            ${p.proposed_price ? `<span style="font-weight:700;font-size:15px;color:var(--accent);">¥${p.proposed_price.toLocaleString()}<span style="font-size:11px;color:var(--muted);font-weight:400;"> /時</span></span>` : '<span></span>'}
+            ${p.status === 'pending' ? `<div style="display:flex;gap:8px;">
+              <button class="btn btn-outline" style="font-size:12px;padding:6px 14px;color:var(--muted);" onclick="respondToProposal('${p.id}','declined',this)">辞退</button>
+              <button class="btn btn-dark" style="font-size:12px;padding:6px 14px;display:flex;align-items:center;gap:4px;" onclick="respondToProposal('${p.id}','accepted',this)"><i data-lucide="check" style="width:12px;height:12px;"></i>承認してチャット</button>
+            </div>` : p.status === 'accepted' ? `<button class="btn btn-outline" style="font-size:12px;padding:6px 14px;" onclick="startDirectChat('${p.teacher_id}','${escapeHtml(teacher.name || '')}')">メッセージ</button>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    if ((sent || []).length) {
+      html += `<p style="font-weight:700;font-size:14px;margin:${received.length ? '20px' : '0'} 0 12px;display:flex;align-items:center;gap:6px;"><i data-lucide="send" style="width:16px;height:16px;color:var(--muted);"></i>送った提案</p>`;
+      html += (sent || []).map(p => {
+        const statusMap = { pending: ['審査中', 'var(--gold)'], accepted: ['承認', 'var(--green)'], declined: ['辞退', 'var(--muted)'] };
+        const [statusLabel, statusColor] = statusMap[p.status] || ['', 'var(--muted)'];
+        const ago = getTimeAgo(new Date(p.created_at));
+        const subj = p.learning_requests?.subject || '';
+        const studentName = p.learning_requests?.profiles?.name || '生徒';
+        return `<div style="background:var(--white);border-radius:12px;padding:14px;margin-bottom:8px;border:1px solid var(--light);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div><p style="font-weight:600;font-size:13px;">${escapeHtml(subj)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(studentName)}さんへ · ${ago}</p></div>
+            <span style="font-size:11px;font-weight:600;color:${statusColor};background:${statusColor}15;padding:2px 8px;border-radius:6px;">${statusLabel}</span>
+          </div>
+          <p style="font-size:12px;color:var(--mid);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.message)}</p>
+          ${p.proposed_price ? `<p style="font-size:12px;font-weight:600;color:var(--accent);margin-top:6px;">¥${p.proposed_price.toLocaleString()} /時</p>` : ''}
+        </div>`;
+      }).join('');
+    }
+    el.innerHTML = html;
+    refreshIcons();
+  } catch(e) { console.error('loadProposals error:', e); el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">読み込みに失敗しました</div>'; }
+}
+
+async function respondToProposal(proposalId, status, btn) {
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    const { data: proposal, error: fetchErr } = await sb.from('proposals')
+      .select('teacher_id, profiles!proposals_teacher_id_fkey(name)')
+      .eq('id', proposalId).single();
+    const { error } = await sb.from('proposals')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', proposalId);
+    if (error) { showToast('更新に失敗しました', 'var(--red)'); btn.disabled = false; return; }
+    if (status === 'accepted' && proposal) {
+      const teacherName = proposal.profiles?.name || '先生';
+      addNotif({ text: `${escapeHtml(teacherName)}さんの提案を承認しました`, time: 'たった今', unread: false, color: 'var(--green)' });
+      startDirectChat(proposal.teacher_id, teacherName);
+    } else {
+      showToast('提案を辞退しました', 'var(--muted)');
+    }
+    loadProposals();
+  } catch(e) { console.error('respondToProposal error:', e); btn.disabled = false; }
+}
+
+async function checkProposalBadge() {
+  if (!currentUser) return;
+  try {
+    const { data: myReqs } = await sb.from('learning_requests').select('id').eq('user_id', currentUser.id).eq('status', 'open');
+    if (!myReqs?.length) return;
+    const { count } = await sb.from('proposals').select('id', { count: 'exact', head: true }).in('request_id', myReqs.map(r => r.id)).eq('status', 'pending');
+    const badge = document.getElementById('proposal-badge');
+    if (badge) badge.style.display = (count || 0) > 0 ? '' : 'none';
+  } catch(e) {}
 }
 
 async function cancelBooking(bookingId, btn) {
