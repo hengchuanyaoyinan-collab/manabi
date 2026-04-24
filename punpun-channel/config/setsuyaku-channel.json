@@ -1,0 +1,44 @@
+{
+  "channelName": "知らなきゃ損する節約術",
+  "handle": "",
+  "language": "ja",
+  "genre": "節約・お金・家計・投資",
+  "format": "解説 + いらすとや",
+  "character": "ぷんぷん (視聴者代弁ツッコミ役)",
+  "goal": {
+    "subscribers": 100000,
+    "monetization": "CPM の高い金融広告で収益化"
+  },
+  "video": {
+    "targetLengthSeconds": 480,
+    "minLengthSeconds": 360,
+    "maxLengthSeconds": 720,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "fps": 24,
+    "format": "mp4"
+  },
+  "upload": {
+    "defaultTime": "07:00",
+    "frequency": "daily",
+    "timezone": "Asia/Tokyo",
+    "privacyStatus": "public",
+    "madeForKids": false,
+    "category": "22"
+  },
+  "titleFormat": "【知らなきゃ損】〇〇で△△円得する方法",
+  "seriesName": "知らなきゃ損シリーズ",
+  "thumbnailStyle": {
+    "textColors": ["#FFEB00", "#DC143C"],
+    "outlineColor": "#000000",
+    "backgroundColor": "#1A1A1A",
+    "accentColor": "#FF4500"
+  },
+  "seoTags": [
+    "節約", "お金", "家計管理", "貯金", "投資", "固定費", "節税",
+    "NISA", "iDeCo", "クレジットカード", "貯蓄", "資産形成",
+    "節約術", "お金の知識", "FP", "家計簿", "副業", "ふるさと納税"
+  ]
+}

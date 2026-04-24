@@ -56,6 +56,10 @@ def main() -> int:
     p.add_argument("--count", type=int, default=5, help="キューから何本取るか")
     p.add_argument("--force", action="store_true", help="既存ファイルを上書き")
     p.add_argument("--model", default="claude-haiku-4-5-20251001")
+    p.add_argument("--template", help="プロンプトテンプレート (templates/xxx.md)")
+    p.add_argument("--out-dir", default="test_data", help="出力先ディレクトリ")
+    p.add_argument("--queue", default="topic-queue.json",
+                   help="題材キュー JSON (config/ 内)")
     args = p.parse_args()
 
     topics = args.topics or _queued_topics()[: args.count]
