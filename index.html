@@ -569,6 +569,15 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <div class="cards" id="recommend-cards" style="grid-template-columns:repeat(auto-fill,minmax(165px,1fr));"></div>
   </div>
 
+  <!-- Teacher Leaderboard -->
+  <div id="leaderboard-section" style="display:none;margin-top:32px;" class="fade-up">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px;"><i data-lucide="trophy" style="width:16px;height:16px;color:var(--gold);"></i>人気講師ランキング</h2>
+      <button onclick="showPage('explore')" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;display:flex;align-items:center;gap:4px;">すべて見る <i data-lucide="chevron-right" style="width:14px;height:14px;"></i></button>
+    </div>
+    <div id="leaderboard-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+
   <!-- Why Manabi -->
   <div style="margin-top:36px;margin-bottom:36px;" class="fade-up">
     <h2 style="font-weight:700;font-size:16px;margin-bottom:16px;text-align:center;">Manabiが選ばれる理由</h2>
@@ -865,6 +874,16 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
           <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;transition:all .15s;" id="fmt-cafe"><input type="checkbox" id="reg-fmt-cafe" style="accent-color:var(--dark);" onchange="updateRegProgress()"><i data-lucide="coffee" style="width:14px;height:14px;"></i>カフェ</label>
         </div>
       </div>
+      <div style="margin-top:16px;margin-bottom:10px;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;padding:12px 16px;border:1.5px solid var(--green);border-radius:12px;background:var(--green-light);transition:all .15s;">
+          <input type="checkbox" id="reg-first-free" style="accent-color:var(--green);width:18px;height:18px;">
+          <div style="flex:1;">
+            <span style="font-weight:600;color:var(--green);">初回レッスン無料</span>
+            <p style="font-size:11px;color:var(--muted);margin-top:2px;">採用率が平均2倍に！新規生徒を獲得しやすくなります</p>
+          </div>
+          <i data-lucide="gift" style="width:18px;height:18px;color:var(--green);"></i>
+        </label>
+      </div>
       <div class="wiz-tip">
         <div class="wiz-tip-icon"><i data-lucide="trending-up" style="width:22px;height:22px;"></i></div>
         <p class="wiz-tip-title">料金の目安</p>
@@ -1142,8 +1161,19 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
           <button onclick="insertEmoji('✅')" style="font-size:20px;background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;">✅</button>
         </div>
       </div>
+      <div id="quick-replies" style="display:none;padding:6px 14px;border-top:1px solid var(--light);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+        <div style="display:flex;gap:6px;">
+          <button onclick="sendQuickReply('ありがとうございます！')" style="padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;color:var(--mid);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'">ありがとうございます！</button>
+          <button onclick="sendQuickReply('了解です！')" style="padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;color:var(--mid);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'">了解です！</button>
+          <button onclick="sendQuickReply('よろしくお願いします！')" style="padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;color:var(--mid);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'">よろしくお願いします！</button>
+          <button onclick="sendQuickReply('少々お待ちください。')" style="padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;color:var(--mid);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'">少々お待ちください。</button>
+          <button onclick="sendQuickReply('承知しました。')" style="padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;color:var(--mid);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'">承知しました。</button>
+          <button onclick="sendQuickReply('日程を調整しましょう！')" style="padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;color:var(--mid);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mid)'">日程を調整しましょう！</button>
+        </div>
+      </div>
       <div style="padding:10px 14px;border-top:1px solid var(--light);display:flex;gap:8px;align-items:center;">
         <button onclick="toggleEmojiPicker()" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--lighter);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">😊</button>
+        <button onclick="toggleQuickReplies()" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--lighter);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--muted);" title="クイック返信"><i data-lucide="zap" style="width:14px;height:14px;"></i></button>
         <input id="chat-input" class="form-input" placeholder="メッセージを入力..." aria-label="メッセージを入力" maxlength="2000" onkeydown="if(event.key==='Enter')sendMsg()" oninput="saveChatDraft()" style="flex:1;border-radius:20px;margin-bottom:0;">
         <button class="btn btn-dark" style="width:36px;height:36px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="sendMsg()"><i data-lucide="send" style="width:16px;height:16px;"></i></button>
       </div>
@@ -2116,7 +2146,7 @@ async function wizReset() {
   const ok = await showConfirm('入力内容をすべてリセットしますか？');
   if (!ok) return;
   ['reg-cat','reg-skill','reg-min','reg-max','reg-area','reg-desc','reg-tags','reg-name','reg-career','reg-experience'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  ['reg-fmt-online','reg-fmt-inperson','reg-fmt-cafe'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
+  ['reg-fmt-online','reg-fmt-inperson','reg-fmt-cafe','reg-first-free'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
   document.querySelectorAll('#reg-style-chips .chip-select, #reg-appeal-chips .chip-select').forEach(c => c.classList.remove('active'));
   Object.keys(regDayStates).forEach(k => delete regDayStates[k]);
   const dc = document.getElementById('reg-desc-count'); if (dc) dc.textContent = '0/500';
@@ -2248,6 +2278,7 @@ async function submitSkill() {
     if (document.getElementById('reg-fmt-online').checked) lessonFormats.push('online');
     if (document.getElementById('reg-fmt-inperson').checked) lessonFormats.push('inperson');
     if (document.getElementById('reg-fmt-cafe').checked) lessonFormats.push('cafe');
+    const firstFree = document.getElementById('reg-first-free')?.checked || false;
     const { error } = await sb.from('skills').insert({
       user_id: currentUser.id, subject: cat, description: desc || skill,
       price_min: priceMin,
@@ -2256,6 +2287,7 @@ async function submitSkill() {
       available_days: selDays.length ? selDays : null,
       tags: document.getElementById('reg-tags').value.split(',').map(t => t.trim()).filter(Boolean).slice(0, 10),
       lesson_formats: lessonFormats.length ? lessonFormats : null,
+      first_lesson_free: firstFree,
     });
     btn.innerHTML = origHtml; btn.disabled = false;
     if (!error) {
@@ -2553,10 +2585,12 @@ function getPriceIndicator(t) {
 function getTeacherBadges(t) {
   const b = [];
   if (t.rating >= 4.8 && t.reviews >= 10) b.push({ icon: 'award', label: 'トップ講師', color: 'var(--gold)' });
+  if (t.verified) b.push({ icon: 'shield-check', label: '認証済', color: '#1976D2' });
   if (t.reviews >= 50) b.push({ icon: 'users', label: '人気', color: 'var(--accent)' });
+  if (t.first_lesson_free) b.push({ icon: 'gift', label: '初回無料', color: 'var(--green)' });
   if (t.available.length >= 5) b.push({ icon: 'calendar-check', label: '柔軟対応', color: 'var(--green)' });
   if ((t.lesson_formats || []).includes('online')) b.push({ icon: 'globe', label: 'オンライン可', color: '#00BCD4' });
-  return b.slice(0, 2);
+  return b.slice(0, 3);
 }
 
 function makeCard(t) {
@@ -2630,6 +2664,7 @@ function renderHome() {
   renderRecentViews();
   renderRecommendations();
   renderTestimonials();
+  renderLeaderboard();
   refreshIcons();
   observeFadeUps();
 }
@@ -2652,6 +2687,41 @@ async function renderTestimonials() {
       </div>`;
     }).join('');
   } catch(e) { section.style.display = 'none'; }
+}
+
+function renderLeaderboard() {
+  const section = document.getElementById('leaderboard-section');
+  const list = document.getElementById('leaderboard-list');
+  if (!section || !list) return;
+  const ranked = visibleTeachers()
+    .filter(t => t.reviews >= 1)
+    .sort((a, b) => {
+      const scoreA = a.rating * Math.log2(a.reviews + 1);
+      const scoreB = b.rating * Math.log2(b.reviews + 1);
+      return scoreB - scoreA;
+    })
+    .slice(0, 5);
+  if (!ranked.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  const medals = ['🥇', '🥈', '🥉', '4', '5'];
+  list.innerHTML = ranked.map((t, i) => {
+    const medal = i < 3 ? `<span style="font-size:20px;">${medals[i]}</span>` : `<span style="width:28px;height:28px;border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);">${medals[i]}</span>`;
+    const safeAv = safeImgUrl(t.avatar_url);
+    const av = safeAv ? `<img src="${safeAv}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="">` : `<div style="width:40px;height:40px;border-radius:50%;background:${t.color || 'var(--accent)'};display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;">${escapeHtml((t.avatar || t.name || '?').substring(0, 2))}</div>`;
+    const stars = '★'.repeat(Math.round(t.rating)) + '☆'.repeat(5 - Math.round(t.rating));
+    const badges = [];
+    if (t.verified) badges.push('<span class="verified-badge">✓ 本人確認済</span>');
+    if (t.first_lesson_free) badges.push('<span style="font-size:9px;font-weight:700;color:var(--green);background:var(--green-light);padding:1px 6px;border-radius:4px;">初回無料</span>');
+    return `<div onclick="openModal(${t.id})" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--white);border-radius:14px;border:1px solid ${i === 0 ? 'var(--gold)' : 'var(--light)'};cursor:pointer;transition:all .15s;${i === 0 ? 'box-shadow:0 2px 8px rgba(255,193,7,.15);' : ''}" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='${i === 0 ? 'var(--gold)' : 'var(--light)'}'">`
+      + `<div style="flex-shrink:0;width:28px;display:flex;justify-content:center;">${medal}</div>`
+      + `<div style="flex-shrink:0;">${av}</div>`
+      + `<div style="flex:1;min-width:0;">`
+      + `<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><p style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.name)}</p>${badges.join('')}</div>`
+      + `<p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.subject)}</p>`
+      + `</div>`
+      + `<div style="text-align:right;flex-shrink:0;"><div style="color:var(--gold);font-size:10px;">${stars}</div><p style="font-size:10px;color:var(--muted);">${t.reviews}件</p></div>`
+      + `</div>`;
+  }).join('');
 }
 
 function renderFavorites() {
@@ -3325,6 +3395,17 @@ function safeImgUrl(url) {
 function toggleEmojiPicker() {
   const ep = document.getElementById('emoji-picker');
   ep.style.display = ep.style.display === 'none' ? 'block' : 'none';
+  if (ep.style.display === 'block') document.getElementById('quick-replies').style.display = 'none';
+}
+function toggleQuickReplies() {
+  const qr = document.getElementById('quick-replies');
+  qr.style.display = qr.style.display === 'none' ? 'block' : 'none';
+  if (qr.style.display === 'block') document.getElementById('emoji-picker').style.display = 'none';
+}
+function sendQuickReply(text) {
+  document.getElementById('chat-input').value = text;
+  document.getElementById('quick-replies').style.display = 'none';
+  sendMsg();
 }
 function insertEmoji(emoji) {
   const inp = document.getElementById('chat-input');
@@ -3873,7 +3954,7 @@ document.getElementById('proposal-message')?.addEventListener('input', function(
 async function generateProposalTemplate() {
   if (!currentUser) return;
   const btn = document.getElementById('btn-generate-proposal');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>生成中...';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>AI生成中...';
   try {
     const { data: prof } = await sb.from('profiles').select('name, bio, career, teaching_style').eq('id', currentUser.id).single();
     const { data: skills } = await sb.from('skills').select('subject, description, price_min').eq('user_id', currentUser.id).limit(3);
@@ -3882,15 +3963,64 @@ async function generateProposalTemplate() {
     const myCareer = prof?.career || '';
     const myStyle = prof?.teaching_style || '';
     const myPrice = skills?.[0]?.price_min || '';
-    const template = `${escapeHtml(myName)}と申します。${escapeHtml(_proposalSubject)}のリクエストを拝見しました。\n\n` +
-      (myCareer ? `【経歴】${myCareer}\n` : '') +
-      (mySkills ? `【対応科目】${mySkills}\n` : '') +
-      (myStyle ? `【指導スタイル】${myStyle}\n` : '') +
-      `\n${escapeHtml(_proposalDetail ? `「${_proposalDetail}」というご要望について、` : '')}私の経験を活かしてしっかりサポートさせていただきます。\n\nまずはお気軽にメッセージでご相談ください。よろしくお願いいたします。`;
-    document.getElementById('proposal-message').value = template;
-    document.getElementById('proposal-char-count').textContent = template.length;
-    if (myPrice) document.getElementById('proposal-price').value = myPrice;
-  } catch(e) { console.error('generateProposalTemplate error:', e); showToast('テンプレート生成に失敗しました', 'var(--red)'); }
+    const prompt = [
+      `あなたはスキルシェアプラットフォーム「Manabi」の講師です。生徒のリクエストに対する提案メッセージを書いてください。`,
+      `\n講師情報:`,
+      `名前: ${myName}`,
+      myCareer ? `経歴: ${myCareer}` : '',
+      mySkills ? `対応科目: ${mySkills}` : '',
+      myStyle ? `指導スタイル: ${myStyle}` : '',
+      prof?.bio ? `自己紹介: ${prof.bio.substring(0, 200)}` : '',
+      `\n生徒のリクエスト:`,
+      `科目: ${_proposalSubject || '未指定'}`,
+      _proposalDetail ? `詳細: ${_proposalDetail}` : '',
+      `\n以下の条件で提案文を作成:`,
+      `- 300〜500文字`,
+      `- 最初に挨拶と自己紹介`,
+      `- 生徒のリクエスト内容に具体的に触れる`,
+      `- 自分の経験やスキルがどう役立つか説明`,
+      `- レッスンの進め方を簡潔に提案`,
+      `- 丁寧だが親しみやすいトーン`,
+      `- 提案文のみ出力（余計な説明不要）`,
+    ].filter(Boolean).join('\n');
+    const session = await sb.auth.getSession();
+    const token = session.data.session?.access_token;
+    if (token) {
+      const res = await fetch(`${SB_URL}/functions/v1/generate-bio`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'apikey': SB_KEY },
+        body: JSON.stringify({ prompt }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.bio) {
+          document.getElementById('proposal-message').value = data.bio;
+          document.getElementById('proposal-char-count').textContent = data.bio.length;
+          if (myPrice) document.getElementById('proposal-price').value = myPrice;
+          showToast('AI提案文を生成しました', 'var(--accent)');
+          btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:14px;height:14px;"></i>AI下書き'; refreshIcons();
+          return;
+        }
+      }
+    }
+    throw new Error('AI generation failed');
+  } catch(e) {
+    console.error('generateProposalTemplate error:', e);
+    try {
+      const { data: prof } = await sb.from('profiles').select('name, career, teaching_style').eq('id', currentUser.id).single();
+      const { data: skills } = await sb.from('skills').select('subject, price_min').eq('user_id', currentUser.id).limit(3);
+      const n = prof?.name || '先生';
+      const sk = (skills || []).map(s => s.subject).join('、');
+      const template = `${n}と申します。${_proposalSubject || ''}のリクエストを拝見しました。\n\n` +
+        (prof?.career ? `【経歴】${prof.career}\n` : '') +
+        (sk ? `【対応科目】${sk}\n` : '') +
+        (prof?.teaching_style ? `【指導スタイル】${prof.teaching_style}\n` : '') +
+        `\n${_proposalDetail ? `「${_proposalDetail}」というご要望について、` : ''}私の経験を活かしてしっかりサポートさせていただきます。\n\nまずはお気軽にメッセージでご相談ください。よろしくお願いいたします。`;
+      document.getElementById('proposal-message').value = template;
+      document.getElementById('proposal-char-count').textContent = template.length;
+      if (skills?.[0]?.price_min) document.getElementById('proposal-price').value = skills[0].price_min;
+    } catch(e2) { showToast('テンプレート生成に失敗しました', 'var(--red)'); }
+  }
   btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:14px;height:14px;"></i>AI下書き'; refreshIcons();
 }
 
@@ -4593,6 +4723,7 @@ function renderModal() {
           <span style="font-size:26px;font-weight:900;letter-spacing:-.5px;">¥${t.price.toLocaleString()}</span>
           <span style="font-size:12px;color:var(--muted);"> /時</span>
           ${avgPrice > 0 && sameSubject.length > 1 ? `<div style="font-size:10px;color:${priceColor};margin-top:3px;font-weight:600;">${priceLabel}（平均¥${avgPrice.toLocaleString()}）</div>` : ''}
+          ${t.first_lesson_free ? `<div style="display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:11px;font-weight:700;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:8px;"><i data-lucide="gift" style="width:12px;height:12px;"></i>初回レッスン無料</div>` : ''}
         </div>
         <div style="text-align:right;">
           ${(t.lesson_formats||[]).length ? `<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">${(t.lesson_formats||[]).map(f=>`<span style="font-size:11px;padding:4px 10px;border-radius:8px;background:var(--accent-light);color:var(--accent);font-weight:500;">${escapeHtml(fmtMap[f]||f)}</span>`).join('')}</div>` : ''}
@@ -4862,6 +4993,7 @@ async function loadSkillsFromDB() {
         email_visible: s.profiles?.email_visible || false,
         phone_visible: s.profiles?.phone_visible || false,
         phone: s.profiles?.phone || null,
+        first_lesson_free: s.first_lesson_free || false,
       };
     });
     teachers = teachers.filter(t => !t.db_skill_id);
