@@ -1,0 +1,1590 @@
+{
+  "topic": "ポル・ポト",
+  "title": "知識人が独裁者に。300万人が消えた地獄の3年8か月",
+  "description": "📖 目次\n0:00 OP：衝撃フック\n0:30 Chapter 1：フランス留学の秀才\n3:30 Chapter 2：革命への目覚め\n7:00 Chapter 3：キリングフィールドの地獄\n12:00 Chapter 4：狂気の極み\n15:30 Chapter 5：最期\n17:30 Chapter 6：歴史の教訓",
+  "tags": [
+    "ポル・ポト",
+    "カンボジア",
+    "クメール・ルージュ",
+    "キリングフィールド",
+    "世界史",
+    "ドキュメンタリー"
+  ],
+  "chapters": [
+    {
+      "index": 0,
+      "title": "OP：衝撃フック",
+      "summary": ""
+    },
+    {
+      "index": 1,
+      "title": "フランス留学の秀才",
+      "summary": ""
+    },
+    {
+      "index": 2,
+      "title": "革命への目覚め",
+      "summary": ""
+    },
+    {
+      "index": 3,
+      "title": "キリングフィールドの地獄",
+      "summary": ""
+    },
+    {
+      "index": 4,
+      "title": "狂気の極み",
+      "summary": ""
+    },
+    {
+      "index": 5,
+      "title": "最期",
+      "summary": ""
+    },
+    {
+      "index": 6,
+      "title": "歴史の教訓",
+      "summary": ""
+    }
+  ],
+  "scenes": [
+    {
+      "index": 0,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "こんにちは、ぷんぷんの世事見聞録です。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "YouTube スタジオ 放送",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 1,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "今回は、20 世紀最悪の独裁者の話です。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 2,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "この人、ポル・ポト。聞いたことあります？",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 肖像",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 3,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "わずか 3 年間で、300 万人以上を殺しました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア 1975 年",
+        "highlight": "カンボジア",
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 4,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "うち医者は全員、教師も全員。知識人なら容赦なし。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "医者 教師 知識人",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 5,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "最後に、彼がどう転落したか。見ていきましょう。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 6,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "1928 年、カンボジア。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア 1928 年 フランス領",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 7,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "ポル・ポトが生まれました。本名はサロット・サル。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 若い 少年",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 8,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "普通の貴族の家の子供です。ですよね。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "カンボジア 貴族 家族 子供",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 9,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "フランスの植民地だったので、親はフランス式教育を望みました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "フランス領インドシナ 1920 年",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 10,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "で、ポル・ポトをプノンペンの一流学校に入れました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "学校 生徒 勉強",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 11,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "そこで成績優秀だったんです。将来有望なエリート。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 学生 若い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 12,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "1949 年、ついにフランスに留学しました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "フランス パリ 1949 年",
+        "highlight": "フランス",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 13,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "パリの大学で工学を学ぶ。まじで優秀。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "パリ 大学 講義 エンジニア",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 14,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "親戚の支援で、パリの上流社会にも出入りしていたそうです。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "パリ 貴族社交 1950 年代",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 15,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "見た目も背が高くて、かなりイケメンだったらしい。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 若い時代 1950 年代",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 16,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "ここまでの話、ただのエリート秀才ですよね。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 17,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "ですが、パリで彼は共産主義に目覚めました。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "フランス パリ 共産主義 1950 年代",
+        "highlight": "フランス",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 18,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "当時のパリは、知識人の間で共産主義が大流行。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "パリ カフェ 知識人 議論 1950 年代",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 19,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "彼も虜になりました。「平等な社会を作ろう」って。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "平等 理想 ユートピア 赤い旗",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 20,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "1952 年、学位も取らずに、カンボジアに帰ります。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア 1952 年",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 21,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "「祖国で革命を起こすんだ」って宣言して。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 決意 若い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 22,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "でも帰ったら、スグに捕まりました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "逮捕 警察 牢獄",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 23,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "当時のカンボジア政府は、共産主義者を嫌っていたんです。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア 政治 1950 年代",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 24,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "獄中で彼は、さらに激進的になります。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "牢獄 独房 思索 暗い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 25,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "「現体制は腐ってる。徹底的に破壊すべき」",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "破壊 革命 炎 激怒",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 26,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "1956 年、獄中から脱獄します。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "脱獄 逃亡 夜間",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 27,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "そして地下に潜り、秘密組織を作り始めます。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "地下組織 密会 秘密 革命家",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 28,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "それが、後のクメール・ルージュです。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "赤い軍隊 ゲリラ カンボジア",
+        "highlight": null,
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 29,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "転機来ました。ここからが本番です。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 30,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "1960 年代、カンボジアは内戦状態になります。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア 内戦 1960 年代",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 31,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "クメール・ルージュはジャングルに立てこもって、勢力を蓄えます。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア ジャングル ゲリラ根拠地",
+        "highlight": "カンボジア",
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 32,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "1975 年、ついに首都プノンペンを占領します。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "プノンペン占領 1975 年",
+        "highlight": "カンボジア",
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 33,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "ポル・ポト、ついに独裁者になったんです。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 独裁者 1975 年",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 34,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "ここからが… 本当にやばい話です。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 35,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "彼は、カンボジアを「白紙から作り直す」ことを決断します。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "白紙 消去 リセット 破壊",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 36,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "つまり… 全部を一度ぶっ壊すってことです。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "破壊 爆発 廃墟",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 37,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "1975 年 4 月 17 日。クメール・ルージュがプノンペンに突入。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "プノンペン 1975 年 占領",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 38,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "彼らは、全国民に指示を出します。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "兵士 指令 マイク スピーカー",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 39,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "「3 日で帰ってくる。爆撃が終わるから」",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "都市 避難 荷物 家族",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 40,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "200 万人の都市住民が、田舎に強制移住させられました。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "大量移動 難民 行進 悲しい",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 41,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "その後、帰してもらえることはありませんでした。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "農村 強制労働 つらい",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 42,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "ポル・ポトの目標は… 「農業中心の平等社会」。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "農業 田んぼ 理想郷",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 43,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "都市の知識人は… その理想の敵でした。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "医者 教師 知識人 インテリ",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 44,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "メガネをかけてる? 知識人です。殺します。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "メガネ 知識人 判定",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 45,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "医者? 知識人です。殺します。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "医者 医学 医師",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 46,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "教師? 知識人です。殺します。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "教師 教育 学校",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 47,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "英語を話せる? 外部と繋がった敵です。殺します。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "英語 外国 スパイ 疑い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 48,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "仏教の僧侶? 平等社会の邪魔です。殺します。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "僧侶 寺院 宗教",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 49,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "華僑（中国系住民）? 外部勢力の手先です。殺します。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "華僑 中国系 商人",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 50,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "眼鏡をかけた、教育を受けた中国系? 最高に危険です。絶対殺す。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "眼鏡 知識人 危険 処刑",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 51,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "…いや、どういう神経してるんですか、本当に。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 52,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "殺害は組織的でした。秘密警察『トゥール・スレン』。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "刑務所 牢獄 暗い 恐怖",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 53,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "捕まった者は、拷問され、自白を強要されました。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "拷問 苦悶 牢獄",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 54,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "「反革命活動をしたか」「スパイか」と。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "尋問 審問 黒板 記録",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 55,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "でも… 実はみんな無実だったんです。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "無実 冤罪 涙",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 56,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "でも、拷問されたら、みんなが認めます。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "自白 苦悶 逃げられない",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 57,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "自白した者は、『キリングフィールド』に連行されました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "キリングフィールド カンボジア",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 58,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "地方の墓地。そこで… 集団処刑されました。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "墓地 処刑 死",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 59,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "銃は使わない。銃弾は勿体ないって理由で。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "鍬 農具 殺戮",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 60,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "農具で殴打。時には爆弾で集団爆殺。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "爆発 犠牲 集団処刑",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 61,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "推定 300 万人以上が消えました。3 年 8 か月で。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "骸骨 頭蓋骨 追悼",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 62,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "当時のカンボジア人口は約 700 万。実に 40% が殺されたんです。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア 人口 1975 年 統計",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 63,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "今の日本の人口で言うと… 約 5000 万人消えるのと同じ。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "日本列島 人口喪失 悲劇",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 64,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "親戚を疑い、隣人を密告し、兄弟を裏切る。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "家族 不信 密告 裏切り",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 65,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "国全体が… 疑心暗鬼の地獄でした。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "地獄 暗闇 絶望 苦悶",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 66,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "ポル・ポトはどこにいたか? 安全な本部に隠れてました。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "建物 本部 執務室 指令",
+        "highlight": null,
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 67,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "毎日、部下から殺害報告を受けて… 指示を出す。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 冷徹 独裁者",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 68,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "その顔は… 全く動じていなかったと言われています。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 無表情 冷血",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 69,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "でも、ここで内戦が勃発します。同志の間で。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "カンボジア 内部抗争 1979 年",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 70,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "ベトナムがカンボジアに侵攻しました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ベトナム カンボジア 1978 年",
+        "highlight": "カンボジア",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 71,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "クメール・ルージュは敗北していきました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "敗北 退却 兵士",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 72,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "1979 年、ポル・ポトはタイに逃げました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "タイ 国境 逃亡 1979 年",
+        "highlight": "タイ",
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 73,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "全ての狂気が… 一度に終わりました。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 74,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "その後、ポル・ポトはどうなったか。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 晩年",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 75,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "タイとカンボジアの国境地帯に… 長く隠れ続けました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "タイ カンボジア 国境 1980 年代",
+        "highlight": null,
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 76,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "米国とタイは、反共の名目で… 彼を支援しました。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "米国 タイ 冷戦 1980 年代",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 77,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "冷戦下では… 敵の敵は味方だったんです。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "冷戦 東西対立 米ソ",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 78,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "1997 年、クメール・ルージュの内部で反乱が起きます。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "反乱 反逆 銃撃 組織分裂",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 79,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "部下たちが… 彼を逮捕しました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "逮捕 拘束 牢獄",
+        "highlight": null,
+        "overlay_keyword": "ポル・ポト",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 80,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "1998 年 4 月 15 日。ポル・ポト、獄死します。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "死 終焉 静寂",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 81,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "69 歳。国際法廷で裁かれることなく… 死にました。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "法廷 裁判 正義",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 82,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "300 万人以上の命を… 説明することなく。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "追悼 記念碑 骸骨",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 83,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "でも、遺骨は…『キリングフィールド』に埋葬されました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "埋葬 墓地 荼毘",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 84,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "まとめます。ポル・ポトの話。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 85,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "彼は、本来は秀才でした。フランス留学の知識人。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ポル・ポト 若い 秀才",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 86,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "でも、理想が歪められたら… こんなことになる。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "理想 幻想 破壊 暴走",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 87,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "共産主義は悪だ… って話じゃなくて。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "思想 共産主義 ユートピア",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 88,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "「絶対的な力と… 絶対的な確信」は…",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "独裁 権力 支配",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 89,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "人類の歴史で… 最悪の悲劇を生む。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "悲劇 死 絶望 地獄",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 90,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "だから、歴史を学ぶ。記憶する。繰り返さない。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "歴史 学習 教訓 明かり",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 91,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "それが… 私たちの使命だと思います。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "使命 責任 未来",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 92,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "今回は『ポル・ポト』。いかがでしたか？",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "ぷんぷん キャラクター 笑顔",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 93,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "次回は、別の歴史人物を。予定ですので、お楽しみに。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "次回予告 次話 楽しみ",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 94,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "この動画が面白かったら、チャンネル登録お願いします。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "登録ボタン チャンネル登録",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 95,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "高評価、コメントも大歓迎。では、また次回。さようなら。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "手を振る 別れ さようなら",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    }
+  ],
+  "thumbnail_text": "知識人の恐怖",
+  "estimated_duration_seconds": 0.0
+}
