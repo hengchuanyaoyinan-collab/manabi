@@ -2,15 +2,22 @@
   "channelName": "ぷんぷんの世事見聞録",
   "handle": "@ororonchi-sv6by",
   "language": "ja",
+  "genre": "偉人・歴史人物・政治・思想・人生解説",
+  "format": "紙芝居型ストーリー解説",
+  "character": "ぷんぷん",
+  "goal": {
+    "subscribers": 1000000,
+    "monetization": "専業化"
+  },
   "video": {
     "targetLengthSeconds": 1200,
-    "minLengthSeconds": 1000,
+    "minLengthSeconds": 600,
     "maxLengthSeconds": 1500,
     "resolution": {
       "width": 1920,
       "height": 1080
     },
-    "fps": 30,
+    "fps": 24,
     "format": "mp4"
   },
   "upload": {
@@ -22,5 +29,10 @@
     "category": "27"
   },
   "titleFormat": "【〇〇】〇〇のやばすぎる人生",
-  "seriesName": "やばすぎる人生シリーズ"
+  "seriesName": "やばすぎる人生シリーズ",
+  "competitors": [
+    "ぴよぴーよ速報",
+    "大人の学び直しTV",
+    "ホモサピのいい話"
+  ]
 }
