@@ -2416,6 +2416,17 @@ async function loadMySkills() {
   } catch(e) { console.error('loadMySkills error:', e); }
 }
 
+// ── TEACHER CACHE ──
+const _teacherCache = new Map();
+function cacheTeacher(t) {
+  _teacherCache.set(t.id, t);
+  if (t.db_skill_id) _teacherCache.set(t.db_skill_id, t);
+}
+function getTeacher(id) {
+  return _teacherCache.get(id) || teachers.find(t => t.id === id || t.db_skill_id === id);
+}
+function qid(id) { return typeof id === 'string' ? `'${id}'` : id; }
+
 // ── STATIC DATA ──
 let teachers = [
   {id:1,name:"田中 美咲",subject:"英語",rating:4.9,reviews:128,price:3500,tags:["TOEIC","ビジネス英語","初心者歓迎"],available:["月","水","金"],bio:"元外資系企業勤務。TOEIC960点。実践的な英語を楽しく教えます。",avatar:"TM",color:"#E8D5B7",dist:"渋谷",career:"外資IT企業 マーケティング部 5年",achievements:"TOEIC 960点\n英検1級\n海外在住3年",teaching_style:"friendly",lesson_formats:["online","cafe"]},
@@ -2427,6 +2438,7 @@ let teachers = [
   {id:7,name:"中村 拓海",subject:"サッカー",rating:4.6,reviews:58,price:2000,tags:["ドリブル","戦術","初心者歓迎"],available:["土","日"],bio:"元Jリーグ選手。基礎から戦術まで丁寧に指導します。",avatar:"NT",color:"#B7E8D5",dist:"多摩川",career:"元J2リーガー / サッカースクールコーチ",achievements:"J2リーグ 3シーズン出場\nJFA公認C級コーチ",teaching_style:"intensive",lesson_formats:["inperson"]},
   {id:8,name:"小林 美咲",subject:"ヨガ",rating:4.8,reviews:73,price:2500,tags:["朝ヨガ","呼吸法","柔軟性"],available:["月","水","金"],bio:"RYT200取得。心と体のバランスを整えるヨガを提供します。",avatar:"KM",color:"#E8D5E0",dist:"代々木",career:"全米ヨガアライアンスRYT200認定インストラクター",achievements:"指導歴5年\n受講者累計1000名以上",teaching_style:"patient",lesson_formats:["online","inperson"]},
 ];
+teachers.forEach(cacheTeacher);
 const areaGeocode = {
   '渋谷':{lat:35.6580,lng:139.7016},'新宿':{lat:35.6938,lng:139.7034},'池袋':{lat:35.7295,lng:139.7109},
   '秋葉原':{lat:35.6984,lng:139.7731},'吉祥寺':{lat:35.7031,lng:139.5795},'代々木':{lat:35.6833,lng:139.7020},
@@ -2610,13 +2622,14 @@ function makeCard(t) {
   const formats = (t.lesson_formats||[]).slice(0,2).map(f => fmtLabels[f]||f);
   const isLiked = getLikes().includes(t.id);
   const priceInd = getPriceIndicator(t);
+  const tid = qid(t.id);
   const isCompared = typeof compareList !== 'undefined' && compareList.includes(t.id);
-  return `<div class="card" onclick="openModal(${t.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openModal(${t.id})" style="position:relative;">
-    <button class="card-fav${isLiked?' liked':''}" onclick="event.stopPropagation();toggleLike(${t.id},this)" aria-label="お気に入り"><i data-lucide="heart" style="width:16px;height:16px;"></i></button>
-    <button class="compare-check${isCompared?' active':''}" data-tid="${t.id}" onclick="event.stopPropagation();toggleCompare(${t.id},event)" style="position:absolute;top:10px;right:44px;width:24px;height:24px;border-radius:6px;border:1.5px solid rgba(255,255,255,.8);background:${isCompared?'var(--accent)':'rgba(0,0,0,.3)'};cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s;backdrop-filter:blur(4px);color:white;font-size:12px;">${isCompared?'✓':''}</button>
+  return `<div class="card" onclick="openModal(${tid})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openModal(${tid})" style="position:relative;">
+    <button class="card-fav${isLiked?' liked':''}" onclick="event.stopPropagation();toggleLike(${tid},this)" aria-label="お気に入り"><i data-lucide="heart" style="width:16px;height:16px;"></i></button>
+    <button class="compare-check${isCompared?' active':''}" data-tid="${t.id}" onclick="event.stopPropagation();toggleCompare(${tid},event)" style="position:absolute;top:10px;right:44px;width:24px;height:24px;border-radius:6px;border:1.5px solid rgba(255,255,255,.8);background:${isCompared?'var(--accent)':'rgba(0,0,0,.3)'};cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s;backdrop-filter:blur(4px);color:white;font-size:12px;">${isCompared?'✓':''}</button>
     ${sampleBadge}
     ${popularBadge}
-    <div class="card-photo" onclick="event.stopPropagation();handleCardDoubleTap(event,${t.id})" style="background:linear-gradient(135deg,${t.color},${t.color}cc);">
+    <div class="card-photo" onclick="event.stopPropagation();handleCardDoubleTap(event,${tid})" style="background:linear-gradient(135deg,${t.color},${t.color}cc);">
       ${avInner}
       ${formats.length ? `<div class="card-badge">${formats.map(f=>`<span>${escapeHtml(f)}</span>`).join('')}</div>` : ''}
     </div>
@@ -2712,7 +2725,8 @@ function renderLeaderboard() {
     const badges = [];
     if (t.verified) badges.push('<span class="verified-badge">✓ 本人確認済</span>');
     if (t.first_lesson_free) badges.push('<span style="font-size:9px;font-weight:700;color:var(--green);background:var(--green-light);padding:1px 6px;border-radius:4px;">初回無料</span>');
-    return `<div onclick="openModal(${t.id})" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--white);border-radius:14px;border:1px solid ${i === 0 ? 'var(--gold)' : 'var(--light)'};cursor:pointer;transition:all .15s;${i === 0 ? 'box-shadow:0 2px 8px rgba(255,193,7,.15);' : ''}" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='${i === 0 ? 'var(--gold)' : 'var(--light)'}'">`
+    const tid = qid(t.id);
+    return `<div onclick="openModal(${tid})" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--white);border-radius:14px;border:1px solid ${i === 0 ? 'var(--gold)' : 'var(--light)'};cursor:pointer;transition:all .15s;${i === 0 ? 'box-shadow:0 2px 8px rgba(255,193,7,.15);' : ''}" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='${i === 0 ? 'var(--gold)' : 'var(--light)'}'">`
       + `<div style="flex-shrink:0;width:28px;display:flex;justify-content:center;">${medal}</div>`
       + `<div style="flex-shrink:0;">${av}</div>`
       + `<div style="flex:1;min-width:0;">`
@@ -2728,7 +2742,7 @@ function renderFavorites() {
   const ids = getLikes();
   const section = document.getElementById('favorites-section');
   if (!section || !ids.length) { if (section) section.style.display = 'none'; return; }
-  const favs = ids.map(id => teachers.find(t => t.id === id)).filter(Boolean);
+  const favs = ids.map(id => getTeacher(id)).filter(Boolean);
   if (!favs.length) { section.style.display = 'none'; return; }
   section.style.display = '';
   document.getElementById('fav-count').textContent = `${favs.length}件`;
@@ -2737,7 +2751,7 @@ function renderFavorites() {
     const avHtml = safeAv
       ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy">`
       : `<span style="font-size:14px;font-weight:700;color:white;">${escapeHtml(t.avatar)}</span>`;
-    return `<div onclick="openModal(${t.id})" style="flex-shrink:0;width:140px;background:var(--white);border-radius:14px;padding:14px;border:1px solid var(--light);cursor:pointer;text-align:center;transition:all .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+    return `<div onclick="openModal(${qid(t.id)})" style="flex-shrink:0;width:140px;background:var(--white);border-radius:14px;padding:14px;border:1px solid var(--light);cursor:pointer;text-align:center;transition:all .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
       <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,${t.color},${t.color}cc);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;overflow:hidden;">${avHtml}</div>
       <p style="font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.name)}</p>
       <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.subject)}</p>
@@ -2750,7 +2764,7 @@ function renderRecentViews() {
   const ids = getRecentViews();
   const section = document.getElementById('recent-section');
   if (!section || !ids.length) { if (section) section.style.display = 'none'; return; }
-  const recent = ids.map(id => teachers.find(t => t.id === id)).filter(Boolean);
+  const recent = ids.map(id => getTeacher(id)).filter(Boolean);
   if (!recent.length) { section.style.display = 'none'; return; }
   section.style.display = '';
   document.getElementById('recent-cards').innerHTML = recent.map(t => {
@@ -2758,7 +2772,7 @@ function renderRecentViews() {
     const avHtml = safeAv
       ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" loading="lazy">`
       : `<span style="font-size:14px;font-weight:700;color:white;">${escapeHtml(t.avatar)}</span>`;
-    return `<div onclick="openModal(${t.id})" style="flex-shrink:0;width:140px;background:var(--white);border-radius:14px;padding:14px;border:1px solid var(--light);cursor:pointer;text-align:center;transition:all .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+    return `<div onclick="openModal(${qid(t.id)})" style="flex-shrink:0;width:140px;background:var(--white);border-radius:14px;padding:14px;border:1px solid var(--light);cursor:pointer;text-align:center;transition:all .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
       <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,${t.color},${t.color}cc);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;overflow:hidden;">${avHtml}</div>
       <p style="font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.name)}</p>
       <p style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.subject)}</p>
@@ -2774,7 +2788,7 @@ function renderRecommendations() {
   const liked = getLikes();
   if (!viewed.length && !liked.length) { section.style.display = 'none'; return; }
   const interacted = [...new Set([...viewed, ...liked])];
-  const cats = interacted.map(id => teachers.find(t => t.id === id)).filter(Boolean).map(t => getCatForSubject(t.subject));
+  const cats = interacted.map(id => getTeacher(id)).filter(Boolean).map(t => getCatForSubject(t.subject));
   const catFreq = {};
   cats.forEach(c => { catFreq[c] = (catFreq[c] || 0) + 1; });
   const topCats = Object.entries(catFreq).sort((a,b) => b[1] - a[1]).slice(0, 3).map(e => e[0]);
@@ -2787,10 +2801,117 @@ function renderRecommendations() {
 
 let _exploreList = [];
 let _exploreShown = 0;
-const EXPLORE_PAGE_SIZE = 12;
+const EXPLORE_PAGE_SIZE = 20;
 let _exploreObserver = null;
+let _exploreOffset = 0;
+let _exploreTotalCount = 0;
+let _exploreLoading = false;
+let _exploreServerMode = false;
 
-function renderExplore() {
+function _mapListingToTeacher(s) {
+  const colors = ['#E8D5B7','#B7D5E8','#D5E8B7','#E8B7D5','#E8E0B7','#D5B7E8','#B7E8D5','#E8D5E0'];
+  const ci = Math.abs((s.skill_id || '').charCodeAt(0) || 0) % colors.length;
+  const t = {
+    id: s.skill_id,
+    name: s.profile_name || s.subject || 'スキル',
+    subject: s.subject || 'その他',
+    rating: Number(s.avg_rating) || 0,
+    reviews: Number(s.review_count) || 0,
+    price: s.price_min || 0,
+    tags: Array.isArray(s.tags) ? s.tags : [],
+    available: s.available_days || ['月','火','水','木','金','土','日'],
+    bio: s.description || '',
+    avatar: (s.profile_name || s.subject || 'S').substring(0, 2).toUpperCase(),
+    avatar_url: s.avatar_url || null,
+    color: colors[ci],
+    dist: s.area || '近く',
+    db_user_id: s.user_id,
+    db_skill_id: s.skill_id,
+    lesson_formats: s.lesson_formats || [],
+    career: s.career || '',
+    achievements: s.achievements || '',
+    teaching_style: s.teaching_style || '',
+    score: s.profile_score || 0,
+    created_at: s.created_at || null,
+    verified: s.verified || false,
+    email_visible: s.email_visible || false,
+    phone_visible: s.phone_visible || false,
+    phone: s.phone || null,
+    first_lesson_free: s.first_lesson_free || false,
+  };
+  cacheTeacher(t);
+  return t;
+}
+
+function _buildExploreQuery(countOnly) {
+  const q = (document.getElementById('explore-search')?.value || '').trim();
+  const sortBy = document.getElementById('explore-sort')?.value || 'rating';
+  let query = countOnly
+    ? sb.from('teacher_listings').select('skill_id', { count: 'exact', head: true })
+    : sb.from('teacher_listings').select('*');
+  if (curSubj && curSubj !== 'すべて') query = query.eq('subject', curSubj);
+  if (curMaxPrice) query = query.lte('price_min', curMaxPrice);
+  if (curDay) query = query.contains('available_days', [curDay]);
+  if (q) {
+    const escaped = q.replace(/[%_]/g, c => '\\' + c);
+    query = query.or(`profile_name.ilike.%${escaped}%,subject.ilike.%${escaped}%,description.ilike.%${escaped}%`);
+  }
+  if (!countOnly) {
+    if (sortBy === 'price-asc') query = query.order('price_min', { ascending: true });
+    else if (sortBy === 'price-desc') query = query.order('price_min', { ascending: false });
+    else if (sortBy === 'reviews') query = query.order('review_count', { ascending: false });
+    else if (sortBy === 'newest') query = query.order('created_at', { ascending: false });
+    else query = query.order('avg_rating', { ascending: false });
+  }
+  return query;
+}
+
+async function renderExplore() {
+  _exploreServerMode = visibleTeachers().some(t => t.db_skill_id);
+  if (!_exploreServerMode) {
+    _renderExploreLocal();
+    return;
+  }
+  const container = document.getElementById('explore-cards');
+  container.innerHTML = makeSkeletonCards(6);
+  _exploreOffset = 0;
+  _exploreLoading = true;
+  try {
+    const countQuery = _buildExploreQuery(true);
+    const dataQuery = _buildExploreQuery(false).range(0, EXPLORE_PAGE_SIZE - 1);
+    const [countRes, dataRes] = await Promise.all([countQuery, dataQuery]);
+    _exploreTotalCount = countRes.count || 0;
+    const items = (dataRes.data || []).map(_mapListingToTeacher);
+    _exploreOffset = items.length;
+    container.innerHTML = '';
+    if (!items.length) {
+      container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted);grid-column:1/-1;">
+        <div style="width:64px;height:64px;border-radius:20px;background:var(--lighter);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><i data-lucide="search-x" style="width:28px;height:28px;"></i></div>
+        <p style="font-weight:600;font-size:14px;color:var(--dark);margin-bottom:6px;">条件に合う先生が見つかりませんでした</p>
+        <p style="font-size:12px;margin-bottom:16px;line-height:1.7;">検索キーワードを変更するか、<br>フィルターをリセットしてお試しください。</p>
+        <button onclick="document.getElementById('explore-search').value='';curSubj='すべて';curDay=null;renderFilters();renderExplore();" class="btn btn-outline" style="padding:8px 20px;font-size:12px;">フィルターをリセット</button>
+      </div>`;
+    } else {
+      container.insertAdjacentHTML('beforeend', items.map(makeCard).join(''));
+      if (_exploreOffset < _exploreTotalCount) {
+        container.insertAdjacentHTML('beforeend', '<div class="explore-sentinel" style="grid-column:1/-1;height:1px;"></div>');
+        setupExploreObserver();
+      }
+    }
+    const rc = document.getElementById('result-count');
+    rc.textContent = `${_exploreTotalCount}名の先生が見つかりました`;
+    rc.style.opacity = '0';
+    requestAnimationFrame(() => { rc.style.transition = 'opacity .3s'; rc.style.opacity = '1'; });
+  } catch(e) {
+    console.error('renderExplore server error:', e);
+    _renderExploreLocal();
+  } finally {
+    _exploreLoading = false;
+    refreshIcons();
+  }
+}
+
+function _renderExploreLocal() {
   const q = (document.getElementById('explore-search')?.value || '').toLowerCase();
   const sortBy = document.getElementById('explore-sort')?.value || 'rating';
   const base = visibleTeachers();
@@ -2806,6 +2927,7 @@ function renderExplore() {
   else if (sortBy === 'newest') _exploreList.sort((a,b) => (b.created_at||'') > (a.created_at||'') ? 1 : -1);
   else _exploreList.sort((a,b) => b.rating - a.rating);
   _exploreShown = 0;
+  _exploreServerMode = false;
   const container = document.getElementById('explore-cards');
   container.innerHTML = '';
   if (!_exploreList.length) {
@@ -2825,7 +2947,30 @@ function renderExplore() {
   refreshIcons();
 }
 
-function loadMoreExplore() {
+async function loadMoreExplore() {
+  if (_exploreServerMode) {
+    if (_exploreLoading || _exploreOffset >= _exploreTotalCount) return;
+    _exploreLoading = true;
+    try {
+      const query = _buildExploreQuery(false).range(_exploreOffset, _exploreOffset + EXPLORE_PAGE_SIZE - 1);
+      const { data } = await query;
+      const items = (data || []).map(_mapListingToTeacher);
+      _exploreOffset += items.length;
+      const container = document.getElementById('explore-cards');
+      const sentinel = container.querySelector('.explore-sentinel');
+      if (sentinel) sentinel.remove();
+      container.insertAdjacentHTML('beforeend', items.map(makeCard).join(''));
+      if (_exploreOffset < _exploreTotalCount) {
+        container.insertAdjacentHTML('beforeend', '<div class="explore-sentinel" style="grid-column:1/-1;height:1px;"></div>');
+        setupExploreObserver();
+      } else if (_exploreObserver) {
+        _exploreObserver.disconnect();
+      }
+      refreshIcons();
+    } catch(e) { console.error('loadMoreExplore error:', e); }
+    finally { _exploreLoading = false; }
+    return;
+  }
   const container = document.getElementById('explore-cards');
   const sentinel = container.querySelector('.explore-sentinel');
   if (sentinel) sentinel.remove();
@@ -2857,7 +3002,7 @@ function renderFilters() {
   document.getElementById('day-filters').innerHTML = days.map(d =>
     `<button class="pill-sm${curDay===d?' active':''}" onclick="toggleDay(${escapeHtml(JSON.stringify(d))})">${escapeHtml(d)}</button>`).join('');
 }
-const debouncedExplore = debounce(renderExplore, 150);
+const debouncedExplore = debounce(renderExplore, 300);
 function setSubj(s) {
   curSubj = s;
   renderFilters();
@@ -2924,7 +3069,7 @@ function formatAiResult(matches, query) {
     const fullStars = Math.floor(t.rating);
     const halfStar = t.rating % 1 >= 0.5;
     const stars = Array.from({length:5}, (_,i) => `<i data-lucide="star" style="width:12px;height:12px;${i < fullStars ? 'fill:var(--gold);color:var(--gold);' : (i === fullStars && halfStar ? 'color:var(--gold);' : 'color:var(--border);')}"></i>`).join('');
-    html += `<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--light);cursor:pointer;" onclick="openModal(${t.id})">`;
+    html += `<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--light);cursor:pointer;" onclick="openModal(${qid(t.id)})">`;
     html += `<strong>${escapeHtml(t.name)}</strong>（${escapeHtml(t.subject)}）`;
     html += `<br><span style="color:var(--gold);">${stars}</span> ${t.rating} · ¥${t.price.toLocaleString()}/50分`;
     if (t.tags.length) html += `<br><span style="font-size:11px;color:var(--muted);">${t.tags.slice(0,3).map(g=>escapeHtml(g)).join(' · ')}</span>`;
@@ -2947,23 +3092,46 @@ function runAiSearch(query) {
 }
 function doAi(t) { runAiSearch(t); }
 
+let _searchTimer = null;
 function showSearchSuggestions(q) {
   const box = document.getElementById('search-suggestions');
   if (!box) return;
   if (!q || q.length < 1) { box.style.display = 'none'; return; }
   const lower = q.toLowerCase();
-  const subjects = [...new Set(teachers.map(t => t.subject))].filter(s => s.toLowerCase().includes(lower));
-  const names = teachers.filter(t => t.name.toLowerCase().includes(lower)).slice(0, 3);
-  const tags = [...new Set(teachers.flatMap(t => t.tags))].filter(g => g.toLowerCase().includes(lower)).slice(0, 3);
-  if (!subjects.length && !names.length && !tags.length) { box.style.display = 'none'; return; }
+  const cachedSubjects = [...new Set(teachers.map(t => t.subject))].filter(s => s.toLowerCase().includes(lower));
+  const cachedNames = teachers.filter(t => t.name.toLowerCase().includes(lower)).slice(0, 3);
+  const cachedTags = [...new Set(teachers.flatMap(t => t.tags))].filter(g => g.toLowerCase().includes(lower)).slice(0, 3);
+  _renderSearchSuggestions(box, cachedSubjects, cachedNames, cachedTags);
+  if (q.length >= 2) {
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(async () => {
+      try {
+        const escaped = q.replace(/[%_]/g, c => '\\' + c);
+        const { data } = await sb.from('teacher_listings')
+          .select('skill_id, profile_name, subject, avatar_url, avg_rating, review_count, tags')
+          .or(`profile_name.ilike.%${escaped}%,subject.ilike.%${escaped}%,description.ilike.%${escaped}%`)
+          .limit(5);
+        if (data && data.length) {
+          const serverNames = data.map(s => _mapListingToTeacher(s));
+          const allSubjects = [...new Set([...cachedSubjects, ...serverNames.map(t => t.subject)])].filter(s => s.toLowerCase().includes(lower));
+          const allNames = [...cachedNames];
+          serverNames.forEach(sn => { if (!allNames.find(n => n.id === sn.id)) allNames.push(sn); });
+          _renderSearchSuggestions(box, allSubjects, allNames.slice(0, 5), cachedTags);
+        }
+      } catch(e) {}
+    }, 300);
+  }
+}
+function _renderSearchSuggestions(box, subjectsList, namesList, tagsList) {
+  if (!subjectsList.length && !namesList.length && !tagsList.length) { box.style.display = 'none'; return; }
   let html = '';
-  subjects.slice(0, 4).forEach(s => {
+  subjectsList.slice(0, 4).forEach(s => {
     html += `<div onclick="selectSuggestion('${escapeHtml(s)}')" style="padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:background .1s;" onmouseover="this.style.background='var(--lighter)'" onmouseout="this.style.background=''"><i data-lucide="book-open" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;"></i>${escapeHtml(s)}</div>`;
   });
-  names.forEach(t => {
-    html += `<div onclick="openModal(${t.id});hideSearchSuggestions()" style="padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:background .1s;" onmouseover="this.style.background='var(--lighter)'" onmouseout="this.style.background=''"><i data-lucide="user" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;"></i>${escapeHtml(t.name)} <span style="color:var(--muted);font-size:11px;margin-left:4px;">${escapeHtml(t.subject)}</span></div>`;
+  namesList.forEach(t => {
+    html += `<div onclick="openModal(${qid(t.id)});hideSearchSuggestions()" style="padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:background .1s;" onmouseover="this.style.background='var(--lighter)'" onmouseout="this.style.background=''"><i data-lucide="user" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;"></i>${escapeHtml(t.name)} <span style="color:var(--muted);font-size:11px;margin-left:4px;">${escapeHtml(t.subject)}</span></div>`;
   });
-  tags.forEach(g => {
+  tagsList.forEach(g => {
     html += `<div onclick="selectSuggestion('${escapeHtml(g)}')" style="padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;transition:background .1s;" onmouseover="this.style.background='var(--lighter)'" onmouseout="this.style.background=''"><i data-lucide="tag" style="width:14px;height:14px;color:var(--muted);flex-shrink:0;"></i>${escapeHtml(g)}</div>`;
   });
   box.innerHTML = html;
@@ -3104,7 +3272,7 @@ function renderMap() {
         <span class="popup-price">¥${t.price.toLocaleString()}〜</span>
         <span class="popup-rating"><i data-lucide="star" style="width:12px;height:12px;fill:var(--gold);color:var(--gold);"></i> ${t.rating}</span>
       </div>
-      <button class="btn btn-dark" style="width:100%;padding:8px;font-size:12px;margin-bottom:6px;" onclick="openModal(${t.id})">詳しく見る</button>
+      <button class="btn btn-dark" style="width:100%;padding:8px;font-size:12px;margin-bottom:6px;" onclick="openModal(${qid(t.id)})">詳しく見る</button>
       <a href="${gmapUrl}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#4285F4;text-decoration:none;padding:6px;border:1px solid #dadce0;border-radius:8px;font-weight:600;transition:background .15s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='transparent'"><i data-lucide="external-link" style="width:11px;height:11px;"></i>Google Mapsで見る</a>
     </div>`;
     marker.bindPopup(popupContent, { maxWidth: 200 });
@@ -4320,13 +4488,13 @@ function updateCompareUI() {
     fab.style.display = 'none';
   }
   document.querySelectorAll('.compare-check').forEach(el => {
-    const id = parseInt(el.dataset.tid);
-    el.classList.toggle('active', compareList.includes(id));
+    const id = el.dataset.tid;
+    el.classList.toggle('active', compareList.includes(id) || compareList.includes(Number(id)));
   });
 }
 function openCompare() {
   if (compareList.length < 2) return;
-  const ts = compareList.map(id => teachers.find(t => t.id === id)).filter(Boolean);
+  const ts = compareList.map(id => getTeacher(id)).filter(Boolean);
   const cols = ts.map(t => {
     const safeAv = safeImgUrl(t.avatar_url);
     const avHtml = safeAv ? `<img src="${escapeHtml(safeAv)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : `<span style="font-weight:700;color:white;font-size:16px;">${escapeHtml(t.avatar)}</span>`;
@@ -4341,7 +4509,7 @@ function openCompare() {
         <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--light);"><span style="color:var(--muted);">曜日</span><span style="font-weight:600;font-size:11px;">${t.available.join('')}</span></div>
         <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:var(--muted);">形式</span><span style="font-weight:600;font-size:11px;">${(t.lesson_formats||[]).map(f=>({online:'オン',inperson:'対面',cafe:'カフェ'}[f]||f)).join(', ')||'—'}</span></div>
       </div>
-      <button class="btn btn-dark" onclick="closeCompareModal();openModal(${t.id});" style="width:100%;margin-top:12px;padding:10px;font-size:12px;">詳細を見る</button>
+      <button class="btn btn-dark" onclick="closeCompareModal();openModal(${qid(t.id)});" style="width:100%;margin-top:12px;padding:10px;font-size:12px;">詳細を見る</button>
     </div>`;
   }).join('<div style="width:1px;background:var(--light);flex-shrink:0;margin:0 4px;"></div>');
   document.getElementById('compare-modal-body').innerHTML = `<div style="display:flex;gap:10px;overflow-x:auto;padding:4px;">${cols}</div>`;
@@ -4456,9 +4624,16 @@ function trackRecentView(id) {
 function getRecentViews() {
   try { return JSON.parse(localStorage.getItem('manabi_recent') || '[]'); } catch { return []; }
 }
-function openModal(id) {
-  selTeacher = teachers.find(t => t.id === id);
-  if (selTeacher) selTeacher._bookingCreated = false;
+async function openModal(id) {
+  selTeacher = getTeacher(id);
+  if (!selTeacher && typeof id === 'string') {
+    try {
+      const { data } = await sb.from('teacher_listings').select('*').eq('skill_id', id).single();
+      if (data) selTeacher = _mapListingToTeacher(data);
+    } catch(e) { console.error('openModal fetch error:', e); }
+  }
+  if (!selTeacher) return;
+  selTeacher._bookingCreated = false;
   trackRecentView(id);
   bookStep = 0; selSlot = null; renderModal();
   document.getElementById('modal').classList.add('open');
@@ -4950,55 +5125,25 @@ async function loadSkillsFromDB() {
   if (homeEl && !homeEl.children.length) homeEl.innerHTML = makeSkeletonCards(4);
   if (exploreEl && !exploreEl.children.length) exploreEl.innerHTML = makeSkeletonCards(6);
   try {
-    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url, score, career, achievements, teaching_style, verified, email_visible, phone_visible, phone)').order('created_at', { ascending: false });
+    const { data, error } = await sb
+      .from('teacher_listings')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .range(0, 199);
     if (error || !data || data.length === 0) return;
-    const userIds = [...new Set(data.map(s => s.user_id).filter(Boolean))];
-    let reviewStats = {};
-    if (userIds.length) {
-      const { data: revData } = await sb.from('reviews').select('reviewee_id, rating').in('reviewee_id', userIds);
-      if (revData) {
-        for (const r of revData) {
-          if (!reviewStats[r.reviewee_id]) reviewStats[r.reviewee_id] = { sum: 0, count: 0 };
-          reviewStats[r.reviewee_id].sum += r.rating;
-          reviewStats[r.reviewee_id].count++;
-        }
-      }
-    }
-    const colors = ['#E8D5B7','#B7D5E8','#D5E8B7','#E8B7D5','#E8E0B7','#D5B7E8','#B7E8D5','#E8D5E0'];
-    const dbTeachers = data.map((s, i) => {
-      const rs = reviewStats[s.user_id];
-      return {
-        id: 1000 + i,
-        name: s.profiles?.name || s.subject || 'スキル',
-        subject: s.subject || 'その他',
-        rating: rs ? Math.round((rs.sum / rs.count) * 10) / 10 : 0,
-        reviews: rs ? rs.count : 0,
-        price: s.price_min || 0,
-        tags: Array.isArray(s.tags) ? s.tags : [],
-        available: s.available_days || ['月','火','水','木','金','土','日'],
-        bio: s.description || '',
-        avatar: (s.profiles?.name || s.subject || 'S').substring(0, 2).toUpperCase(),
-        avatar_url: s.profiles?.avatar_url || null,
-        color: colors[i % colors.length],
-        dist: s.area || '近く',
-        db_user_id: s.user_id,
-        db_skill_id: s.id,
-        lesson_formats: s.lesson_formats || [],
-        career: s.profiles?.career || '',
-        achievements: s.profiles?.achievements || '',
-        teaching_style: s.profiles?.teaching_style || '',
-        score: s.profiles?.score || 0,
-        created_at: s.created_at || null,
-        verified: s.profiles?.verified || false,
-        email_visible: s.profiles?.email_visible || false,
-        phone_visible: s.profiles?.phone_visible || false,
-        phone: s.profiles?.phone || null,
-        first_lesson_free: s.first_lesson_free || false,
-      };
-    });
+    const dbTeachers = data.map(_mapListingToTeacher);
     teachers = teachers.filter(t => !t.db_skill_id);
     teachers.unshift(...dbTeachers);
-    const allSubjects = [...new Set(teachers.map(t => t.subject))];
+    const { count: totalCount } = await sb
+      .from('teacher_listings')
+      .select('skill_id', { count: 'exact', head: true });
+    const subjectsQuery = await sb
+      .from('teacher_listings')
+      .select('subject');
+    const allSubjects = [...new Set([
+      ...teachers.map(t => t.subject),
+      ...(subjectsQuery.data || []).map(r => r.subject),
+    ])];
     subjects = ['すべて', ...allSubjects];
     renderFilters();
     renderHome();
@@ -5124,8 +5269,10 @@ if (location.hash) {
   const initPage = location.hash.replace('#','');
   const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy'];
   if (initPage.startsWith('teacher-')) {
-    const tid = parseInt(initPage.replace('teacher-', ''));
-    if (tid) setTimeout(() => { if (teachers.find(t => t.id === tid)) openModal(tid); }, 800);
+    const tid = initPage.replace('teacher-', '');
+    const numTid = parseInt(tid);
+    const resolvedTid = Number.isFinite(numTid) ? numTid : tid;
+    if (resolvedTid) setTimeout(() => openModal(resolvedTid), 800);
   } else if (validPages.includes(initPage)) showPage(initPage, false);
 }
 refreshIcons();
