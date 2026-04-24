@@ -3453,13 +3453,43 @@ async function startDirectChat(userId, userName) {
   } catch(e) { console.error('startDirectChat error:', e); }
 }
 
+const CHAT_PAGE_SIZE = 50;
+const _chatHasMore = {};
+
 async function loadMsgsFor(otherId) {
   try {
-    const { data } = await sb.from('messages').select('*')
+    const { data, count } = await sb.from('messages').select('*', { count: 'exact' })
       .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${currentUser.id})`)
-      .order('created_at', { ascending: true });
-    chatMsgs[otherId] = data || [];
+      .order('created_at', { ascending: false })
+      .range(0, CHAT_PAGE_SIZE - 1);
+    chatMsgs[otherId] = (data || []).reverse();
+    _chatHasMore[otherId] = (count || 0) > CHAT_PAGE_SIZE;
   } catch(e) { console.error('loadMsgsFor error:', e); }
+}
+
+async function loadOlderMessages() {
+  if (curChat == null) return;
+  const t = chatThreads[curChat];
+  if (!t) return;
+  const otherId = t.other.id;
+  const existing = chatMsgs[otherId] || [];
+  if (!existing.length || !_chatHasMore[otherId]) return;
+  const btn = document.getElementById('load-older-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '読み込み中...'; }
+  try {
+    const offset = existing.length;
+    const { data, count } = await sb.from('messages').select('*', { count: 'exact' })
+      .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${currentUser.id})`)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + CHAT_PAGE_SIZE - 1);
+    const older = (data || []).reverse();
+    chatMsgs[otherId] = [...older, ...existing];
+    _chatHasMore[otherId] = (count || 0) > chatMsgs[otherId].length;
+    const msgsEl = document.getElementById('chat-msgs');
+    const prevHeight = msgsEl.scrollHeight;
+    renderChat(curChat);
+    msgsEl.scrollTop = msgsEl.scrollHeight - prevHeight;
+  } catch(e) { console.error('loadOlderMessages error:', e); }
 }
 
 function renderChatList() {
@@ -3509,7 +3539,8 @@ function renderChat(idx) {
   const list = chatMsgs[o.id] || [];
   if (list.length) {
     let lastDateStr = '';
-    msgs.innerHTML = list.map(m => {
+    const loadMoreBtn = _chatHasMore[o.id] ? `<div style="text-align:center;margin:8px 0 12px;"><button id="load-older-btn" onclick="loadOlderMessages()" style="padding:6px 16px;border-radius:16px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:11px;font-family:inherit;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">以前のメッセージを読み込む</button></div>` : '';
+    msgs.innerHTML = loadMoreBtn + list.map(m => {
         const d = new Date(m.created_at);
         const dateStr = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
         const ts = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
