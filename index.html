@@ -139,6 +139,15 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 .pill:hover,.pill.active{background:var(--primary);color:white;border-color:var(--primary);}
 .pill-sm{padding:4px 10px;border-radius:16px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:var(--white);font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;flex-shrink:0;}
 .pill-sm:hover,.pill-sm.active{background:var(--primary);color:white;border-color:var(--primary);}
+.chip-select{padding:8px 14px;border-radius:10px;font-size:12px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);font-family:inherit;font-weight:500;transition:all .15s;white-space:nowrap;color:var(--mid);}
+.chip-select:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+.chip-select.active{background:var(--accent);color:white;border-color:var(--accent);}
+[data-theme="dark"] .chip-select{background:var(--lighter);border-color:var(--border);color:var(--mid);}
+[data-theme="dark"] .chip-select.active{background:var(--accent);color:white;border-color:var(--accent);}
+.verified-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#1976D2;background:#E3F2FD;padding:2px 8px;border-radius:6px;}
+.contact-pref{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--white);font-size:13px;cursor:pointer;transition:all .15s;}
+.contact-pref:hover{border-color:var(--accent);}
+.contact-pref.active{border-color:var(--green);background:var(--green-light);}
 /* FORM */
 .form-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;transition:all .2s cubic-bezier(.4,0,.2,1);background:var(--white);color:var(--dark);}
 .form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(45,45,45,.06);background:var(--white);}
@@ -778,13 +787,37 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       </div>
       <div style="margin-bottom:16px;">
         <label for="reg-cat" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">カテゴリ <span style="color:var(--red);font-size:11px;background:#FFEBEE;padding:2px 8px;border-radius:6px;margin-left:4px;">必須</span></label>
-        <select class="form-input" id="reg-cat" onchange="updateRegProgress();updateWizNext()" style="padding:14px;font-size:14px;"><option value="">選択してください</option>
-          <optgroup label="勉強"><option>英語</option><option>数学</option><option>プログラミング</option><option>日本語</option><option>物理</option><option>化学</option></optgroup>
-          <optgroup label="スポーツ"><option>サッカー</option><option>テニス</option><option>ヨガ</option><option>水泳</option><option>バスケ</option></optgroup>
-          <optgroup label="音楽"><option>ピアノ</option><option>ギター</option><option>ボーカル</option><option>ドラム</option></optgroup>
-          <optgroup label="趣味"><option>美術</option><option>写真</option><option>料理</option><option>園芸</option></optgroup>
-          <optgroup label="スキル"><option>ビジネス</option><option>デザイン</option><option>動画編集</option><option>マーケティング</option></optgroup>
-          <optgroup label="依頼"><option>引越し手伝い</option><option>掃除</option><option>修理</option><option>買い物代行</option></optgroup>
+        <select class="form-input" id="reg-cat" onchange="updateRegProgress();updateWizNext();updateSubcategory()" style="padding:14px;font-size:14px;"><option value="">選択してください</option>
+          <optgroup label="語学">
+            <option>英語</option><option>日本語</option><option>中国語</option><option>韓国語</option><option>フランス語</option><option>スペイン語</option><option>ドイツ語</option><option>その他の語学</option>
+          </optgroup>
+          <optgroup label="受験・学習">
+            <option>数学</option><option>物理</option><option>化学</option><option>生物</option><option>国語</option><option>社会</option><option>小論文</option><option>受験対策</option>
+          </optgroup>
+          <optgroup label="プログラミング・IT">
+            <option>プログラミング</option><option>Web制作</option><option>アプリ開発</option><option>データ分析</option><option>AI・機械学習</option><option>ネットワーク</option>
+          </optgroup>
+          <optgroup label="スポーツ・フィットネス">
+            <option>サッカー</option><option>テニス</option><option>ヨガ</option><option>水泳</option><option>バスケ</option><option>ゴルフ</option><option>ランニング</option><option>ダンス</option><option>格闘技</option><option>筋トレ</option>
+          </optgroup>
+          <optgroup label="音楽">
+            <option>ピアノ</option><option>ギター</option><option>ボーカル</option><option>ドラム</option><option>バイオリン</option><option>ウクレレ</option><option>DTM・作曲</option><option>DJ</option>
+          </optgroup>
+          <optgroup label="ビジネス・キャリア">
+            <option>ビジネス</option><option>マーケティング</option><option>営業・プレゼン</option><option>起業・副業</option><option>簿記・会計</option><option>キャリア相談</option><option>面接対策</option>
+          </optgroup>
+          <optgroup label="クリエイティブ">
+            <option>デザイン</option><option>動画編集</option><option>写真</option><option>イラスト</option><option>3Dモデリング</option><option>ハンドメイド</option>
+          </optgroup>
+          <optgroup label="料理・暮らし">
+            <option>料理</option><option>お菓子作り</option><option>園芸</option><option>整理収納</option><option>DIY</option>
+          </optgroup>
+          <optgroup label="美容・健康">
+            <option>メイク</option><option>ネイル</option><option>ヘアアレンジ</option><option>栄養指導</option>
+          </optgroup>
+          <optgroup label="依頼・お手伝い">
+            <option>引越し手伝い</option><option>掃除</option><option>修理</option><option>買い物代行</option><option>PC設定</option><option>翻訳</option>
+          </optgroup>
           <option>その他</option></select>
       </div>
       <div style="margin-bottom:10px;">
@@ -860,13 +893,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <div id="reg-day-grid" class="day-grid"></div>
     </div>
 
-    <!-- STEP 4: アピール -->
+    <!-- STEP 4: プロフィール構築 (Zehitomo-style structured bio) -->
     <div class="wiz-step" data-step="4">
       <div class="wiz-title-row">
         <div class="wiz-icon" style="background:#E3F2FD;color:#1976D2;"><i data-lucide="sparkles" style="width:26px;height:26px;"></i></div>
         <div style="flex:1;">
-          <h2 class="wiz-title">アピールポイント</h2>
-          <p class="wiz-desc">あなたの魅力を伝えて<br>生徒さんに選ばれやすくしましょう。</p>
+          <h2 class="wiz-title">プロフィールを作ろう</h2>
+          <p class="wiz-desc">選択するだけでAIが紹介文を自動生成。<br>生徒さんに選ばれるプロフィールに。</p>
         </div>
       </div>
       <div style="margin-bottom:16px;">
@@ -874,9 +907,62 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         <input class="form-input" id="reg-name" placeholder="山田 花子" maxlength="50" style="padding:14px;font-size:14px;">
       </div>
       <div style="margin-bottom:16px;">
-        <label for="reg-desc" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">自己紹介</label>
-        <textarea class="form-input" id="reg-desc" rows="3" placeholder="経験・レベル・対応できる内容を書いてください" maxlength="500" style="resize:vertical;padding:14px;font-size:14px;" oninput="document.getElementById('reg-desc-count').textContent=this.value.length+'/500';updateRegProgress()"></textarea>
+        <label style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">経験年数</label>
+        <select class="form-input" id="reg-experience" style="padding:14px;font-size:14px;">
+          <option value="">選択してください</option>
+          <option value="under1">1年未満</option>
+          <option value="1-3">1〜3年</option>
+          <option value="3-5">3〜5年</option>
+          <option value="5-10">5〜10年</option>
+          <option value="10plus">10年以上</option>
+        </select>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">指導スタイル（複数選択可）</label>
+        <div id="reg-style-chips" style="display:flex;flex-wrap:wrap;gap:8px;">
+          <button type="button" class="chip-select" data-val="friendly" onclick="toggleChip(this)">フレンドリー</button>
+          <button type="button" class="chip-select" data-val="structured" onclick="toggleChip(this)">体系的・丁寧</button>
+          <button type="button" class="chip-select" data-val="practical" onclick="toggleChip(this)">実践重視</button>
+          <button type="button" class="chip-select" data-val="patient" onclick="toggleChip(this)">じっくり型</button>
+          <button type="button" class="chip-select" data-val="intensive" onclick="toggleChip(this)">短期集中</button>
+          <button type="button" class="chip-select" data-val="fun" onclick="toggleChip(this)">楽しく学ぶ</button>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">アピールポイント（複数選択可）</label>
+        <div id="reg-appeal-chips" style="display:flex;flex-wrap:wrap;gap:8px;">
+          <button type="button" class="chip-select" data-val="beginner_welcome" onclick="toggleChip(this)">初心者歓迎</button>
+          <button type="button" class="chip-select" data-val="flexible_schedule" onclick="toggleChip(this)">柔軟なスケジュール</button>
+          <button type="button" class="chip-select" data-val="pro_experience" onclick="toggleChip(this)">プロ経験あり</button>
+          <button type="button" class="chip-select" data-val="certification" onclick="toggleChip(this)">資格保有</button>
+          <button type="button" class="chip-select" data-val="customized" onclick="toggleChip(this)">オーダーメイド指導</button>
+          <button type="button" class="chip-select" data-val="results" onclick="toggleChip(this)">成果にこだわる</button>
+          <button type="button" class="chip-select" data-val="kids_ok" onclick="toggleChip(this)">子供対応可</button>
+          <button type="button" class="chip-select" data-val="group_ok" onclick="toggleChip(this)">グループ対応可</button>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="reg-career" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">経歴・資格（任意）</label>
+        <input class="form-input" id="reg-career" placeholder="例：TOEIC 950点、塾講師5年" maxlength="200" style="padding:14px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <label for="reg-desc" style="font-size:13px;color:var(--dark);font-weight:600;">自己紹介文</label>
+          <button type="button" id="btn-ai-bio" class="btn btn-outline" style="font-size:11px;padding:5px 12px;display:flex;align-items:center;gap:5px;border-radius:8px;" onclick="generateAIBio()"><i data-lucide="sparkles" style="width:12px;height:12px;"></i>AIで自動生成</button>
+        </div>
+        <textarea class="form-input" id="reg-desc" rows="4" placeholder="上の項目を選んで「AIで自動生成」を押すと、プロの紹介文が作られます" maxlength="500" style="resize:vertical;padding:14px;font-size:14px;line-height:1.7;" oninput="document.getElementById('reg-desc-count').textContent=this.value.length+'/500';updateRegProgress()"></textarea>
         <p style="font-size:11px;color:var(--muted);text-align:right;margin-top:4px;"><span id="reg-desc-count">0/500</span></p>
+      </div>
+      <div id="ai-bio-preview" style="display:none;background:linear-gradient(135deg,#f0f4ff,#e8eaf6);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+          <i data-lucide="sparkles" style="width:14px;height:14px;color:var(--accent);"></i>
+          <span style="font-size:12px;font-weight:600;color:var(--accent);">AI生成プレビュー</span>
+        </div>
+        <p id="ai-bio-text" style="font-size:13px;line-height:1.8;color:var(--mid);white-space:pre-wrap;"></p>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button type="button" class="btn btn-dark" style="font-size:12px;padding:6px 16px;" onclick="acceptAIBio()">この文章を使う</button>
+          <button type="button" class="btn btn-outline" style="font-size:12px;padding:6px 16px;" onclick="generateAIBio()">再生成</button>
+        </div>
       </div>
       <div style="margin-bottom:16px;">
         <label for="reg-tags" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">タグ（カンマ区切り）</label>
@@ -894,12 +980,12 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         </div>
       </div>
       <div class="wiz-tip">
-        <div class="wiz-tip-icon"><i data-lucide="star" style="width:22px;height:22px;"></i></div>
-        <p class="wiz-tip-title">人気の先生の例</p>
+        <div class="wiz-tip-icon"><i data-lucide="zap" style="width:22px;height:22px;"></i></div>
+        <p class="wiz-tip-title">AIが紹介文を作成します</p>
         <ul>
-          <li>丁寧なスケジュール調整に自信</li>
-          <li>塾講師経験5年・TOEIC 950点</li>
-          <li>現役エンジニアの実践的なレッスン</li>
+          <li>経験年数・スタイル・アピールを選択</li>
+          <li>「AIで自動生成」ボタンを押すだけ</li>
+          <li>生成後に自由に編集できます</li>
         </ul>
       </div>
     </div>
@@ -995,15 +1081,25 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <h3 style="font-weight:700;font-size:16px;">提案を送る</h3>
       <button onclick="closeProposalModal()" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
     </div>
-    <div id="proposal-request-info" style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid var(--light);"></div>
+    <div id="proposal-request-info" style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid var(--light);"></div>
+    <div style="background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border:1px solid #FFE0B2;border-radius:12px;padding:14px;margin-bottom:16px;">
+      <p style="font-size:12px;font-weight:700;color:#E65100;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i data-lucide="lightbulb" style="width:14px;height:14px;"></i>選ばれる提案のコツ</p>
+      <ul style="font-size:11px;color:#BF360C;line-height:1.8;padding-left:16px;margin:0;">
+        <li>最初に自己紹介と経験を簡潔に伝える</li>
+        <li>相手のリクエスト内容に具体的に触れる</li>
+        <li>レッスンの進め方や目標達成の道筋を示す</li>
+        <li>初回無料体験や割引の提案も効果的</li>
+      </ul>
+    </div>
     <div style="margin-bottom:12px;">
       <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;">提案メッセージ</label>
-      <textarea id="proposal-message" class="form-input" rows="6" maxlength="2000" placeholder="自己紹介と、なぜこの生徒さんにぴったりか伝えましょう..." style="resize:vertical;line-height:1.7;"></textarea>
+      <textarea id="proposal-message" class="form-input" rows="6" maxlength="2000" placeholder="はじめまして！○○と申します。&#10;&#10;△△のリクエストを拝見し、私の経験がお役に立てると思い提案させていただきました。&#10;&#10;【私の強み】&#10;・○○年の指導経験&#10;・△△の資格保有&#10;&#10;まずは無料体験からいかがでしょうか？" style="resize:vertical;line-height:1.7;"></textarea>
       <p style="font-size:10px;color:var(--muted);text-align:right;margin-top:4px;"><span id="proposal-char-count">0</span>/2000</p>
     </div>
     <div style="margin-bottom:16px;">
       <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;">提案単価（円/時）</label>
       <input id="proposal-price" class="form-input" type="number" min="0" max="1000000" step="500" placeholder="例: 3000">
+      <p style="font-size:10px;color:var(--muted);margin-top:4px;">相場より少し低めに設定すると採用率UP</p>
     </div>
     <div style="display:flex;gap:8px;">
       <button id="btn-generate-proposal" class="btn btn-outline" style="flex:1;padding:12px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="generateProposalTemplate()"><i data-lucide="sparkles" style="width:14px;height:14px;"></i>AI下書き</button>
@@ -1165,17 +1261,51 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <div id="ai-profile-strengths" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;"></div>
     <div id="ai-profile-tags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
   </div>
+  <div id="verification-banner" style="display:none;background:linear-gradient(135deg,#E3F2FD,#BBDEFB);border-radius:16px;padding:18px;border:1px solid #90CAF9;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:40px;height:40px;border-radius:12px;background:#1976D2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="shield-check" style="width:20px;height:20px;color:white;"></i></div>
+      <div style="flex:1;">
+        <p style="font-weight:700;font-size:13px;color:#1565C0;">本人確認で信頼度UP</p>
+        <p style="font-size:11px;color:#1976D2;line-height:1.6;">身分証を提出すると認証バッジが付きます。生徒からの信頼が高まり、マッチング率が向上します。</p>
+      </div>
+    </div>
+    <button class="btn btn-dark" style="width:100%;margin-top:12px;padding:10px;font-size:13px;background:#1976D2;" onclick="requestVerification()">本人確認を申請する</button>
+  </div>
   <div style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);">
     <p style="font-weight:700;font-size:14px;margin-bottom:16px;">プロフィールを編集</p>
     <div style="margin-bottom:14px;"><label for="edit-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="edit-name" placeholder="山田 花子" maxlength="50"></div>
-    <div style="margin-bottom:14px;"><label for="edit-bio" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">自己紹介</label><textarea class="form-input" id="edit-bio" rows="3" placeholder="あなたのことを教えてください" maxlength="500" style="resize:vertical;" oninput="this.nextElementSibling.textContent=this.value.length+'/500'"></textarea><span style="font-size:10px;color:var(--muted);float:right;margin-top:4px;">0/500</span></div>
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <label for="edit-bio" style="font-size:11px;color:var(--muted);">自己紹介</label>
+        <button type="button" id="btn-profile-ai-bio" class="btn btn-outline" style="font-size:10px;padding:3px 10px;display:flex;align-items:center;gap:4px;border-radius:6px;" onclick="generateProfileAIBio()"><i data-lucide="sparkles" style="width:10px;height:10px;"></i>AIで生成</button>
+      </div>
+      <textarea class="form-input" id="edit-bio" rows="3" placeholder="あなたのことを教えてください" maxlength="500" style="resize:vertical;" oninput="this.nextElementSibling.textContent=this.value.length+'/500'"></textarea><span style="font-size:10px;color:var(--muted);float:right;margin-top:4px;">0/500</span>
+    </div>
     <div style="margin-bottom:14px;"><label for="edit-career" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">経歴・職業</label><input class="form-input" id="edit-career" placeholder="例：ソフトウェアエンジニア歴10年 / 音大卒" maxlength="200"></div>
     <div style="margin-bottom:14px;"><label for="edit-achievements" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">実績・資格</label><textarea class="form-input" id="edit-achievements" rows="2" placeholder="例：TOEIC 950点、英検1級、海外在住5年" maxlength="500" style="resize:vertical;"></textarea></div>
     <div style="margin-bottom:14px;"><label for="edit-style" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">教え方のスタイル</label>
       <select class="form-input" id="edit-style"><option value="">未選択</option><option value="friendly">フレンドリー・楽しく</option><option value="structured">体系的・カリキュラム重視</option><option value="practical">実践的・ハンズオン</option><option value="patient">じっくり丁寧</option><option value="intensive">集中・短期上達</option></select>
     </div>
-    <div style="margin-bottom:20px;"><label for="edit-role" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">役割</label>
+    <div style="margin-bottom:14px;"><label for="edit-role" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">役割</label>
       <select class="form-input" id="edit-role"><option value="student">生徒</option><option value="teacher">先生</option><option value="both">両方</option></select>
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:8px;">連絡先の公開設定</label>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label class="contact-pref" id="pref-email-visible">
+          <input type="checkbox" id="edit-email-visible" style="accent-color:var(--green);" onchange="this.closest('.contact-pref').classList.toggle('active',this.checked)">
+          <i data-lucide="mail" style="width:16px;height:16px;color:var(--muted);"></i>
+          <div style="flex:1;"><span style="font-weight:500;">メールアドレス</span><p style="font-size:10px;color:var(--muted);margin-top:1px;">生徒に直接連絡を可能にする</p></div>
+        </label>
+        <label class="contact-pref" id="pref-phone-visible">
+          <input type="checkbox" id="edit-phone-visible" style="accent-color:var(--green);" onchange="this.closest('.contact-pref').classList.toggle('active',this.checked)">
+          <i data-lucide="phone" style="width:16px;height:16px;color:var(--muted);"></i>
+          <div style="flex:1;"><span style="font-weight:500;">電話番号</span><p style="font-size:10px;color:var(--muted);margin-top:1px;">電話での問い合わせを受け付ける</p></div>
+        </label>
+      </div>
+      <div id="phone-input-row" style="display:none;margin-top:8px;">
+        <input class="form-input" id="edit-phone" type="tel" placeholder="090-1234-5678" maxlength="15" style="font-size:14px;">
+      </div>
     </div>
     <button class="btn btn-dark" id="btn-save-prof" style="width:100%;padding:13px;" onclick="saveProfile()">保存する</button>
     <div id="prof-saved" class="msg-box msg-success" style="margin-top:12px;margin-bottom:0;">保存しました！</div>
@@ -1471,6 +1601,11 @@ async function loadProfile() {
       if (data.career) document.getElementById('edit-career').value = data.career;
       if (data.achievements) document.getElementById('edit-achievements').value = data.achievements;
       if (data.teaching_style) document.getElementById('edit-style').value = data.teaching_style;
+      if (data.phone) { const pe = document.getElementById('edit-phone'); if (pe) pe.value = data.phone; }
+      if (data.email_visible) { const ec = document.getElementById('edit-email-visible'); if (ec) { ec.checked = true; ec.closest('.contact-pref')?.classList.add('active'); } }
+      if (data.phone_visible) { const pc = document.getElementById('edit-phone-visible'); if (pc) { pc.checked = true; pc.closest('.contact-pref')?.classList.add('active'); } document.getElementById('phone-input-row').style.display = ''; }
+      const vBanner = document.getElementById('verification-banner');
+      if (vBanner) vBanner.style.display = data.verified ? 'none' : '';
       const styleMap = { friendly:'フレンドリー・楽しく', structured:'体系的・カリキュラム重視', practical:'実践的・ハンズオン', patient:'じっくり丁寧', intensive:'集中・短期上達' };
       const display = document.getElementById('prof-display');
       let anyShown = false;
@@ -1812,10 +1947,14 @@ async function saveProfile() {
   const achievements = document.getElementById('edit-achievements').value.trim();
   const teaching_style = document.getElementById('edit-style').value;
   const role = document.getElementById('edit-role').value;
+  const phone = document.getElementById('edit-phone')?.value.trim() || null;
+  const emailVisible = document.getElementById('edit-email-visible')?.checked || false;
+  const phoneVisible = document.getElementById('edit-phone-visible')?.checked || false;
   const btn = document.getElementById('btn-save-prof');
   btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
   try {
-    const { error } = await sb.from('profiles').upsert({ id: currentUser.id, name, bio, role, career, achievements, teaching_style });
+    const profileData = { id: currentUser.id, name, bio, role, career, achievements, teaching_style, phone, email_visible: emailVisible, phone_visible: phoneVisible };
+    const { error } = await sb.from('profiles').upsert(profileData);
     btn.innerHTML = '保存する'; btn.disabled = false;
     if (!error) {
       document.getElementById('prof-saved').style.display = 'block';
@@ -1831,24 +1970,89 @@ async function saveProfile() {
   } catch(e) { console.error('saveProfile error:', e); btn.innerHTML = '保存する'; btn.disabled = false; addNotif({ text: 'プロフィールの保存に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
 }
 
+async function generateProfileAIBio() {
+  const btn = document.getElementById('btn-profile-ai-bio');
+  const name = document.getElementById('edit-name').value.trim();
+  const career = document.getElementById('edit-career').value.trim();
+  const achievements = document.getElementById('edit-achievements').value.trim();
+  const style = document.getElementById('edit-style').value;
+  if (!name && !career && !achievements && !style) {
+    showToast('名前・経歴・資格のいずれかを入力してください', 'var(--gold)');
+    return;
+  }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    const { data: skills } = await sb.from('skills').select('subject, description').eq('user_id', currentUser.id).limit(3);
+    const styleMap = { friendly:'フレンドリー', structured:'体系的', practical:'実践的', patient:'丁寧', intensive:'集中型' };
+    const prompt = [
+      '以下の情報から、スキルシェアプラットフォームの先生用自己紹介文を日本語で200〜350文字で作成してください。',
+      name ? `名前: ${name}` : '',
+      career ? `経歴: ${career}` : '',
+      achievements ? `資格・実績: ${achievements}` : '',
+      style ? `指導スタイル: ${styleMap[style] || style}` : '',
+      skills?.length ? `提供スキル: ${skills.map(s => s.subject).join('、')}` : '',
+    ].filter(Boolean).join('\n');
+    const session = await sb.auth.getSession();
+    const token = session.data.session?.access_token;
+    const res = await fetch(`${SB_URL}/functions/v1/generate-bio`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'apikey': SB_KEY },
+      body: JSON.stringify({ prompt }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.bio) {
+        document.getElementById('edit-bio').value = data.bio;
+        const counter = document.getElementById('edit-bio').nextElementSibling;
+        if (counter) counter.textContent = data.bio.length + '/500';
+        showToast('AI紹介文を生成しました', 'var(--green)');
+      }
+    }
+  } catch(e) { console.error('generateProfileAIBio:', e); showToast('生成に失敗しました', 'var(--red)'); }
+  btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:10px;height:10px;"></i>AIで生成'; refreshIcons();
+}
+
+function requestVerification() {
+  showToast('本人確認機能は近日公開予定です', 'var(--accent)');
+}
+
+function showPhoneInput() {
+  const el = document.getElementById('phone-input-row');
+  if (el) el.style.display = document.getElementById('edit-phone-visible')?.checked ? '' : 'none';
+}
+document.getElementById('edit-phone-visible')?.addEventListener('change', showPhoneInput);
+
 function updateProfileCompletion(data) {
   const el = document.getElementById('prof-completion');
   if (!el || !data) { if (el) el.style.display = 'none'; return; }
   const checks = [
-    { done: !!data.name, tip: '名前を設定しましょう' },
-    { done: !!data.bio, tip: '自己紹介を書きましょう' },
-    { done: !!data.avatar_url, tip: 'プロフィール写真を追加しましょう' },
-    { done: !!data.career, tip: '経歴を追加すると信頼度UP' },
-    { done: !!data.teaching_style, tip: '教え方のスタイルを選びましょう' },
+    { done: !!data.name, tip: '名前を設定しましょう', icon: 'user' },
+    { done: !!data.bio, tip: 'AIで自己紹介を生成しましょう', icon: 'file-text' },
+    { done: !!data.avatar_url, tip: '写真があると信頼度3倍UP', icon: 'camera' },
+    { done: !!data.career, tip: '経歴を追加すると選ばれやすくなります', icon: 'briefcase' },
+    { done: !!data.teaching_style, tip: '教え方のスタイルを選びましょう', icon: 'sparkles' },
+    { done: !!data.achievements, tip: '資格・実績を追加するとプロ感UP', icon: 'award' },
   ];
   const done = checks.filter(c => c.done).length;
   const pct = Math.round((done / checks.length) * 100);
-  if (pct >= 100) { el.style.display = 'none'; return; }
+  if (pct >= 100) {
+    el.style.display = 'none';
+    const shown = localStorage.getItem('manabi_prof_complete_shown');
+    if (!shown) {
+      localStorage.setItem('manabi_prof_complete_shown', '1');
+      showToast('プロフィール完成！マッチング率が大幅にUPします', 'var(--green)');
+    }
+    return;
+  }
   el.style.display = '';
   document.getElementById('prof-pct').textContent = pct + '%';
   document.getElementById('prof-bar').style.width = pct + '%';
   const next = checks.find(c => !c.done);
-  document.getElementById('prof-tip').textContent = next ? '💡 ' + next.tip : '';
+  const tipEl = document.getElementById('prof-tip');
+  if (next && tipEl) {
+    tipEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="${next.icon}" style="width:12px;height:12px;"></i>${next.tip}</span>`;
+    refreshIcons();
+  }
 }
 
 // WIZARD NAVIGATION
@@ -1894,6 +2098,8 @@ function showWizStep(n) {
   if (wizStep === 3) renderWizDayGrid();
   refreshIcons();
 }
+function updateSubcategory() {}
+
 function wizNext() {
   if (!canProceedWiz()) return;
   if (wizStep < WIZ_TOTAL) { showWizStep(wizStep + 1); }
@@ -1909,10 +2115,12 @@ function wizSkip() {
 async function wizReset() {
   const ok = await showConfirm('入力内容をすべてリセットしますか？');
   if (!ok) return;
-  ['reg-cat','reg-skill','reg-min','reg-max','reg-area','reg-desc','reg-tags','reg-name'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['reg-cat','reg-skill','reg-min','reg-max','reg-area','reg-desc','reg-tags','reg-name','reg-career','reg-experience'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   ['reg-fmt-online','reg-fmt-inperson','reg-fmt-cafe'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
+  document.querySelectorAll('#reg-style-chips .chip-select, #reg-appeal-chips .chip-select').forEach(c => c.classList.remove('active'));
   Object.keys(regDayStates).forEach(k => delete regDayStates[k]);
   const dc = document.getElementById('reg-desc-count'); if (dc) dc.textContent = '0/500';
+  const aiBioPreview = document.getElementById('ai-bio-preview'); if (aiBioPreview) aiBioPreview.style.display = 'none';
   renderWizDayGrid();
   showWizStep(1);
   updateWizNext();
@@ -1936,8 +2144,90 @@ function updateWizNext() {
 }
 
 function updateRegProgress() {
-  // legacy noop kept for existing callers; wizard state tracks per-step validity
   updateWizNext();
+}
+
+function toggleChip(el) {
+  el.classList.toggle('active');
+  updateWizNext();
+}
+
+function getSelectedChips(containerId) {
+  return Array.from(document.querySelectorAll(`#${containerId} .chip-select.active`)).map(c => c.textContent.trim());
+}
+
+async function generateAIBio() {
+  const btn = document.getElementById('btn-ai-bio');
+  const name = document.getElementById('reg-name').value.trim() || '';
+  const skill = document.getElementById('reg-skill')?.value.trim() || '';
+  const cat = document.getElementById('reg-cat')?.value || '';
+  const exp = document.getElementById('reg-experience').value;
+  const styles = getSelectedChips('reg-style-chips');
+  const appeals = getSelectedChips('reg-appeal-chips');
+  const career = document.getElementById('reg-career')?.value.trim() || '';
+  if (!exp && styles.length === 0 && appeals.length === 0 && !career) {
+    showToast('経験年数やスタイルを1つ以上選択してください', 'var(--gold)');
+    return;
+  }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>生成中...';
+  try {
+    const expMap = { under1:'1年未満', '1-3':'1〜3年', '3-5':'3〜5年', '5-10':'5〜10年', '10plus':'10年以上' };
+    const prompt = [
+      `以下の情報から、スキルシェアプラットフォームの先生用自己紹介文を日本語で200〜350文字で作成してください。`,
+      `温かみがあり、プロフェッショナルで、生徒が「この先生に習いたい」と思えるトーンで書いてください。`,
+      `絵文字は使わないでください。段落分けして読みやすくしてください。`,
+      ``,
+      name ? `名前: ${name}` : '',
+      cat ? `カテゴリ: ${cat}` : '',
+      skill ? `提供内容: ${skill}` : '',
+      exp ? `経験年数: ${expMap[exp] || exp}` : '',
+      styles.length ? `指導スタイル: ${styles.join('、')}` : '',
+      appeals.length ? `アピールポイント: ${appeals.join('、')}` : '',
+      career ? `経歴・資格: ${career}` : '',
+    ].filter(Boolean).join('\n');
+    const session = await sb.auth.getSession();
+    const token = session.data.session?.access_token;
+    const res = await fetch(`${SB_URL}/functions/v1/generate-bio`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'apikey': SB_KEY },
+      body: JSON.stringify({ prompt }),
+    });
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    if (data.bio) {
+      document.getElementById('ai-bio-text').textContent = data.bio;
+      document.getElementById('ai-bio-preview').style.display = '';
+      refreshIcons();
+    } else {
+      throw new Error(data.error || 'No bio returned');
+    }
+  } catch(e) {
+    console.error('generateAIBio error:', e);
+    const styles2 = getSelectedChips('reg-style-chips');
+    const appeals2 = getSelectedChips('reg-appeal-chips');
+    const expMap2 = { under1:'1年未満', '1-3':'1〜3年', '3-5':'3〜5年', '5-10':'5〜10年', '10plus':'10年以上' };
+    const expText = expMap2[document.getElementById('reg-experience').value] || '';
+    let fallback = '';
+    if (name) fallback += `${name}です。`;
+    if (cat && skill) fallback += `${cat}の${skill}を提供しています。`;
+    if (expText) fallback += `${expText}の経験があります。`;
+    if (career) fallback += `経歴: ${career}。`;
+    if (styles2.length) fallback += `\n\n指導スタイルは${styles2.join('・')}を大切にしています。`;
+    if (appeals2.length) fallback += `${appeals2.join('、')}が特徴です。`;
+    fallback += '\n\nお気軽にご相談ください。一緒に楽しく学びましょう！';
+    document.getElementById('ai-bio-text').textContent = fallback;
+    document.getElementById('ai-bio-preview').style.display = '';
+  }
+  btn.disabled = false; btn.innerHTML = '<i data-lucide="sparkles" style="width:12px;height:12px;"></i>AIで自動生成';
+  refreshIcons();
+}
+
+function acceptAIBio() {
+  const bio = document.getElementById('ai-bio-text').textContent;
+  document.getElementById('reg-desc').value = bio;
+  document.getElementById('reg-desc-count').textContent = bio.length + '/500';
+  document.getElementById('ai-bio-preview').style.display = 'none';
+  showToast('紹介文を反映しました', 'var(--green)');
 }
 
 async function submitSkill() {
@@ -1970,7 +2260,15 @@ async function submitSkill() {
     btn.innerHTML = origHtml; btn.disabled = false;
     if (!error) {
       const regName = document.getElementById('reg-name').value.trim();
-      if (regName) await sb.from('profiles').update({ name: regName }).eq('id', currentUser.id);
+      const regCareer = document.getElementById('reg-career')?.value.trim() || '';
+      const regStyles = getSelectedChips('reg-style-chips');
+      const regExp = document.getElementById('reg-experience')?.value || '';
+      const profileUpdate = {};
+      if (regName) profileUpdate.name = regName;
+      if (desc) profileUpdate.bio = desc;
+      if (regCareer) profileUpdate.career = regCareer;
+      if (regStyles.length) profileUpdate.teaching_style = regStyles[0] === 'フレンドリー' ? 'friendly' : regStyles[0] === '体系的・丁寧' ? 'structured' : regStyles[0] === '実践重視' ? 'practical' : regStyles[0] === 'じっくり型' ? 'patient' : regStyles[0] === '短期集中' ? 'intensive' : 'friendly';
+      if (Object.keys(profileUpdate).length) await sb.from('profiles').update(profileUpdate).eq('id', currentUser.id);
       await uploadRegAvatar();
       document.getElementById('reg-ok').style.display = 'block';
       addNotif({ text: `「${escapeHtml(skill)}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
@@ -2273,7 +2571,7 @@ function makeCard(t) {
   const availToday = t.available.includes(todayDay);
   const badges = getTeacherBadges(t);
   const popularBadge = t.reviews >= 100 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#FF6B35,#FF8F00);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">人気</span>' : t.rating >= 4.8 && t.reviews >= 20 ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--accent),#7C4DFF);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">高評価</span>' : isNew ? '<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#00BCD4,#00ACC1);color:white;padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;backdrop-filter:blur(4px);">NEW</span>' : '';
-  const verified = t.db_skill_id ? '<i data-lucide="badge-check" style="width:14px;height:14px;color:var(--green);flex-shrink:0;"></i>' : '';
+  const verified = t.verified ? '<span class="verified-badge"><i data-lucide="shield-check" style="width:11px;height:11px;"></i>認証済</span>' : '';
   const fmtLabels = {online:'オンライン',inperson:'対面',cafe:'カフェ'};
   const formats = (t.lesson_formats||[]).slice(0,2).map(f => fmtLabels[f]||f);
   const isLiked = getLikes().includes(t.id);
@@ -4264,7 +4562,7 @@ function renderModal() {
   const t = selTeacher; if (!t) return;
   let html = '<div class="modal-handle" style="width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 12px;"></div>';
   if (bookStep === 0) {
-    const verified = t.db_skill_id ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--green);background:var(--green-light);padding:3px 10px;border-radius:8px;font-weight:600;"><i data-lucide="badge-check" style="width:12px;height:12px;"></i>認証済み</span>' : '';
+    const verified = t.verified ? '<span class="verified-badge"><i data-lucide="shield-check" style="width:11px;height:11px;"></i>認証済</span>' : '';
     const safeModalAv = safeImgUrl(t.avatar_url);
     const modalAvInner = safeModalAv
       ? `<img src="${escapeHtml(safeModalAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;">`
@@ -4333,7 +4631,14 @@ function renderModal() {
       <p style="font-size:14px;color:var(--mid);">${escapeHtml(styleMap[t.teaching_style]||'')}</p>
     </div>` : ''}
     ${t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">${t.tags.map(g=>`<span class="tag" style="padding:5px 12px;font-size:12px;">${escapeHtml(g)}</span>`).join('')}</div>` : ''}
-    ${t.dist ? `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--lighter);border-radius:10px;margin-bottom:20px;"><i data-lucide="map-pin" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;"></i><span style="font-size:12px;color:var(--mid);flex:1;">${escapeHtml(t.dist)}エリア</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.dist + ' 駅')}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);font-weight:600;text-decoration:none;" onclick="event.stopPropagation()">地図を開く →</a></div>` : ''}
+    ${t.dist ? `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--lighter);border-radius:10px;margin-bottom:12px;"><i data-lucide="map-pin" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;"></i><span style="font-size:12px;color:var(--mid);flex:1;">${escapeHtml(t.dist)}エリア</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.dist + ' 駅')}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);font-weight:600;text-decoration:none;" onclick="event.stopPropagation()">地図を開く →</a></div>` : ''}
+    ${(t.email_visible || t.phone_visible) && currentUser && t.db_user_id !== currentUser?.id ? `<div style="background:var(--accent-light);border-radius:12px;padding:14px;margin-bottom:20px;border:1px solid #C5CAE9;">
+      <p style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i data-lucide="phone-forwarded" style="width:13px;height:13px;"></i>直接連絡OK</p>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${t.email_visible && t.db_user_id ? `<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mid);"><i data-lucide="mail" style="width:13px;height:13px;color:var(--accent);"></i><span>メッセージから連絡可</span></div>` : ''}
+        ${t.phone_visible && t.phone ? `<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mid);"><i data-lucide="phone" style="width:13px;height:13px;color:var(--accent);"></i><span>${escapeHtml(t.phone)}</span></div>` : ''}
+      </div>
+    </div>` : ''}
     <div style="display:flex;gap:10px;"><button class="btn btn-outline" onclick="closeModal()" style="flex:1;padding:13px;">閉じる</button>${currentUser && t.db_user_id === currentUser.id ? '<button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">自分のスキルです</button>' : !t.db_skill_id ? '<button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">サンプル（予約不可）</button>' : !currentUser ? `<button class="btn btn-dark" onclick="closeModal();openAuthModal('signup');" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="log-in" style="width:16px;height:16px;"></i>ログインして予約</button>` : '<button class="btn btn-dark" onclick="bookStep=1;renderModal();" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="calendar" style="width:16px;height:16px;"></i>予約する</button>'}</div>
     ${t.db_skill_id && t.db_user_id && currentUser && t.db_user_id !== currentUser.id ? `<button onclick="closeModal();startDirectChat('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="width:100%;margin-top:10px;padding:11px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージを送る</button>` : ''}
     <div style="display:flex;justify-content:center;gap:16px;margin-top:8px;">
@@ -4442,7 +4747,7 @@ async function editSkill(skillId) {
   if (error || !skill) { addNotif({ text: 'スキル情報の取得に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); return; }
   const days = ['月','火','水','木','金','土','日'];
   const activeDays = skill.available_days || [];
-  const cats = ['英語','数学','プログラミング','日本語','物理','化学','サッカー','テニス','ヨガ','水泳','バスケ','ピアノ','ギター','ボーカル','ドラム','美術','写真','料理','園芸','ビジネス','デザイン','動画編集','マーケティング','引越し手伝い','掃除','修理','買い物代行','その他'];
+  const cats = ['英語','日本語','中国語','韓国語','フランス語','スペイン語','ドイツ語','その他の語学','数学','物理','化学','生物','国語','社会','小論文','受験対策','プログラミング','Web制作','アプリ開発','データ分析','AI・機械学習','ネットワーク','サッカー','テニス','ヨガ','水泳','バスケ','ゴルフ','ランニング','ダンス','格闘技','筋トレ','ピアノ','ギター','ボーカル','ドラム','バイオリン','ウクレレ','DTM・作曲','DJ','ビジネス','マーケティング','営業・プレゼン','起業・副業','簿記・会計','キャリア相談','面接対策','デザイン','動画編集','写真','イラスト','3Dモデリング','ハンドメイド','料理','お菓子作り','園芸','整理収納','DIY','メイク','ネイル','ヘアアレンジ','栄養指導','引越し手伝い','掃除','修理','買い物代行','PC設定','翻訳','その他'];
   const modal = document.createElement('div');
   modal.id = 'edit-skill-modal';
   modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);';
@@ -4514,7 +4819,7 @@ async function loadSkillsFromDB() {
   if (homeEl && !homeEl.children.length) homeEl.innerHTML = makeSkeletonCards(4);
   if (exploreEl && !exploreEl.children.length) exploreEl.innerHTML = makeSkeletonCards(6);
   try {
-    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url, score, career, achievements, teaching_style)').order('created_at', { ascending: false });
+    const { data, error } = await sb.from('skills').select('*, profiles(name, avatar_url, score, career, achievements, teaching_style, verified, email_visible, phone_visible, phone)').order('created_at', { ascending: false });
     if (error || !data || data.length === 0) return;
     const userIds = [...new Set(data.map(s => s.user_id).filter(Boolean))];
     let reviewStats = {};
@@ -4553,6 +4858,10 @@ async function loadSkillsFromDB() {
         teaching_style: s.profiles?.teaching_style || '',
         score: s.profiles?.score || 0,
         created_at: s.created_at || null,
+        verified: s.profiles?.verified || false,
+        email_visible: s.profiles?.email_visible || false,
+        phone_visible: s.profiles?.phone_visible || false,
+        phone: s.profiles?.phone || null,
       };
     });
     teachers = teachers.filter(t => !t.db_skill_id);
@@ -4769,8 +5078,9 @@ setTimeout(showNotifBannerIfNeeded, 5000);
   if (localStorage.getItem('manabi_onboarded')) return;
   setTimeout(() => {
     const tips = [
-      { text: 'スキルを教えたい方は「出品」から始めましょう 🎓', duration: 4000 },
-      { text: '気になる先生はダブルタップで ♡ できます', duration: 3500 },
+      { text: '教えたいスキルがある方は「出品」からAIが紹介文を自動生成します', duration: 4500 },
+      { text: '学びたいことがあれば「AIマッチング」で最適な先生を自動検索', duration: 4000 },
+      { text: '気になる先生はダブルタップでお気に入りに追加できます', duration: 3500 },
     ];
     let i = 0;
     function showNext() {
