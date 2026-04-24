@@ -473,7 +473,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <button onclick="document.getElementById('hero-search').value='ピアノ';document.getElementById('hero-search').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter'}))" style="padding:4px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(200,196,188,.7);font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;backdrop-filter:blur(4px);" onmouseover="this.style.background='rgba(255,255,255,.12)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">ピアノ</button>
       <button onclick="document.getElementById('hero-search').value='ヨガ';document.getElementById('hero-search').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter'}))" style="padding:4px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:rgba(200,196,188,.7);font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;backdrop-filter:blur(4px);" onmouseover="this.style.background='rgba(255,255,255,.12)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">ヨガ</button>
     </div>
-    <div style="display:flex;justify-content:center;gap:24px;margin-top:12px;position:relative;">
+    <div id="hero-stats-row" style="display:none;justify-content:center;gap:24px;margin-top:12px;position:relative;">
       <span style="color:rgba(200,196,188,.5);font-size:12px;">登録数 <strong style="color:rgba(200,196,188,.8);" id="hero-teacher-count">--</strong></span>
       <span style="color:rgba(200,196,188,.3);">·</span>
       <span style="color:rgba(200,196,188,.5);font-size:12px;">マッチング <strong style="color:rgba(200,196,188,.8);" id="hero-session-count">--</strong></span>
@@ -4162,8 +4162,14 @@ async function loadHeroStats() {
       sb.from('skills').select('id', { count: 'exact', head: true }),
       sb.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
     ]);
-    animateCount(document.getElementById('hero-teacher-count'), skillsRes.count || 0, '名');
-    animateCount(document.getElementById('hero-session-count'), bookingsRes.count || 0, '回');
+    const teachers = skillsRes.count || 0;
+    const sessions = bookingsRes.count || 0;
+    if (teachers >= 10 || sessions >= 5) {
+      const row = document.getElementById('hero-stats-row');
+      if (row) row.style.display = 'flex';
+      animateCount(document.getElementById('hero-teacher-count'), teachers, '名');
+      animateCount(document.getElementById('hero-session-count'), sessions, '回');
+    }
   } catch(e) { console.error('loadHeroStats error:', e); }
 }
 
