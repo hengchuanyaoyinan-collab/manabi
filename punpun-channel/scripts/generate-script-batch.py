@@ -42,8 +42,8 @@ def _slugify(text: str) -> str:
     return re.sub(r"[\s/\\:*?\"<>|]+", "_", text).strip("_")
 
 
-def _queued_topics() -> list[str]:
-    qp = CONFIG_DIR / "topic-queue.json"
+def _queued_topics(queue_filename: str = "topic-queue.json") -> list[str]:
+    qp = CONFIG_DIR / queue_filename
     if not qp.exists():
         return []
     data = json.loads(qp.read_text(encoding="utf-8"))
@@ -62,17 +62,25 @@ def main() -> int:
                    help="題材キュー JSON (config/ 内)")
     args = p.parse_args()
 
-    topics = args.topics or _queued_topics()[: args.count]
+    topics = args.topics or _queued_topics(args.queue)[: args.count]
     if not topics:
         print("対象トピックが無い")
         return 1
 
-    TEST_DATA.mkdir(parents=True, exist_ok=True)
+    out_dir = (PROJECT_ROOT / args.out_dir) if not Path(args.out_dir).is_absolute() else Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    template_path = None
+    if args.template:
+        template_path = (PROJECT_ROOT / args.template) if not Path(args.template).is_absolute() else Path(args.template)
+        if not template_path.exists():
+            print(f"テンプレートが見つからない: {template_path}")
+            return 1
 
     results: list[dict] = []
     for i, topic in enumerate(topics, 1):
         slug = _slugify(topic)
-        out_path = TEST_DATA / f"{slug}.json"
+        out_path = out_dir / f"{slug}.json"
 
         if out_path.exists() and not args.force:
             print(f"[{i}/{len(topics)}] SKIP {topic} (既存: {out_path.name})")
@@ -81,7 +89,10 @@ def main() -> int:
 
         print(f"[{i}/{len(topics)}] 生成中: {topic} → {out_path.name}")
         try:
-            script = generate_script(topic, model=args.model, save_to=out_path)
+            script = generate_script(
+                topic, model=args.model, save_to=out_path,
+                template_path=template_path,
+            )
             print(f"   ✅ {script.title} ({len(script.scenes)} scenes)")
             results.append({
                 "topic": topic,
