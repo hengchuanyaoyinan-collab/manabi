@@ -213,34 +213,50 @@ def _draw_mouth_punpun(
     cx: int, cy: int, r: int,
     mouth: str, emotion: str,
 ):
-    """過去動画風の口 (シンプルな赤い楕円)。emotion 別のバリエーション。"""
+    """過去動画風の口: 赤い楕円の中を白く抜いた「リング」形状が基本。"""
+    # サイズ (大きめ)
     if mouth == MOUTH_CLOSED:
-        lw, lh = int(r * 0.42), int(r * 0.24)
+        # 閉じ: リング (赤ドーナツ)
+        lw, lh = int(r * 0.60), int(r * 0.30)
     elif mouth == MOUTH_HALF:
-        lw, lh = int(r * 0.46), int(r * 0.36)
+        # 半開: 真ん中の抜き穴がやや大きい
+        lw, lh = int(r * 0.62), int(r * 0.38)
     else:
-        lw, lh = int(r * 0.50), int(r * 0.48)
+        # 全開: リングが大きく、抜き穴も大きい
+        lw, lh = int(r * 0.64), int(r * 0.46)
 
     if emotion == "angry":
-        # への字
         draw.arc((cx - lw, cy - lh, cx + lw, cy + lh), 180, 360, fill=(200, 40, 40), width=6)
-    elif emotion == "sad":
-        # 逆 U
+        return
+    if emotion == "sad":
         draw.arc((cx - lw, cy - lh * 2 // 3, cx + lw, cy + lh // 2), 180, 360, fill=(200, 40, 40), width=5)
-    elif emotion == "laugh":
-        # 大きな U (笑い)
+        return
+    if emotion == "laugh":
+        # 笑い: 大きな U 字 (下半分)
         draw.chord((cx - lw, cy - lh, cx + lw, cy + lh), 0, 180, fill=(220, 50, 50),
                    outline=(150, 30, 30), width=3)
-    elif emotion == "think":
-        # 小さく
+        return
+    if emotion == "think":
+        # 考え中: 小さい楕円
         small_lw = lw // 2
         small_lh = lh // 2
         draw.ellipse((cx - small_lw, cy - small_lh, cx + small_lw, cy + small_lh),
-                     fill=(220, 50, 50), outline=(150, 30, 30), width=2)
-    else:
-        # 通常: 赤い楕円 (過去動画の特徴)
-        draw.ellipse((cx - lw, cy - lh, cx + lw, cy + lh),
-                     fill=(220, 50, 50), outline=(150, 30, 30), width=2)
+                     fill=(220, 50, 50))
+        return
+
+    # normal / shock: 赤いリング (中央に白い楕円を抜く)
+    # 外側の赤い楕円
+    draw.ellipse(
+        (cx - lw, cy - lh, cx + lw, cy + lh),
+        fill=(210, 70, 55),
+    )
+    # 内側を白く抜く (ほぼ横に潰れた細長い楕円)
+    inner_w = int(lw * 0.66)
+    inner_h = max(2, int(lh * 0.30))
+    draw.ellipse(
+        (cx - inner_w, cy - inner_h, cx + inner_w, cy + inner_h),
+        fill="white",
+    )
 
 
 @lru_cache(maxsize=64)
