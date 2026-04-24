@@ -1018,7 +1018,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       </div>
       <div style="padding:10px 14px;border-top:1px solid var(--light);display:flex;gap:8px;align-items:center;">
         <button onclick="toggleEmojiPicker()" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--lighter);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">😊</button>
-        <input id="chat-input" class="form-input" placeholder="メッセージを入力..." aria-label="メッセージを入力" maxlength="2000" onkeydown="if(event.key==='Enter')sendMsg()" style="flex:1;border-radius:20px;margin-bottom:0;">
+        <input id="chat-input" class="form-input" placeholder="メッセージを入力..." aria-label="メッセージを入力" maxlength="2000" onkeydown="if(event.key==='Enter')sendMsg()" oninput="saveChatDraft()" style="flex:1;border-radius:20px;margin-bottom:0;">
         <button class="btn btn-dark" style="width:36px;height:36px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;" onclick="sendMsg()"><i data-lucide="send" style="width:16px;height:16px;"></i></button>
       </div>
     </div>
@@ -3002,6 +3002,23 @@ function insertEmoji(emoji) {
   const inp = document.getElementById('chat-input');
   inp.value += emoji;
   inp.focus();
+  saveChatDraft();
+}
+function saveChatDraft() {
+  if (curChat == null) return;
+  const t = chatThreads[curChat];
+  if (!t) return;
+  const val = document.getElementById('chat-input')?.value || '';
+  if (val) localStorage.setItem('manabi_draft_' + t.other.id, val);
+  else localStorage.removeItem('manabi_draft_' + t.other.id);
+}
+function loadChatDraft() {
+  if (curChat == null) return;
+  const t = chatThreads[curChat];
+  if (!t) return;
+  const draft = localStorage.getItem('manabi_draft_' + t.other.id);
+  const inp = document.getElementById('chat-input');
+  if (inp && draft) inp.value = draft;
 }
 async function sendMsg() {
   const inp = document.getElementById('chat-input');
