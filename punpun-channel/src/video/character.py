@@ -199,8 +199,8 @@ def _draw_punpun(
             outline=(60, 150, 210),
         )
 
-    # 口 (過去動画風: 大きめの赤い楕円)
-    lip_cy = cy + int(r * 0.34)
+    # 口 (過去動画風: 赤いリング、顔中心より下)
+    lip_cy = cy + int(r * 0.32)
     _draw_mouth_punpun(draw, cx, lip_cy, r, mouth, emotion)
 
     if angle != 0.0:
@@ -214,16 +214,13 @@ def _draw_mouth_punpun(
     mouth: str, emotion: str,
 ):
     """過去動画風の口: 赤い楕円の中を白く抜いた「リング」形状が基本。"""
-    # サイズ (大きめ)
+    # サイズ (顔に収まるように控えめに)
     if mouth == MOUTH_CLOSED:
-        # 閉じ: リング (赤ドーナツ)
-        lw, lh = int(r * 0.60), int(r * 0.30)
+        lw, lh = int(r * 0.42), int(r * 0.20)
     elif mouth == MOUTH_HALF:
-        # 半開: 真ん中の抜き穴がやや大きい
-        lw, lh = int(r * 0.62), int(r * 0.38)
+        lw, lh = int(r * 0.45), int(r * 0.26)
     else:
-        # 全開: リングが大きく、抜き穴も大きい
-        lw, lh = int(r * 0.64), int(r * 0.46)
+        lw, lh = int(r * 0.48), int(r * 0.34)
 
     if emotion == "angry":
         draw.arc((cx - lw, cy - lh, cx + lw, cy + lh), 180, 360, fill=(200, 40, 40), width=6)
