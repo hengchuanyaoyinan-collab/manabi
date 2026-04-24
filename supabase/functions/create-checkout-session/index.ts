@@ -28,34 +28,48 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
 const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2024-12-18.acacia' });
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+const ALLOWED_ORIGINS = [
+  'https://manabi-bay.vercel.app',
+  PUBLIC_SITE_URL,
+].filter(Boolean);
+
+function getAllowOrigin(req: Request): string {
+  const origin = req.headers.get('origin') ?? '';
+  return ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0] || '';
+}
+
+function makeCors(req: Request) {
+  return {
+    'Access-Control-Allow-Origin': getAllowOrigin(req),
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  };
+}
 
 Deno.serve(async (req) => {
+  const corsHeaders = makeCors(req);
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
   if (req.method !== 'POST') {
-    return json({ error: 'method_not_allowed' }, 405);
+    return json(req, { error: 'method_not_allowed' }, 405);
   }
 
   try {
     // --- Auth: ユーザの JWT を Supabase で検証 ---
     const authHeader = req.headers.get('Authorization') ?? '';
     const jwt = authHeader.replace(/^Bearer\s+/i, '');
-    if (!jwt) return json({ error: 'missing_authorization' }, 401);
+    if (!jwt) return json(req, { error: 'missing_authorization' }, 401);
 
     const userClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
       global: { headers: { Authorization: `Bearer ${jwt}` } },
     });
     const { data: userData, error: userErr } = await userClient.auth.getUser(jwt);
-    if (userErr || !userData?.user) return json({ error: 'invalid_token' }, 401);
+    if (userErr || !userData?.user) return json(req, { error: 'invalid_token' }, 401);
     const user = userData.user;
 
-    const siteUrl = PUBLIC_SITE_URL || req.headers.get('origin') || 'https://manabi-bay.vercel.app';
+    const siteUrl = PUBLIC_SITE_URL || 'https://manabi-bay.vercel.app';
 
     // --- 入力 ---
     const body = await req.json().catch(() => ({}));
@@ -71,29 +85,51 @@ Deno.serve(async (req) => {
 
     const totalYen = Math.round(Number(amount) + Number(fee));
     if (!Number.isFinite(totalYen) || totalYen < 50) {
-      return json({ error: 'invalid_amount', message: '金額は¥50以上で指定してください' }, 400);
+      return json(req, { error: 'invalid_amount', message: '金額は¥50以上で指定してください' }, 400);
     }
     if (totalYen > 1_000_000) {
-      return json({ error: 'invalid_amount', message: '金額は¥1,000,000以下で指定してください' }, 400);
+      return json(req, { error: 'invalid_amount', message: '金額は¥1,000,000以下で指定してください' }, 400);
     }
 
     const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (teacher_id && !uuidRe.test(teacher_id)) {
-      return json({ error: 'invalid_teacher_id' }, 400);
+      return json(req, { error: 'invalid_teacher_id' }, 400);
     }
     if (skill_id && !uuidRe.test(skill_id)) {
-      return json({ error: 'invalid_skill_id' }, 400);
+      return json(req, { error: 'invalid_skill_id' }, 400);
     }
     if (booking_id && !uuidRe.test(booking_id)) {
-      return json({ error: 'invalid_booking_id' }, 400);
+      return json(req, { error: 'invalid_booking_id' }, 400);
     }
     if (scheduled_at) {
       const d = new Date(scheduled_at);
-      if (isNaN(d.getTime())) return json({ error: 'invalid_scheduled_at' }, 400);
+      if (isNaN(d.getTime())) return json(req, { error: 'invalid_scheduled_at' }, 400);
+    }
+
+    if (teacher_id && teacher_id === user.id) {
+      return json(req, { error: 'self_booking', message: '自分自身への予約はできません' }, 400);
     }
 
     // --- service role で booking / payment を作成 ---
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    // サーバ側で価格を再検証（クライアント側の価格改ざんを防止）
+    if (skill_id) {
+      const { data: skill, error: skillErr } = await admin
+        .from('skills')
+        .select('price_min, user_id')
+        .eq('id', skill_id)
+        .single();
+      if (skillErr || !skill) {
+        return json(req, { error: 'skill_not_found', message: '指定されたスキルが見つかりません' }, 404);
+      }
+      if (teacher_id && skill.user_id !== teacher_id) {
+        return json(req, { error: 'skill_teacher_mismatch', message: 'スキルと講師が一致しません' }, 400);
+      }
+      if (Number(amount) < skill.price_min) {
+        return json(req, { error: 'amount_below_minimum', message: `金額はスキルの最低単価(¥${skill.price_min.toLocaleString()})以上にしてください` }, 400);
+      }
+    }
 
     let bookingId = booking_id;
     if (!bookingId) {
@@ -111,7 +147,7 @@ Deno.serve(async (req) => {
         .single();
       if (bErr) {
         console.error('booking insert error:', bErr.message);
-        return json({ error: 'booking_insert_failed', message: '予約の作成に失敗しました' }, 500);
+        return json(req, { error: 'booking_insert_failed', message: '予約の作成に失敗しました' }, 500);
       }
       bookingId = booking.id;
     }
@@ -129,7 +165,7 @@ Deno.serve(async (req) => {
       .single();
     if (pErr) {
       console.error('payment insert error:', pErr.message);
-      return json({ error: 'payment_insert_failed', message: '決済情報の作成に失敗しました' }, 500);
+      return json(req, { error: 'payment_insert_failed', message: '決済情報の作成に失敗しました' }, 500);
     }
 
     // --- Stripe Checkout Session ---
@@ -163,16 +199,16 @@ Deno.serve(async (req) => {
       .update({ stripe_session_id: session.id, updated_at: new Date().toISOString() })
       .eq('id', payment.id);
 
-    return json({ url: session.url, session_id: session.id, booking_id: bookingId });
+    return json(req, { url: session.url, session_id: session.id, booking_id: bookingId });
   } catch (e) {
     console.error('create-checkout-session error', e);
-    return json({ error: 'internal_error', message: '決済処理中にエラーが発生しました' }, 500);
+    return json(req, { error: 'internal_error', message: '決済処理中にエラーが発生しました' }, 500);
   }
 });
 
-function json(body: unknown, status = 200) {
+function json(req: Request, body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    headers: { 'Content-Type': 'application/json', ...makeCors(req) },
   });
 }

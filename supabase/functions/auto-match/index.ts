@@ -1,11 +1,18 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+const ALLOWED_ORIGINS = [
+  "https://manabi-bay.vercel.app",
+];
+
+function getCors(req: Request) {
+  const origin = req.headers.get("origin") ?? "";
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
 
 const WEIGHTS = {
   embedding_similarity: 0.35,
@@ -18,8 +25,10 @@ const WEIGHTS = {
 };
 
 Deno.serve(async (req: Request) => {
+  const cors = getCors(req);
+
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: cors });
   }
 
   try {
@@ -42,23 +51,23 @@ Deno.serve(async (req: Request) => {
     const { action } = body;
 
     if (action === "create_and_match") {
-      return await createAndMatch(supabase, user.id, body);
+      return await createAndMatch(supabase, user.id, body, cors);
     } else if (action === "rematch") {
-      return await rematch(supabase, user.id, body.request_id);
+      return await rematch(supabase, user.id, body.request_id, cors);
     } else if (action === "feedback") {
-      return await recordFeedback(supabase, user.id, body);
+      return await recordFeedback(supabase, user.id, body, cors);
     } else {
       throw new Error("Invalid action. Use: create_and_match, rematch, feedback");
     }
   } catch (err: any) {
     return new Response(
       JSON.stringify({ error: err.message }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 400, headers: { ...cors, "Content-Type": "application/json" } }
     );
   }
 });
 
-async function createAndMatch(supabase: any, userId: string, body: any) {
+async function createAndMatch(supabase: any, userId: string, body: any, cors: Record<string, string>) {
   const { subject, detail, budget, format } = body;
   if (!subject) throw new Error("subject is required");
 
@@ -147,11 +156,11 @@ async function createAndMatch(supabase: any, userId: string, body: any) {
 
   return new Response(
     JSON.stringify({ success: true, request_id: request.id, matches, structured }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { headers: { ...cors, "Content-Type": "application/json" } }
   );
 }
 
-async function rematch(supabase: any, userId: string, requestId: string) {
+async function rematch(supabase: any, userId: string, requestId: string, cors: Record<string, string>) {
   if (!requestId) throw new Error("request_id is required");
 
   const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY");
@@ -173,11 +182,11 @@ async function rematch(supabase: any, userId: string, requestId: string) {
 
   return new Response(
     JSON.stringify({ success: true, request_id: requestId, matches }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { headers: { ...cors, "Content-Type": "application/json" } }
   );
 }
 
-async function recordFeedback(supabase: any, userId: string, body: any) {
+async function recordFeedback(supabase: any, userId: string, body: any, cors: Record<string, string>) {
   const { match_id, feedback_action, rating, metadata } = body;
   if (!match_id || !feedback_action) throw new Error("match_id and feedback_action required");
 
@@ -203,7 +212,7 @@ async function recordFeedback(supabase: any, userId: string, body: any) {
 
   return new Response(
     JSON.stringify({ success: true }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { headers: { ...cors, "Content-Type": "application/json" } }
   );
 }
 
@@ -227,10 +236,11 @@ async function findAndScoreMatches(
     (vectorMatches || []).map((m: any) => [m.user_id, m.similarity])
   );
 
+  const sanitizedSubject = (request.subject || "").replace(/[%_,(){}."'\\]/g, "");
   const { data: keywordSkills } = await supabase
     .from("skills")
     .select("user_id, subject, price_min, available_days, lesson_formats, area, tags, description, id")
-    .or(`subject.ilike.%${request.subject}%,tags.cs.{${request.subject}}`);
+    .or(`subject.ilike.%${sanitizedSubject}%,tags.cs.{${sanitizedSubject}}`);
 
   const keywordTeacherIds = (keywordSkills || [])
     .map((s: any) => s.user_id)
