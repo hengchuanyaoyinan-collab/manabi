@@ -37,6 +37,8 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="anonymous">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXXXXX',{send_page_view:false});</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin="anonymous"></script>
@@ -356,7 +358,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 </head>
 <body>
 <div id="scroll-progress" style="position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--green));width:0%;z-index:9999;transition:width .1s linear;pointer-events:none;"></div>
-<a href="#home" class="sr-only" style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1000;background:var(--accent);color:white;padding:8px 16px;border-radius:0 0 8px 8px;" onfocus="this.style.position='fixed';this.classList.remove('sr-only')" onblur="this.classList.add('sr-only')">コンテンツへスキップ</a>
+<a href="/" class="sr-only" style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:1000;background:var(--accent);color:white;padding:8px 16px;border-radius:0 0 8px 8px;" onfocus="this.style.position='fixed';this.classList.remove('sr-only')" onblur="this.classList.add('sr-only')">コンテンツへスキップ</a>
 
 <!-- SPLASH -->
 <div id="splash">
@@ -650,21 +652,21 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <div style="display:flex;gap:24px;">
         <div>
           <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">サービス</p>
-          <a href="#explore" onclick="event.preventDefault();showPage('explore')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">先生を探す</a>
-          <a href="#matching" onclick="event.preventDefault();showPage('matching')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">AIマッチング</a>
-          <a href="#register" onclick="event.preventDefault();showPage('register')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">スキルを出品</a>
-          <a href="#map" onclick="event.preventDefault();showPage('map')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">地図で探す</a>
+          <a href="/explore" onclick="event.preventDefault();showPage('explore')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">先生を探す</a>
+          <a href="/matching" onclick="event.preventDefault();showPage('matching')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">AIマッチング</a>
+          <a href="/register" onclick="event.preventDefault();showPage('register')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">スキルを出品</a>
+          <a href="/map" onclick="event.preventDefault();showPage('map')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">地図で探す</a>
         </div>
         <div>
           <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">アカウント</p>
-          <a href="#profile" onclick="event.preventDefault();showPage('profile')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">マイページ</a>
-          <a href="#chat" onclick="event.preventDefault();showPage('chat')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">メッセージ</a>
-          <a href="#dashboard" onclick="event.preventDefault();showPage('dashboard')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">ダッシュボード</a>
+          <a href="/profile" onclick="event.preventDefault();showPage('profile')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">マイページ</a>
+          <a href="/chat" onclick="event.preventDefault();showPage('chat')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">メッセージ</a>
+          <a href="/dashboard" onclick="event.preventDefault();showPage('dashboard')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">ダッシュボード</a>
         </div>
         <div>
           <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">法的情報</p>
-          <a href="#terms" onclick="event.preventDefault();showPage('terms')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">利用規約</a>
-          <a href="#privacy" onclick="event.preventDefault();showPage('privacy')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">プライバシーポリシー</a>
+          <a href="/terms" onclick="event.preventDefault();showPage('terms')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">利用規約</a>
+          <a href="/privacy" onclick="event.preventDefault();showPage('privacy')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">プライバシーポリシー</a>
         </div>
       </div>
     </div>
@@ -1344,6 +1346,21 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <p style="font-weight:700;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:6px;"><i data-lucide="star" style="width:16px;height:16px;color:var(--gold);"></i>受け取ったレビュー</p>
     <div id="prof-reviews"><p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">レビューはまだありません</p></div>
   </div>
+  <div style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);margin-top:16px;">
+    <p style="font-weight:700;font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:6px;"><i data-lucide="bell" style="width:16px;height:16px;color:var(--accent);"></i>通知設定</p>
+    <label style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--lighter);cursor:pointer;">
+      <span style="font-size:13px;">プッシュ通知</span>
+      <input type="checkbox" id="pref-push" onchange="toggleNotifPref('push', this.checked)" style="width:18px;height:18px;accent-color:var(--accent);">
+    </label>
+    <label style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--lighter);cursor:pointer;">
+      <span style="font-size:13px;">メッセージ通知</span>
+      <input type="checkbox" id="pref-message" onchange="toggleNotifPref('message', this.checked)" style="width:18px;height:18px;accent-color:var(--accent);">
+    </label>
+    <label style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;cursor:pointer;">
+      <span style="font-size:13px;">予約更新通知</span>
+      <input type="checkbox" id="pref-booking" onchange="toggleNotifPref('booking', this.checked)" style="width:18px;height:18px;accent-color:var(--accent);">
+    </label>
+  </div>
   <button onclick="doLogout()" style="width:100%;margin-top:16px;padding:13px;background:transparent;border:1.5px solid var(--border);border-radius:12px;color:var(--muted);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">ログアウト</button>
 </div>
 
@@ -1462,6 +1479,45 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
   </div>
 </div>
 
+<!-- ADMIN PAGE -->
+<div class="page" id="admin" style="max-width:900px;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+    <div style="width:40px;height:40px;border-radius:12px;background:var(--red);color:white;display:flex;align-items:center;justify-content:center;"><i data-lucide="shield-alert" style="width:20px;height:20px;"></i></div>
+    <div><h1 style="font-size:20px;font-weight:800;">管理ダッシュボード</h1><p style="font-size:11px;color:var(--muted);">通報管理・ユーザー管理</p></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;" id="admin-stats"></div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+    <button class="btn btn-dark" onclick="loadAdminReports('pending')" style="font-size:12px;padding:8px 14px;" id="admin-tab-pending">未対応</button>
+    <button class="btn btn-outline" onclick="loadAdminReports('resolved')" style="font-size:12px;padding:8px 14px;" id="admin-tab-resolved">対応済</button>
+    <button class="btn btn-outline" onclick="loadAdminReports('all')" style="font-size:12px;padding:8px 14px;" id="admin-tab-all">すべて</button>
+  </div>
+  <div id="admin-reports-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<!-- REPORT MODAL -->
+<div id="report-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeReportModal()">
+  <div class="modal" style="max-width:420px;max-height:80vh;overflow-y:auto;padding:24px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-size:17px;font-weight:700;">通報する</h2>
+      <button onclick="closeReportModal()" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+    </div>
+    <div id="report-target-info" style="margin-bottom:16px;padding:12px;background:var(--lighter);border-radius:10px;font-size:12px;"></div>
+    <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">理由</label>
+    <select id="report-reason" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:12px;background:var(--white);color:var(--dark);font-family:inherit;">
+      <option value="">選択してください</option>
+      <option value="spam">スパム・迷惑行為</option>
+      <option value="inappropriate">不適切なコンテンツ</option>
+      <option value="fake">虚偽の情報</option>
+      <option value="harassment">ハラスメント</option>
+      <option value="scam">詐欺・不正行為</option>
+      <option value="other">その他</option>
+    </select>
+    <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">詳細（任意）</label>
+    <textarea id="report-detail" rows="3" placeholder="具体的な内容を記入..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;resize:vertical;font-family:inherit;background:var(--white);color:var(--dark);"></textarea>
+    <button class="btn btn-dark" onclick="submitReport()" style="width:100%;margin-top:14px;padding:12px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="flag" style="width:14px;height:14px;"></i>通報を送信</button>
+  </div>
+</div>
+
 <!-- BACK TO TOP -->
 <button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="ページの先頭へ"><i data-lucide="chevron-up" style="width:20px;height:20px;"></i></button>
 
@@ -1496,6 +1552,9 @@ const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const sb = supabase.createClient(SB_URL, SB_KEY);
 let currentUser = null;
 const FEE_RATE = 0.05;
+function trackEvent(name, params) {
+  try { if (typeof gtag === 'function') gtag('event', name, params); } catch(e) {}
+}
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 
 // ── DARK MODE ──
@@ -1578,6 +1637,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
       const { data: prof } = await sb.from('profiles').select('name').eq('id', currentUser.id).single();
       const greeting = prof?.name ? `おかえりなさい、${prof.name}さん！` : 'ログインしました！';
       showToast(greeting, 'var(--green)');
+      trackEvent('login', { method: 'email' });
     }
     if (pendingPageAfterAuth) {
       const target = pendingPageAfterAuth;
@@ -1606,6 +1666,7 @@ function updateNavUser() {
 
 async function loadProfile() {
   if (!currentUser) return;
+  loadNotifPrefs();
   try {
     const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
     if (data) {
@@ -2043,7 +2104,71 @@ async function generateProfileAIBio() {
 }
 
 function requestVerification() {
-  showToast('本人確認機能は近日公開予定です', 'var(--accent)');
+  if (!currentUser) return;
+  const overlay = document.getElementById('modal');
+  document.getElementById('modal-body').innerHTML = `
+    <div style="text-align:center;padding:10px 0 16px;">
+      <div style="width:48px;height:48px;border-radius:50%;background:#E3F2FD;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="shield-check" style="width:24px;height:24px;color:#1976D2;"></i></div>
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">本人確認の申請</h2>
+      <p style="font-size:12px;color:var(--muted);line-height:1.6;">身分証明書の画像をアップロードしてください。<br>運転免許証・パスポート・マイナンバーカードが利用可能です。</p>
+    </div>
+    <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">書類の種類</label>
+    <select id="verify-doc-type" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:12px;background:var(--white);color:var(--dark);font-family:inherit;">
+      <option value="drivers_license">運転免許証</option>
+      <option value="passport">パスポート</option>
+      <option value="mynumber">マイナンバーカード（表面のみ）</option>
+    </select>
+    <div id="verify-upload-area" style="border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;margin-bottom:12px;transition:border-color .2s;" onclick="document.getElementById('verify-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="event.preventDefault();this.style.borderColor='var(--border)';handleVerifyFile(event.dataTransfer.files[0])">
+      <i data-lucide="upload" style="width:28px;height:28px;color:var(--muted);margin-bottom:8px;"></i>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:4px;">クリックまたはドラッグ&ドロップ</p>
+      <p style="font-size:10px;color:var(--mid);">JPG, PNG（10MB以下）</p>
+      <input type="file" id="verify-file-input" accept="image/*" style="display:none;" onchange="handleVerifyFile(this.files[0])">
+    </div>
+    <div id="verify-preview" style="display:none;margin-bottom:12px;text-align:center;"><img id="verify-preview-img" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--light);"></div>
+    <p style="font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:14px;">※ アップロードされた画像は本人確認の目的のみに使用され、確認後は削除されます。マイナンバーカードの裏面（個人番号）は送信しないでください。</p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline" onclick="closeModal()" style="flex:1;">キャンセル</button>
+      <button class="btn btn-dark" id="verify-submit-btn" onclick="submitVerification()" style="flex:2;background:#1976D2;" disabled>申請する</button>
+    </div>`;
+  overlay.classList.add('open');
+  refreshIcons();
+}
+let _verifyFile = null;
+function handleVerifyFile(file) {
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { showToast('ファイルサイズは10MB以下にしてください', 'var(--red)'); return; }
+  if (!file.type.startsWith('image/')) { showToast('画像ファイルを選択してください', 'var(--red)'); return; }
+  _verifyFile = file;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('verify-preview-img').src = e.target.result;
+    document.getElementById('verify-preview').style.display = '';
+    document.getElementById('verify-upload-area').style.display = 'none';
+    document.getElementById('verify-submit-btn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+async function submitVerification() {
+  if (!_verifyFile || !currentUser) return;
+  const btn = document.getElementById('verify-submit-btn');
+  btn.disabled = true; btn.textContent = '送信中...';
+  try {
+    const ext = _verifyFile.name.split('.').pop();
+    const path = `verification/${currentUser.id}/${Date.now()}.${ext}`;
+    const { error: uploadErr } = await sb.storage.from('documents').upload(path, _verifyFile, { upsert: true });
+    if (uploadErr) throw uploadErr;
+    const docType = document.getElementById('verify-doc-type').value;
+    await sb.from('verification_requests').insert({
+      user_id: currentUser.id, document_type: docType, document_path: path, status: 'pending'
+    });
+    closeModal();
+    showToast('本人確認の申請を送信しました。審査には1〜3営業日かかります。', 'var(--green)');
+    _verifyFile = null;
+  } catch(e) {
+    console.error('verification error:', e);
+    showToast('送信に失敗しました', 'var(--red)');
+    btn.disabled = false; btn.textContent = '申請する';
+  }
 }
 
 function showPhoneInput() {
@@ -2526,8 +2651,10 @@ let notifs = [];
 
 // ── UI ──
 function showPage(id, pushHistory = true) {
-  const protectedPages = ['register','matching','chat','payment','dashboard','profile'];
+  const protectedPages = ['register','matching','chat','payment','dashboard','profile','admin'];
   if (protectedPages.includes(id) && !requireAuth(id)) return;
+  if (id === 'admin' && !isAdmin()) { showToast('管理者権限が必要です', 'var(--red)'); return; }
+  if (id === 'admin') loadAdminReports('pending');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const el = document.getElementById(id);
@@ -2557,13 +2684,22 @@ function showPage(id, pushHistory = true) {
   bookStep = 0; selSlot = null;
   document.querySelector('.nav-links')?.classList.remove('open');
   window.scrollTo(0, 0);
-  if (pushHistory && location.hash !== '#' + id) history.pushState({ page: id }, '', '#' + id);
+  if (pushHistory) {
+    const target = '/' + (id === 'home' ? '' : id);
+    if (location.pathname !== target) history.pushState({ page: id }, '', target);
+  }
+  trackEvent('page_view', { page_title: id, page_location: location.pathname });
   refreshIcons();
 }
 window.addEventListener('popstate', (e) => {
-  const page = e.state?.page || location.hash.replace('#','') || 'home';
-  const valid = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy'];
+  const page = e.state?.page || location.pathname.replace(/^\//,'') || 'home';
+  const valid = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy','admin'];
   if (valid.includes(page)) showPage(page, false);
+  else if (page.startsWith('teacher/')) {
+    const tid = page.replace('teacher/', '');
+    const numTid = parseInt(tid);
+    openModal(Number.isFinite(numTid) ? numTid : tid);
+  }
 });
 
 function makeSkeletonCards(n) {
@@ -2867,6 +3003,8 @@ function _buildExploreQuery(countOnly) {
 }
 
 async function renderExplore() {
+  const searchVal = document.getElementById('explore-search')?.value?.trim();
+  if (searchVal) trackEvent('search', { search_term: searchVal });
   _exploreServerMode = visibleTeachers().some(t => t.db_skill_id);
   if (!_exploreServerMode) {
     _renderExploreLocal();
@@ -3649,6 +3787,34 @@ async function sendMsg() {
   finally { if (sendBtn) sendBtn.disabled = false; }
 }
 
+function _getNotifPrefs() {
+  try { return JSON.parse(localStorage.getItem('manabi_notif_prefs') || '{}'); } catch { return {}; }
+}
+function _setNotifPrefs(prefs) { localStorage.setItem('manabi_notif_prefs', JSON.stringify(prefs)); }
+function toggleNotifPref(key, val) {
+  const prefs = _getNotifPrefs();
+  prefs[key] = val;
+  _setNotifPrefs(prefs);
+  showToast(val ? '通知をオンにしました' : '通知をオフにしました', 'var(--accent)');
+  if (key === 'push' && val && 'Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+function loadNotifPrefs() {
+  const prefs = _getNotifPrefs();
+  const pushEl = document.getElementById('pref-push');
+  const msgEl = document.getElementById('pref-message');
+  const bookEl = document.getElementById('pref-booking');
+  if (pushEl) pushEl.checked = prefs.push !== false;
+  if (msgEl) msgEl.checked = prefs.message !== false;
+  if (bookEl) bookEl.checked = prefs.booking !== false;
+}
+function _sendPushNotif(title, body) {
+  const prefs = _getNotifPrefs();
+  if (prefs.push === false) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try { new Notification(title, { body, icon: '/favicon.png', badge: '/favicon-32.png', tag: 'manabi-' + Date.now() }); } catch(e) {}
+}
 function subscribeRealtimeMessages() {
   if (!currentUser) return;
   if (realtimeCh) { sb.removeChannel(realtimeCh); realtimeCh = null; }
@@ -3659,6 +3825,7 @@ function subscribeRealtimeMessages() {
       const statusLabels = { confirmed: '予約が確定しました', completed: 'セッションが完了しました', cancelled: '予約がキャンセルされました' };
       if (statusLabels[b.status]) {
         addNotif({ text: statusLabels[b.status], time: 'たった今', unread: true, color: b.status === 'confirmed' ? 'var(--green)' : 'var(--muted)' });
+        _sendPushNotif('予約の更新', statusLabels[b.status]);
       }
     })
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `receiver_id=eq.${currentUser.id}` }, (p) => {
@@ -3674,6 +3841,7 @@ function subscribeRealtimeMessages() {
         addNotif({ text: `${name}さんからメッセージ`, time:'たった今', unread:true, color:'var(--accent)' });
         playNotifSound();
         updateChatBadge();
+        if (document.hidden) _sendPushNotif(`${name}さんからメッセージ`, m.content?.substring(0, 80) || '新しいメッセージ');
       } else {
         loadChatThreads();
       }
@@ -4488,7 +4656,7 @@ function handlePaymentReturn() {
     addNotif({text:'支払いがキャンセルされました', time:'たった今', unread:true, color:'var(--red)'});
   }
   // クエリを消してURLをきれいに
-  history.replaceState({ page: 'payment' }, '', window.location.pathname + '#payment');
+  history.replaceState({ page: 'payment' }, '', '/payment');
 }
 function renderPayMethods() {
   document.getElementById('pay-methods').innerHTML = `
@@ -4638,12 +4806,101 @@ async function shareTeacher(id) {
   const shareData = {
     title: `${t.name} - ${t.subject} | Manabi`,
     text: `${t.name}さんが${t.subject}を教えています。¥${t.price.toLocaleString()}/時〜`,
-    url: `https://manabi-bay.vercel.app/#teacher-${id}`,
+    url: `https://manabi-bay.vercel.app/teacher/${id}`,
   };
   try {
     if (navigator.share) { await navigator.share(shareData); }
     else { await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`); showToast('リンクをコピーしました', 'var(--accent)'); }
   } catch(e) { if (e.name !== 'AbortError') showToast('シェアに失敗しました', 'var(--red)'); }
+}
+// ── Report / Block / Admin ──
+let _reportTarget = null;
+function openReportModal(type, targetId, targetName) {
+  if (!requireAuth('report')) return;
+  _reportTarget = { type, targetId };
+  document.getElementById('report-target-info').innerHTML = `<strong>${escapeHtml(targetName)}</strong>を通報`;
+  document.getElementById('report-reason').value = '';
+  document.getElementById('report-detail').value = '';
+  document.getElementById('report-modal').style.display = 'flex';
+  refreshIcons();
+}
+function closeReportModal() { document.getElementById('report-modal').style.display = 'none'; _reportTarget = null; }
+async function submitReport() {
+  if (!_reportTarget) return;
+  const reason = document.getElementById('report-reason').value;
+  if (!reason) { showToast('理由を選択してください', 'var(--red)'); return; }
+  const detail = document.getElementById('report-detail').value.trim();
+  const { error } = await sb.from('reports').insert({
+    reporter_id: currentUser.id,
+    target_type: _reportTarget.type,
+    target_id: _reportTarget.targetId,
+    reason, detail, status: 'pending'
+  });
+  if (error) { showToast('送信に失敗しました', 'var(--red)'); console.error(error); return; }
+  showToast('通報を送信しました。ご協力ありがとうございます。', 'var(--green)');
+  closeReportModal();
+}
+async function blockUser(userId, userName) {
+  if (!requireAuth('block')) return;
+  if (!confirm(`${userName}さんをブロックしますか？ブロックすると相手のリストに表示されなくなります。`)) return;
+  const { error } = await sb.from('blocks').insert({ blocker_id: currentUser.id, blocked_id: userId });
+  if (error && error.code !== '23505') { showToast('ブロックに失敗しました', 'var(--red)'); return; }
+  showToast(`${userName}さんをブロックしました`, 'var(--accent)');
+}
+const ADMIN_EMAILS = ['admin@manabi.com'];
+function isAdmin() { return currentUser && ADMIN_EMAILS.includes(currentUser.email); }
+async function loadAdminReports(filter) {
+  if (!isAdmin()) { showToast('権限がありません', 'var(--red)'); return; }
+  ['pending','resolved','all'].forEach(f => {
+    const tab = document.getElementById('admin-tab-' + f);
+    if (tab) { tab.className = f === filter ? 'btn btn-dark' : 'btn btn-outline'; }
+  });
+  let q = sb.from('reports').select('*').order('created_at', { ascending: false }).limit(50);
+  if (filter === 'pending') q = q.eq('status', 'pending');
+  else if (filter === 'resolved') q = q.eq('status', 'resolved');
+  const { data } = await q;
+  const statsQ = await sb.from('reports').select('status', { count: 'exact' });
+  const pendingCount = (await sb.from('reports').select('*', { count: 'exact', head: true }).eq('status', 'pending')).count || 0;
+  const totalCount = (await sb.from('reports').select('*', { count: 'exact', head: true })).count || 0;
+  document.getElementById('admin-stats').innerHTML = `
+    <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;color:var(--red);">${pendingCount}</div>
+      <div style="font-size:11px;color:var(--muted);">未対応</div>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;color:var(--green);">${totalCount - pendingCount}</div>
+      <div style="font-size:11px;color:var(--muted);">対応済</div>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;">${totalCount}</div>
+      <div style="font-size:11px;color:var(--muted);">合計</div>
+    </div>`;
+  const list = document.getElementById('admin-reports-list');
+  if (!data || !data.length) { list.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:40px 0;">通報はありません</p>'; refreshIcons(); return; }
+  const reasonLabels = { spam:'スパム', inappropriate:'不適切', fake:'虚偽', harassment:'ハラスメント', scam:'詐欺', other:'その他' };
+  list.innerHTML = data.map(r => `
+    <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:${r.status==='pending'?'#FFF3E0;color:#E65100':'#E8F5E9;color:#2E7D32'};font-weight:600;">${r.status==='pending'?'未対応':'対応済'}</span>
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;background:var(--lighter);margin-left:4px;">${reasonLabels[r.reason]||r.reason}</span>
+        </div>
+        <span style="font-size:10px;color:var(--muted);">${new Date(r.created_at).toLocaleDateString('ja-JP')}</span>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">${r.target_type}: ${escapeHtml(r.target_id)}</p>
+      ${r.detail ? `<p style="font-size:12px;line-height:1.6;">${escapeHtml(r.detail)}</p>` : ''}
+      ${r.status==='pending' ? `<div style="display:flex;gap:6px;margin-top:10px;">
+        <button class="btn btn-dark" onclick="resolveReport('${r.id}','resolved')" style="font-size:11px;padding:6px 12px;">対応済にする</button>
+        <button class="btn btn-outline" onclick="resolveReport('${r.id}','dismissed')" style="font-size:11px;padding:6px 12px;">却下</button>
+      </div>` : ''}
+    </div>`).join('');
+  refreshIcons();
+}
+async function resolveReport(reportId, status) {
+  const { error } = await sb.from('reports').update({ status, resolved_at: new Date().toISOString() }).eq('id', reportId);
+  if (error) { showToast('更新に失敗しました', 'var(--red)'); return; }
+  showToast('更新しました', 'var(--green)');
+  loadAdminReports('pending');
 }
 function trackRecentView(id) {
   try {
@@ -4654,6 +4911,27 @@ function trackRecentView(id) {
 }
 function getRecentViews() {
   try { return JSON.parse(localStorage.getItem('manabi_recent') || '[]'); } catch { return []; }
+}
+function _injectTeacherJsonLd(t) {
+  _removeTeacherJsonLd();
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: t.subject,
+    description: t.bio || `${t.name}による${t.subject}レッスン`,
+    provider: { '@type': 'Person', name: t.name, url: `https://manabi-bay.vercel.app/teacher/${t.id}` },
+    offers: { '@type': 'Offer', price: String(t.price), priceCurrency: 'JPY', availability: 'https://schema.org/InStock' }
+  };
+  if (t.rating) ld.aggregateRating = { '@type': 'AggregateRating', ratingValue: String(t.rating), reviewCount: String(t.reviews || 0) };
+  const el = document.createElement('script');
+  el.type = 'application/ld+json';
+  el.id = 'teacher-jsonld';
+  el.textContent = JSON.stringify(ld);
+  document.head.appendChild(el);
+}
+function _removeTeacherJsonLd() {
+  const el = document.getElementById('teacher-jsonld');
+  if (el) el.remove();
 }
 async function openModal(id) {
   selTeacher = getTeacher(id);
@@ -4668,12 +4946,22 @@ async function openModal(id) {
   trackRecentView(id);
   bookStep = 0; selSlot = null; renderModal();
   document.getElementById('modal').classList.add('open');
+  history.pushState({ page: 'teacher', teacherId: id }, '', '/teacher/' + id);
+  _injectTeacherJsonLd(selTeacher);
+  document.title = `${selTeacher.name} - ${selTeacher.subject} | Manabi`;
+  document.querySelector('link[rel="canonical"]').href = `https://manabi-bay.vercel.app/teacher/${id}`;
+  trackEvent('view_item', { item_id: id, item_name: selTeacher.subject, item_category: selTeacher.subject, price: selTeacher.price });
 }
 function closeModal() {
   const overlay = document.getElementById('modal');
   const modal = overlay.querySelector('.modal');
   if (modal) { modal.style.transform = 'translateY(100%)'; modal.style.transition = 'transform .2s ease-in'; }
   setTimeout(() => { overlay.classList.remove('open'); if (modal) { modal.style.transform = ''; modal.style.transition = ''; } }, 200);
+  _removeTeacherJsonLd();
+  document.title = 'Manabi — スキルのマーケットプレイス';
+  document.querySelector('link[rel="canonical"]').href = 'https://manabi-bay.vercel.app';
+  const prev = location.pathname.replace(/^\//,'');
+  if (prev.startsWith('teacher/')) history.pushState({ page: 'explore' }, '', '/explore');
 }
 (function initSwipeDismiss() {
   const overlay = document.getElementById('modal');
@@ -4816,82 +5104,7 @@ async function createBookingInDB(t) {
 }
 
 function reportTeacher(userId, name) {
-  if (!currentUser) { showToast('ログインが必要です', 'var(--red)'); return; }
-  const reasons = ['不適切なコンテンツ','スパム・詐欺','なりすまし','ハラスメント','その他'];
-  const overlay = document.getElementById('modal');
-  document.getElementById('modal-body').innerHTML = `
-    <div style="text-align:center;padding:10px 0 16px;">
-      <div style="width:48px;height:48px;border-radius:50%;background:var(--red);opacity:.1;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"></div>
-      <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">${escapeHtml(name)}を報告</h2>
-      <p style="font-size:12px;color:var(--muted);">問題の内容を選択してください</p>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-      ${reasons.map((r,i) => `<button onclick="document.querySelectorAll('.report-opt').forEach(b=>b.style.borderColor='var(--border)');this.style.borderColor='var(--red)';document.getElementById('report-reason').value='${r}'" class="report-opt" style="padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;font-size:13px;font-family:inherit;text-align:left;transition:border-color .15s;color:var(--dark);">${r}</button>`).join('')}
-    </div>
-    <input type="hidden" id="report-reason" value="">
-    <textarea id="report-detail" rows="2" placeholder="詳細（任意）" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:13px;resize:none;background:var(--bg);color:var(--dark);margin-bottom:12px;"></textarea>
-    <div style="display:flex;gap:10px;">
-      <button class="btn btn-outline" onclick="closeModal()" style="flex:1;">キャンセル</button>
-      <button class="btn" onclick="submitReport('${userId}')" style="flex:2;background:var(--red);color:white;">報告する</button>
-    </div>`;
-  overlay.classList.add('open');
-}
-async function submitReport(userId) {
-  const reason = document.getElementById('report-reason').value;
-  if (!reason) { showToast('理由を選択してください', 'var(--gold)'); return; }
-  const detail = document.getElementById('report-detail')?.value?.trim() || '';
-  try {
-    await sb.from('reports').insert({ reporter_id: currentUser.id, reported_user_id: userId, reason, detail });
-  } catch(e) {}
-  closeModal();
-  showToast('報告を送信しました。ご協力ありがとうございます。', 'var(--green)');
-}
-
-function openReviewModal(teacherId, teacherName) {
-  let selectedRating = 0;
-  const overlay = document.getElementById('modal');
-  document.getElementById('modal-body').innerHTML = `
-    <div style="text-align:center;padding:10px 0 20px;">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--green));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="message-square-heart" style="width:24px;height:24px;color:white;"></i></div>
-      <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">${escapeHtml(teacherName)}のレビュー</h2>
-      <p style="font-size:12px;color:var(--muted);">あなたの体験を共有しましょう</p>
-    </div>
-    <div id="review-stars" style="display:flex;justify-content:center;gap:8px;margin-bottom:20px;">
-      ${[1,2,3,4,5].map(n => `<button onclick="document.querySelectorAll('#review-stars button').forEach((b,i)=>{b.style.color=i<${n}?'var(--gold)':'var(--border)';b.querySelector('i').style.fill=i<${n}?'var(--gold)':'none'});document.getElementById('review-rating').value=${n};" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--border);transition:all .15s;"><i data-lucide="star" style="width:32px;height:32px;fill:none;"></i></button>`).join('')}
-    </div>
-    <input type="hidden" id="review-rating" value="0">
-    <textarea id="review-comment" rows="4" placeholder="レッスンはいかがでしたか？（任意）" style="width:100%;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;resize:none;transition:border-color .2s;background:var(--bg);color:var(--dark);" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-    <div style="display:flex;gap:10px;margin-top:16px;">
-      <button class="btn btn-outline" onclick="closeModal()" style="flex:1;">キャンセル</button>
-      <button class="btn btn-dark" id="submit-review-btn" onclick="submitReview('${teacherId}')" style="flex:2;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="send" style="width:14px;height:14px;"></i>送信する</button>
-    </div>`;
-  overlay.classList.add('open');
-  refreshIcons();
-}
-
-async function submitReview(teacherId) {
-  if (!currentUser) { showToast('ログインが必要です', 'var(--red)'); return; }
-  const rating = parseInt(document.getElementById('review-rating').value);
-  const comment = document.getElementById('review-comment').value.trim();
-  if (!rating || rating < 1) { showToast('星を選択してください', 'var(--gold)'); return; }
-  const btn = document.getElementById('submit-review-btn');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;"></span>';
-  try {
-    const { error } = await sb.from('reviews').insert({
-      reviewer_id: currentUser.id,
-      reviewee_id: teacherId,
-      rating,
-      comment: comment || null,
-    });
-    if (error) throw error;
-    closeModal();
-    showToast('レビューを投稿しました！ありがとうございます', 'var(--green)');
-    celebrateBooking();
-  } catch(e) {
-    showToast('レビューの送信に失敗しました', 'var(--red)');
-    btn.disabled = false; btn.innerHTML = '<i data-lucide="send" style="width:14px;height:14px;"></i>送信する';
-    refreshIcons();
-  }
+  openReportModal('user', userId, name);
 }
 
 function renderModal() {
@@ -4983,7 +5196,6 @@ function renderModal() {
       ${currentUser && t.db_user_id && t.db_user_id !== currentUser.id ? `<button onclick="reportTeacher('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="padding:9px 16px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"><i data-lucide="flag" style="width:13px;height:13px;"></i>報告</button>` : ''}
     </div>`;
   } else if (bookStep === 1) {
-  } else if (bookStep === 1) {
     const slots = generateSlots(t.available);
     const dayLabels = ['日','月','火','水','木','金','土'];
     const grouped = {};
@@ -5022,6 +5234,7 @@ function renderModal() {
           <button class="btn btn-dark" onclick="proceedToPayment();" style="width:100%;padding:14px;">支払いへ進む</button>
         </div>`;
         addNotif({text:`${escapeHtml(t.name)}先生との予約が完了しました`, time:'たった今', unread:true, color:'var(--green)'});
+        trackEvent('begin_checkout', { currency: 'JPY', value: t.price, items: [{ item_name: t.subject, price: t.price }] });
         if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
         celebrateBooking();
         refreshIcons();
@@ -5296,15 +5509,15 @@ renderNotifs();
 handlePaymentReturn();
 loadHeroStats();
 loadSkillsFromDB();
-if (location.hash) {
-  const initPage = location.hash.replace('#','');
-  const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy'];
-  if (initPage.startsWith('teacher-')) {
-    const tid = initPage.replace('teacher-', '');
+{
+  const path = location.pathname.replace(/^\//,'') || (location.hash ? location.hash.replace('#','') : '');
+  const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy','admin'];
+  if (path.startsWith('teacher/') || path.startsWith('teacher-')) {
+    const tid = path.replace(/^teacher[\/-]/, '');
     const numTid = parseInt(tid);
     const resolvedTid = Number.isFinite(numTid) ? numTid : tid;
     if (resolvedTid) setTimeout(() => openModal(resolvedTid), 800);
-  } else if (validPages.includes(initPage)) showPage(initPage, false);
+  } else if (validPages.includes(path)) showPage(path, false);
 }
 refreshIcons();
 observeFadeUps();
