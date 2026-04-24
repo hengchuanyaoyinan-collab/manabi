@@ -4164,7 +4164,7 @@ async function loadHeroStats() {
     ]);
     const teachers = skillsRes.count || 0;
     const sessions = bookingsRes.count || 0;
-    if (teachers >= 10 || sessions >= 5) {
+    if (teachers >= 10000 || sessions >= 10000) {
       const row = document.getElementById('hero-stats-row');
       if (row) row.style.display = 'flex';
       animateCount(document.getElementById('hero-teacher-count'), teachers, '名');
