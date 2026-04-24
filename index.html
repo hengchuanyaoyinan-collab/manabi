@@ -1402,6 +1402,35 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
   <div id="dash-reviews" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">レビューはまだありません</p>
   </div>
+  <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="wallet" style="width:18px;height:18px;color:var(--green);"></i>売上・入金設定</h3>
+  <div id="stripe-connect-section" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
+    <div id="connect-status-loading" style="text-align:center;padding:20px;"><span class="spinner" style="border-color:var(--border);border-top-color:var(--dark);width:20px;height:20px;"></span></div>
+    <div id="connect-not-setup" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#635BFF,#7A73FF);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="credit-card" style="width:20px;height:20px;color:white;"></i></div>
+        <div><p style="font-weight:700;font-size:14px;">入金を受け取るには口座登録が必要です</p><p style="font-size:11px;color:var(--muted);line-height:1.6;">Stripeアカウントを連携すると、レッスン完了後に自動で売上が振り込まれます。</p></div>
+      </div>
+      <button class="btn btn-dark" id="btn-connect-onboard" onclick="startStripeOnboarding()" style="width:100%;padding:12px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;background:#635BFF;"><i data-lucide="link" style="width:14px;height:14px;"></i>Stripeアカウントを連携する</button>
+    </div>
+    <div id="connect-active" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div><span style="font-size:13px;font-weight:600;">入金アカウント連携済み</span></div>
+        <button onclick="openStripeDashboard()" style="font-size:11px;color:#635BFF;background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;">ダッシュボード →</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="connect-balance">
+        <div style="background:var(--lighter);border-radius:10px;padding:14px;text-align:center;"><p style="font-size:10px;color:var(--muted);margin-bottom:4px;">未払い残高</p><p id="connect-pending-bal" style="font-size:20px;font-weight:800;">¥0</p></div>
+        <div style="background:var(--lighter);border-radius:10px;padding:14px;text-align:center;"><p style="font-size:10px;color:var(--muted);margin-bottom:4px;">累計入金額</p><p id="connect-total-paid" style="font-size:20px;font-weight:800;">¥0</p></div>
+      </div>
+    </div>
+    <div id="connect-pending-onboard" style="display:none;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:#FFF3E0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="clock" style="width:20px;height:20px;color:#E65100;"></i></div>
+        <div><p style="font-weight:700;font-size:14px;color:#E65100;">アカウント設定が未完了です</p><p style="font-size:11px;color:var(--muted);line-height:1.6;">Stripeのオンボーディングを完了してください。</p></div>
+      </div>
+      <button class="btn btn-dark" onclick="startStripeOnboarding()" style="width:100%;padding:12px;font-size:13px;background:#E65100;">設定を続ける</button>
+    </div>
+  </div>
+
   <h3 style="font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><i data-lucide="bar-chart-3" style="width:18px;height:18px;color:var(--green);"></i>収益グラフ</h3>
   <div id="earnings-chart" style="display:none;background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:28px;">
     <div style="display:flex;align-items:flex-end;gap:6px;height:100px;" id="earnings-bars"></div>
@@ -1515,6 +1544,49 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">詳細（任意）</label>
     <textarea id="report-detail" rows="3" placeholder="具体的な内容を記入..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;resize:vertical;font-family:inherit;background:var(--white);color:var(--dark);"></textarea>
     <button class="btn btn-dark" onclick="submitReport()" style="width:100%;margin-top:14px;padding:12px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="flag" style="width:14px;height:14px;"></i>通報を送信</button>
+  </div>
+</div>
+
+<!-- REFUND REQUEST MODAL -->
+<div id="refund-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeRefundModal()">
+  <div class="modal" style="max-width:420px;max-height:80vh;overflow-y:auto;padding:24px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2 style="font-size:17px;font-weight:700;">返金リクエスト</h2>
+      <button onclick="closeRefundModal()" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+    </div>
+    <div id="refund-booking-info" style="margin-bottom:16px;padding:12px;background:var(--lighter);border-radius:10px;font-size:12px;"></div>
+    <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">返金理由</label>
+    <select id="refund-reason" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:12px;background:var(--white);color:var(--dark);font-family:inherit;">
+      <option value="">選択してください</option>
+      <option value="no_show">先生が来なかった</option>
+      <option value="quality">レッスン内容が説明と違った</option>
+      <option value="schedule_change">スケジュール変更が必要</option>
+      <option value="duplicate">重複予約</option>
+      <option value="other">その他</option>
+    </select>
+    <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">詳細（任意）</label>
+    <textarea id="refund-detail" rows="3" placeholder="具体的な状況を記入..." style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;resize:vertical;font-family:inherit;background:var(--white);color:var(--dark);"></textarea>
+    <p style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6;">※ 返金リクエストは先生に通知され、承認後にカードに返金されます。通常3〜5営業日かかります。</p>
+    <button class="btn btn-dark" id="btn-submit-refund" onclick="submitRefundRequest()" style="width:100%;margin-top:14px;padding:12px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="undo-2" style="width:14px;height:14px;"></i>返金をリクエスト</button>
+  </div>
+</div>
+
+<!-- VIDEO CALL MODAL -->
+<div id="video-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeVideoCall()">
+  <div class="modal" style="max-width:800px;max-height:90vh;padding:0;overflow:hidden;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--light);background:var(--white);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;"></div>
+        <span style="font-size:14px;font-weight:700;" id="video-call-title">ビデオ通話</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="copyVideoLink()" style="padding:6px 12px;font-size:11px;background:var(--lighter);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;color:var(--dark);"><i data-lucide="link" style="width:12px;height:12px;"></i>リンクをコピー</button>
+        <button onclick="closeVideoCall()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;"><i data-lucide="phone-off" style="width:12px;height:12px;"></i>退出</button>
+      </div>
+    </div>
+    <div id="video-frame-container" style="width:100%;height:0;padding-bottom:56.25%;position:relative;background:#1a1a1a;">
+      <iframe id="video-iframe" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allow="camera;microphone;display-capture;autoplay"></iframe>
+    </div>
   </div>
 </div>
 
@@ -1720,7 +1792,7 @@ async function loadProfile() {
     }
   } catch(e) { console.error('loadProfile error:', e); addNotif({ text: 'プロフィールの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
   updateProfileCompletion(data);
-  await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory(), loadAIProfileBadge(), loadNextBooking(), loadEarningsChart()]);
+  await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory(), loadAIProfileBadge(), loadNextBooking(), loadEarningsChart(), loadConnectStatus()]);
 }
 
 async function loadDashboardStats() {
@@ -3870,6 +3942,12 @@ async function renderMatching() {
     .select('id, student_id, teacher_id, skill_id, status, scheduled_at, price, skills(subject,description), student:profiles!bookings_student_id_fkey(name,avatar_url), teacher:profiles!bookings_teacher_id_fkey(name,avatar_url)')
     .or(`student_id.eq.${currentUser.id},teacher_id.eq.${currentUser.id}`)
     .order('created_at', { ascending: false }).limit(20);
+  const bookingIds = (data || []).map(b => b.id);
+  let refundMap = {};
+  if (bookingIds.length) {
+    const { data: refunds } = await sb.from('refund_requests').select('*').in('booking_id', bookingIds).eq('status', 'pending');
+    (refunds || []).forEach(r => { refundMap[r.booking_id] = r; });
+  }
   if (!data || !data.length) {
     el.innerHTML = `<div style="background:var(--white);border-radius:16px;padding:48px 20px;text-align:center;border:1px solid var(--light);">
       <div style="width:64px;height:64px;border-radius:20px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--accent);"><i data-lucide="calendar-search" style="width:28px;height:28px;"></i></div>
@@ -3900,11 +3978,22 @@ async function renderMatching() {
         <span><span style="color:var(--muted);">日時：</span>${dtStr}</span>
         <span><span style="color:var(--muted);">金額：</span><strong>¥${(b.price||0).toLocaleString()}</strong></span>
       </div>
+      ${refundMap[b.id] ? `<div style="background:#FFF3E0;border:1px solid #FFE0B2;border-radius:10px;padding:12px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;"><i data-lucide="alert-triangle" style="width:14px;height:14px;color:#E65100;"></i><span style="font-size:12px;font-weight:700;color:#E65100;">返金リクエスト</span></div>
+        <p style="font-size:11px;color:var(--mid);margin-bottom:8px;">理由: ${escapeHtml(refundMap[b.id].reason)}${refundMap[b.id].detail ? ' — ' + escapeHtml(refundMap[b.id].detail) : ''}</p>
+        ${!amStudent ? `<div style="display:flex;gap:6px;">
+          <button class="btn btn-dark" onclick="approveRefund('${refundMap[b.id].id}',this)" style="font-size:11px;padding:6px 12px;background:var(--green);">承認する</button>
+          <button class="btn btn-outline" onclick="rejectRefund('${refundMap[b.id].id}',this)" style="font-size:11px;padding:6px 12px;">却下</button>
+        </div>` : '<p style="font-size:10px;color:var(--muted);">先生の承認を待っています...</p>'}
+      </div>` : ''}
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="showPage('chat')"><i data-lucide="message-circle" style="width:12px;height:12px;"></i>チャット</button>
+        ${b.status === 'confirmed' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:#635BFF;border-color:#635BFF;" onclick="startVideoCall('${escapeHtml(b.id)}','${escapeHtml(other?.name||'')}')"><i data-lucide="video" style="width:12px;height:12px;"></i>ビデオ通話</button>` : ''}
         ${b.status === 'pending' && amStudent ? `<button class="btn btn-accent" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="payForBooking('${escapeHtml(b.id)}','${escapeHtml(other?.name||'先生')}',${b.price||0},'${escapeHtml(b.skill_id||'')}')"><i data-lucide="credit-card" style="width:12px;height:12px;"></i>支払う</button>` : ''}
         ${b.status === 'completed' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;" onclick="openReviewModal('${escapeHtml(b.id)}','${escapeHtml(other?.name||'')}','${escapeHtml(amStudent ? (b.teacher_id||'') : (b.student_id||''))}')"><i data-lucide="star" style="width:12px;height:12px;"></i>レビュー</button>` : ''}
+        ${b.status === 'completed' && !amStudent ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--green);border-color:var(--green);" onclick="requestPayout('${escapeHtml(b.id)}',this)"><i data-lucide="banknote" style="width:12px;height:12px;"></i>入金申請</button>` : ''}
         ${b.status === 'confirmed' && !amStudent ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--green);border-color:var(--green);" onclick="completeBooking('${escapeHtml(b.id)}',this)"><i data-lucide="check" style="width:12px;height:12px;"></i>完了にする</button>` : ''}
+        ${b.status === 'confirmed' && amStudent ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--red);border-color:var(--red);" onclick="requestRefund('${escapeHtml(b.id)}','${escapeHtml(b.skills?.subject||'セッション')}')"><i data-lucide="undo-2" style="width:12px;height:12px;"></i>返金</button>` : ''}
         ${b.status === 'pending' ? `<button class="btn btn-outline" style="font-size:12px;padding:8px 16px;display:flex;align-items:center;gap:4px;color:var(--red);border-color:var(--red);" onclick="cancelBooking('${escapeHtml(b.id)}',this)"><i data-lucide="x" style="width:12px;height:12px;"></i>キャンセル</button>` : ''}
       </div>
     </div>`;
@@ -4567,9 +4656,160 @@ async function completeBooking(bookingId, btn) {
   try {
     const { error } = await sb.from('bookings').update({ status: 'completed' }).eq('id', bookingId);
     if (error) { addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="check" style="width:12px;height:12px;"></i>完了にする'; refreshIcons(); } return; }
-    addNotif({ text: 'セッションが完了しました', time: 'たった今', unread: false, color: 'var(--green)' });
+    addNotif({ text: 'セッションが完了しました。入金申請ができます。', time: 'たった今', unread: true, color: 'var(--green)' });
+    trackEvent('booking_complete', { booking_id: bookingId });
     renderMatching();
   } catch(e) { console.error('completeBooking error:', e); addNotif({ text: '完了処理に失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="check" style="width:12px;height:12px;"></i>完了にする'; refreshIcons(); } }
+}
+
+// ── Stripe Connect (先生への入金) ──
+async function loadConnectStatus() {
+  if (!currentUser) return;
+  try {
+    const { data, error } = await sb.functions.invoke('process-payout', { body: { action: 'status' } });
+    const loading = document.getElementById('connect-status-loading');
+    const notSetup = document.getElementById('connect-not-setup');
+    const active = document.getElementById('connect-active');
+    const pendingOnboard = document.getElementById('connect-pending-onboard');
+    if (loading) loading.style.display = 'none';
+    if (error || !data) { if (notSetup) notSetup.style.display = ''; return; }
+    if (!data.has_account) { if (notSetup) notSetup.style.display = ''; }
+    else if (!data.onboarding_complete) { if (pendingOnboard) pendingOnboard.style.display = ''; }
+    else {
+      if (active) active.style.display = '';
+      const pending = data.balance?.pending?.find(b => b.currency === 'jpy');
+      const available = data.balance?.available?.find(b => b.currency === 'jpy');
+      document.getElementById('connect-pending-bal').textContent = '¥' + ((pending?.amount || 0) + (available?.amount || 0)).toLocaleString();
+      const { data: payouts } = await sb.from('payouts').select('net_amount').eq('teacher_id', currentUser.id).eq('status', 'completed');
+      const total = (payouts || []).reduce((s, p) => s + (p.net_amount || 0), 0);
+      document.getElementById('connect-total-paid').textContent = '¥' + total.toLocaleString();
+    }
+    refreshIcons();
+  } catch(e) { console.error('loadConnectStatus error:', e); }
+}
+async function startStripeOnboarding() {
+  if (!currentUser) return;
+  const btn = document.getElementById('btn-connect-onboard');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>設定中...'; }
+  try {
+    const { data, error } = await sb.functions.invoke('process-payout', { body: { action: 'onboard' } });
+    if (error || !data?.url) throw new Error(error?.message || '接続に失敗しました');
+    window.location.href = data.url;
+  } catch(e) {
+    showToast('Stripe連携に失敗しました', 'var(--red)');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="link" style="width:14px;height:14px;"></i>Stripeアカウントを連携する'; refreshIcons(); }
+  }
+}
+async function openStripeDashboard() {
+  try {
+    const { data, error } = await sb.functions.invoke('process-payout', { body: { action: 'dashboard' } });
+    if (data?.url) window.open(data.url, '_blank');
+    else showToast('ダッシュボードを開けませんでした', 'var(--red)');
+  } catch(e) { showToast('エラーが発生しました', 'var(--red)'); }
+}
+async function requestPayout(bookingId, btn) {
+  if (!currentUser) return;
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>処理中...'; }
+  try {
+    const { data, error } = await sb.functions.invoke('process-payout', { body: { action: 'payout', booking_id: bookingId } });
+    if (error || !data?.success) throw new Error(data?.message || error?.message || '入金申請に失敗しました');
+    showToast('入金を申請しました！', 'var(--green)');
+    renderMatching();
+    loadConnectStatus();
+  } catch(e) {
+    showToast(e.message || '入金申請に失敗しました', 'var(--red)');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="banknote" style="width:12px;height:12px;"></i>入金申請'; refreshIcons(); }
+  }
+}
+
+// ── 返金リクエスト ──
+let _refundBookingId = null;
+function requestRefund(bookingId, subject) {
+  if (!requireAuth('refund')) return;
+  _refundBookingId = bookingId;
+  document.getElementById('refund-booking-info').innerHTML = `<strong>${escapeHtml(subject)}</strong>の返金リクエスト`;
+  document.getElementById('refund-reason').value = '';
+  document.getElementById('refund-detail').value = '';
+  document.getElementById('refund-modal').style.display = 'flex';
+  refreshIcons();
+}
+function closeRefundModal() { document.getElementById('refund-modal').style.display = 'none'; _refundBookingId = null; }
+async function submitRefundRequest() {
+  if (!_refundBookingId) return;
+  const reason = document.getElementById('refund-reason').value;
+  if (!reason) { showToast('理由を選択してください', 'var(--red)'); return; }
+  const detail = document.getElementById('refund-detail').value.trim();
+  const btn = document.getElementById('btn-submit-refund');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>送信中...';
+  try {
+    const { data, error } = await sb.functions.invoke('process-refund', {
+      body: { action: 'request_refund', booking_id: _refundBookingId, reason, detail }
+    });
+    if (error || !data?.success) throw new Error(data?.message || error?.message || '送信に失敗しました');
+    showToast('返金リクエストを送信しました', 'var(--green)');
+    closeRefundModal();
+    renderMatching();
+  } catch(e) {
+    showToast(e.message || '返金リクエストに失敗しました', 'var(--red)');
+    btn.disabled = false; btn.innerHTML = '<i data-lucide="undo-2" style="width:14px;height:14px;"></i>返金をリクエスト'; refreshIcons();
+  }
+}
+async function approveRefund(refundRequestId, btn) {
+  if (!await showConfirm('この返金リクエストを承認しますか？カードに返金されます。')) return;
+  if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
+  try {
+    const { data, error } = await sb.functions.invoke('process-refund', { body: { action: 'approve_refund', refund_request_id: refundRequestId } });
+    if (error || !data?.success) throw new Error(data?.message || '承認に失敗しました');
+    showToast('返金を承認しました', 'var(--green)');
+    renderMatching();
+  } catch(e) { showToast(e.message || '処理に失敗しました', 'var(--red)'); if (btn) { btn.disabled = false; btn.textContent = '承認'; } }
+}
+async function rejectRefund(refundRequestId, btn) {
+  const reason = prompt('却下理由（任意）:');
+  if (reason === null) return;
+  if (btn) { btn.disabled = true; btn.textContent = '処理中...'; }
+  try {
+    const { data, error } = await sb.functions.invoke('process-refund', { body: { action: 'reject_refund', refund_request_id: refundRequestId, reason } });
+    if (error || !data?.success) throw new Error(data?.message || '却下に失敗しました');
+    showToast('返金リクエストを却下しました', 'var(--accent)');
+    renderMatching();
+  } catch(e) { showToast(e.message || '処理に失敗しました', 'var(--red)'); if (btn) { btn.disabled = false; btn.textContent = '却下'; } }
+}
+
+// ── ビデオ通話 (Jitsi Meet) ──
+let _videoRoomId = null;
+function _generateRoomId(bookingId) {
+  return 'manabi-' + bookingId.replace(/-/g, '').substring(0, 12);
+}
+async function startVideoCall(bookingId, otherName) {
+  if (!requireAuth('video')) return;
+  const roomId = _generateRoomId(bookingId);
+  _videoRoomId = roomId;
+  try {
+    await sb.from('video_sessions').upsert({
+      booking_id: bookingId, room_id: roomId, created_by: currentUser.id, status: 'active', started_at: new Date().toISOString()
+    }, { onConflict: 'booking_id,status', ignoreDuplicates: true });
+  } catch(e) { console.error('video session upsert:', e); }
+  document.getElementById('video-call-title').textContent = `${otherName}さんとの通話`;
+  const userName = currentUser.user_metadata?.name || currentUser.email?.split('@')[0] || 'User';
+  const iframe = document.getElementById('video-iframe');
+  iframe.src = `https://meet.jit.si/${encodeURIComponent(roomId)}#config.prejoinConfig.enabled=false&config.startWithAudioMuted=false&config.startWithVideoMuted=false&userInfo.displayName=${encodeURIComponent(userName)}`;
+  document.getElementById('video-modal').style.display = 'flex';
+  trackEvent('video_call_start', { booking_id: bookingId });
+  refreshIcons();
+}
+function closeVideoCall() {
+  const iframe = document.getElementById('video-iframe');
+  iframe.src = '';
+  document.getElementById('video-modal').style.display = 'none';
+  if (_videoRoomId) {
+    sb.from('video_sessions').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('room_id', _videoRoomId).eq('status', 'active').then(() => {});
+    _videoRoomId = null;
+  }
+}
+function copyVideoLink() {
+  if (!_videoRoomId) return;
+  navigator.clipboard.writeText(`https://meet.jit.si/${_videoRoomId}`).then(() => showToast('通話リンクをコピーしました', 'var(--accent)'));
 }
 
 function payForBooking(bookingId, teacherName, price, skillId) {

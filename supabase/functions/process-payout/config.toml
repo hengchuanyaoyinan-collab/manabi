@@ -1,0 +1,2 @@
+[functions.process-payout]
+verify_jwt = true

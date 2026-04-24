@@ -158,6 +158,53 @@ test('Has review integrity (booking-based)', () => {
   assert(html.includes('reviewBookingId'));
 });
 
+test('Has Stripe Connect integration', () => {
+  assert(html.includes('function startStripeOnboarding'));
+  assert(html.includes('function loadConnectStatus'));
+  assert(html.includes('function requestPayout'));
+  assert(html.includes('function openStripeDashboard'));
+  assert(html.includes('id="stripe-connect-section"'));
+});
+
+test('Has refund request flow', () => {
+  assert(html.includes('function requestRefund'));
+  assert(html.includes('function submitRefundRequest'));
+  assert(html.includes('function approveRefund'));
+  assert(html.includes('function rejectRefund'));
+  assert(html.includes('id="refund-modal"'));
+});
+
+test('Has video call integration', () => {
+  assert(html.includes('function startVideoCall'));
+  assert(html.includes('function closeVideoCall'));
+  assert(html.includes('meet.jit.si'));
+  assert(html.includes('id="video-modal"'));
+  assert(html.includes('id="video-iframe"'));
+});
+
+// ── Edge Functions Tests ──
+console.log('\n\x1b[36mEdge Functions\x1b[0m');
+
+const edgeFunctionsDir = path.join(__dirname, '..', 'supabase', 'functions');
+
+test('Has process-payout edge function', () => {
+  const fp = path.join(edgeFunctionsDir, 'process-payout', 'index.ts');
+  assert(fs.existsSync(fp), 'process-payout/index.ts missing');
+  const src = fs.readFileSync(fp, 'utf8');
+  assert(src.includes("action: 'onboard'") || src.includes("'onboard'"), 'Missing onboard action');
+  assert(src.includes("action: 'payout'") || src.includes("'payout'"), 'Missing payout action');
+  assert(src.includes('stripe.transfers') || src.includes('Transfer'), 'Missing Stripe transfer');
+});
+
+test('Has process-refund edge function', () => {
+  const fp = path.join(edgeFunctionsDir, 'process-refund', 'index.ts');
+  assert(fs.existsSync(fp), 'process-refund/index.ts missing');
+  const src = fs.readFileSync(fp, 'utf8');
+  assert(src.includes('request_refund'), 'Missing request_refund action');
+  assert(src.includes('approve_refund'), 'Missing approve_refund action');
+  assert(src.includes('stripe.refunds'), 'Missing Stripe refund');
+});
+
 // ── Vercel Config Tests ──
 console.log('\n\x1b[36mVercel Config\x1b[0m');
 
