@@ -1,0 +1,965 @@
+{
+  "topic": "カリグラ帝",
+  "title": "【衝撃】史上最狂の皇帝・カリグラ　わずか4年で帝国を蝕んだ24歳の暴君",
+  "description": "ローマ帝国の皇帝・カリグラ。わずか18歳で玉座に座り、4年後には暗殺される。馬を領事に任命し、自分を神と名乗り、貴族の娘を売春婦として扱った歴史上最狂の皇帝の正体を徹底解説。\n\n【目次】\n0:00 衝撃フック - 馬の領事任命\n1:30 第1章 - 玉座への道\n4:00 第2章 - 若き皇帝の転機\n6:30 第3章 - やばすぎる4年間\n11:00 第4章 - 狂気の極み\n14:00 第5章 - 暗殺\n17:00 第6章 - まとめ",
+  "tags": [
+    "歴史",
+    "ローマ帝国",
+    "カリグラ",
+    "皇帝",
+    "暴君"
+  ],
+  "chapters": [
+    {
+      "index": 0,
+      "title": "OP - 衝撃フック",
+      "summary": ""
+    },
+    {
+      "index": 1,
+      "title": "出自・生い立ち",
+      "summary": ""
+    },
+    {
+      "index": 2,
+      "title": "転機",
+      "summary": ""
+    },
+    {
+      "index": 3,
+      "title": "全盛期のやばエピソード",
+      "summary": ""
+    },
+    {
+      "index": 4,
+      "title": "狂気の極み",
+      "summary": ""
+    },
+    {
+      "index": 5,
+      "title": "最期",
+      "summary": ""
+    },
+    {
+      "index": 6,
+      "title": "まとめ",
+      "summary": ""
+    }
+  ],
+  "scenes": [
+    {
+      "index": 0,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "皆さん、歴史上『最も狂った皇帝』って誰だと思います？",
+      "emotion": "think",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 1,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "ローマ帝国には、たった4年で帝国を蝕んだ怪物がいました。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ローマ帝国37年",
+        "highlight": "ローマ",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 2,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "その男の名は、カリグラ。わずか24歳で暗殺されます。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 3,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "馬を、領事に任命した男です。マジです。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "馬 王様 玉座",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 4,
+      "chapter": 0,
+      "chapter_title": "",
+      "text": "どうも、ぷんぷんの世事見聞録です。今日の主人公は…この狂気。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 5,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "紀元37年。ローマ帝国の奥地で、ある男の子が生まれました。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ローマ帝国37年",
+        "highlight": "ローマ",
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 6,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "ガイウス・ユーリウス・カエサル。長い。だから『カリグラ』と呼ばれます。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ 子供",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 7,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "この子、ただの貴族じゃない。父親は大将軍。超エリート家系。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "貴族 家族 豪華な家",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 8,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "少年時代のカリグラは…普通の子でした。むしろ人気者。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ 少年",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 9,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "でも、ここで運命の転機が来ます。母親の死。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "母親 悲しみ 病気",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 10,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "その3年後、父親も…暗殺。7歳でした。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "悲しい 子供 涙",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 11,
+      "chapter": 1,
+      "chapter_title": "",
+      "text": "孤独な少年は、ローマ帝国のトップから目を向けられました。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ティベリウス皇帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 12,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "ティベリウス皇帝。帝国のボス。この人がカリグラを可愛がった。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "ティベリウス皇帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 13,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "理由は簡単。カリグラは…皇帝の孫だったから。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 子供 甘やかす",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 14,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "何でも欲しいものをもらえた。何をしてもOK。親なし、歯止めなし。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 豪華 贅沢",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 15,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "そして、紀元37年。転機が来ます。ティベリウス皇帝が…死ぬ。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "老人 皇帝 死",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 16,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "そしてなぜか、わずか18歳のカリグラが…次期皇帝に。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝 若い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 17,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "ローマ帝国のトップです。やることなす全てが思い通り。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ローマ帝国37年",
+        "highlight": "ローマ",
+        "overlay_keyword": "カリグラ",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 18,
+      "chapter": 2,
+      "chapter_title": "",
+      "text": "この18歳が…4年後にどうなるのか。この先が地獄です。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 19,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "最初は、えっ…良い皇帝だったんです。ガチです。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 城 栄光",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 20,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "給与を上げる。不正を取り締まる。民衆のために、真面目に働く。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "市民 笑顔 働く",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 21,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "『あ、カリグラって思ったより良い奴じゃん』ってなる。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "市民 拍手 喜び",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 22,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "ところが……ここで、歯車が狂う。1つの病気。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "病人 熱 寝込む",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 23,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "治ったのか、それとも脳がやられたのか…誰もわかりません。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 24,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "以後のカリグラは…完全に豹変します。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "悪魔 不気味 暗い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 25,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "まず、全ての国庫を…自分の遊びに使い始めた。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "お金 浪費 派手",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 26,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "竞技場で毎日パーティー。競馬に金をぶっ込む。贅沢の限り。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "競技場 馬 競争 豪華",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 27,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "国庫は…わずか1年でゼロに。帝国の金、全部使った。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "お金 ゼロ 破産",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 28,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "『だから次は市民から取ろう』って思ったんでしょうね。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 強盗 悪い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 29,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "帝国の貴族たちを…呼びつけて、金を奪い始めた。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 脅迫 貴族 恐怖",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 30,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "『財宝を出さなきゃ、死刑な』って、マジで。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 31,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "そしてさらに…ヤバい話が出てくる。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "blank",
+        "keyword": "",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 32,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "『自分を神だ』って言い始めた。ガチです。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 神 光 豪華",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 33,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "貴族たちに、自分の像を拝ませた。そして『俺に祈れ』と。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 像 拝む 貴族",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 34,
+      "chapter": 3,
+      "chapter_title": "",
+      "text": "ローマ帝国ですよ?神を尊ぶ文化がある。だからもう…完全にキチガイ認定。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ローマ帝国37年",
+        "highlight": "ローマ",
+        "overlay_keyword": "カリグラ",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 35,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "ここからが…本当の狂気。馬の話が出てくる。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "馬 不気味 異常",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 36,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "『インキタトゥス』という名の馬。カリグラの愛馬でした。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "馬 美しい",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 37,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "この馬を…『領事官に任命する』って宣言した。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "馬 王冠 玉座",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 38,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "領事官?ローマ帝国で最高の公職です。馬に。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "馬 服 書類",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 39,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "貴族たちは…泣きながら『わかりました』と返事したそうです。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "貴族 絶望 泣く",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 40,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "『この馬の舌が切られたら、お前たちの給与没収な』とも言った。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "馬 脅迫 恐怖",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 41,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "…いやいや、どういう神経してるんですか、マジで。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 42,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "さらに、皇帝の娘たちを…売春婦として売った。マジです。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "悲しい 女性 悪行",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 43,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "『金のためなら自分の血筋も売る』という狂気。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "お金 悪い 皇帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 44,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "貴族たちの反感は…極限に達してました。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "貴族 怒り 集まる",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 45,
+      "chapter": 4,
+      "chapter_title": "",
+      "text": "『こいつ、もう止めるしかない』…そう決めます。",
+      "emotion": "angry",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "貴族 陰謀 計画",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 46,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "紀元41年。わずか4年の治世を経て、運命の日が来ます。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ローマ帝国41年",
+        "highlight": "ローマ",
+        "overlay_keyword": "カリグラ",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 47,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "競技場を出たカリグラに、貴族たちが刃向かった。",
+      "emotion": "shock",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "戦い 刃物 競技場",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 48,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "30箇所以上…刺されたと言われている。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "死 暗い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 49,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "まだ24歳。妻と娘も…一緒に殺された。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "悲しみ 喪",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 50,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "ローマ帝国の民衆は…パーティーを開いた。",
+      "emotion": "laugh",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "市民 祝い 喜び",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 51,
+      "chapter": 5,
+      "chapter_title": "",
+      "text": "『狂気の皇帝、終わった』って…安堵したんです。",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "市民 安心",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 52,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "カリグラは…何を学ぶ?ただの狂人か、それとも…",
+      "emotion": "think",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 53,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "歴史学者は言う。『権力は人を壊す』ってね。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "王様 権力 破壊",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 54,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "絶対的な力を持つと…人間は自制心を失う。それがカリグラ。",
+      "emotion": "think",
+      "image_hint": {
+        "type": "map_historical",
+        "keyword": "ローマ帝国",
+        "highlight": "ローマ",
+        "overlay_keyword": "カリグラ",
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 55,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "18歳で皇帝。歯止めなし。それが…狂気を生んだ。",
+      "emotion": "sad",
+      "image_hint": {
+        "type": "portrait",
+        "keyword": "カリグラ帝 若い",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    },
+    {
+      "index": 56,
+      "chapter": 6,
+      "chapter_title": "",
+      "text": "では次回は?ぷんぷんの世事見聞録、チャンネル登録よろしく!",
+      "emotion": "normal",
+      "image_hint": {
+        "type": "illustration",
+        "keyword": "笑顔 ぷんぷん",
+        "highlight": null,
+        "overlay_keyword": null,
+        "annotation": null
+      },
+      "duration_seconds": null,
+      "audio_path": null
+    }
+  ],
+  "thumbnail_text": "馬が領事!?",
+  "estimated_duration_seconds": 0.0
+}
