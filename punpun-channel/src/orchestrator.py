@@ -40,6 +40,7 @@ from src.video.assembler import assemble_video, render_scene_image
 from src.video.image_fetcher import fetch_for_hint
 from src.video.thumbnail_generator import generate_thumbnail
 from src.voice.synth import concatenate_audio, synthesize_script
+from src.notify.discord import notify_success, notify_error
 
 logger = logging.getLogger("punpun")
 logging.basicConfig(
@@ -204,6 +205,30 @@ def run_pipeline(
         encoding="utf-8",
     )
     logger.info(f"✅ Done. {work_dir}/report.json")
+
+    # Discord 通知
+    try:
+        if report["errors"]:
+            err = report["errors"][0]
+            notify_error(
+                stage=err["stage"],
+                detail=err.get("error", "unknown"),
+                topic=report.get("topic"),
+            )
+        else:
+            video_url = None
+            if report.get("video_id"):
+                video_url = f"https://www.youtube.com/watch?v={report['video_id']}"
+            notify_success(
+                message="動画パイプラインが完了しました",
+                video_url=video_url,
+                title=report.get("title"),
+                duration_sec=report.get("total_duration"),
+                scene_count=report.get("scenes"),
+            )
+    except Exception:
+        pass
+
     return report
 
 

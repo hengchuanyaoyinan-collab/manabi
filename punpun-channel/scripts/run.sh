@@ -54,6 +54,18 @@ case "${1:-}" in
     best)
         python3 src/analytics.py best
         ;;
+    analytics)
+        python3 scripts/daily-analytics.py "$@"
+        ;;
+    review)
+        python3 scripts/weekly-review.py "$@"
+        ;;
+    batch)
+        python3 scripts/generate-script-batch.py "${@:2}"
+        ;;
+    competitors)
+        python3 scripts/analyze-competitors.py "${@:2}"
+        ;;
     *)
         cat <<EOF
 ぷんぷんチャンネル 便利スクリプト
