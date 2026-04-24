@@ -36,7 +36,18 @@ from src.video.assembler import _find_font, _wrap_text
 # ---- 音声の振幅エンベロープ ----
 
 def _audio_envelope(wav_path: Path, fps: int = 30) -> list[float]:
-    """WAV の RMS エンベロープを fps で取得。正規化して [0, 1]。"""
+    """WAV/MP3/M4A の RMS エンベロープを fps で取得。正規化して [0, 1]。"""
+    # 非 WAV の場合は一時 WAV に変換
+    if wav_path.suffix.lower() != ".wav":
+        import tempfile
+        tmp = Path(tempfile.mktemp(suffix=".wav"))
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", str(wav_path),
+             "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "1",
+             str(tmp)],
+            check=True, capture_output=True,
+        )
+        wav_path = tmp
     with wave.open(str(wav_path), "rb") as w:
         n_channels = w.getnchannels()
         sample_width = w.getsampwidth()

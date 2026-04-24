@@ -241,12 +241,33 @@ def _find_historical_map_key(keyword: str) -> str | None:
 
 
 def _resolve_main(hint: ImageHint) -> Path | None:
-    """overlay を考えずにメイン背景だけ取る。"""
+    """overlay を考えずにメイン背景だけ取る。
+    優先順位:
+        1. OpenAI gpt-image-1 (API キーあり時、illustration 用)
+        2. Wikipedia (portrait/photo 用)
+        3. いらすとや (illustration フォールバック)
+        4. 地図レンダラ
+    """
     if hint.type in (BackgroundType.PORTRAIT, BackgroundType.PHOTO):
         p = fetch_wikipedia_image(hint.keyword)
         if p:
             return p
     elif hint.type == BackgroundType.ILLUSTRATION:
+        # OpenAI API キーあれば優先
+        try:
+            from src.video.openai_image import (
+                is_available as oai_available,
+                generate_scene_image,
+                translate_keyword,
+            )
+            if oai_available():
+                prompt = translate_keyword(hint.keyword)
+                p = generate_scene_image(prompt)
+                if p:
+                    return p
+        except ImportError:
+            pass
+        # フォールバック: いらすとや
         p = fetch_irasutoya(hint.keyword)
         if p:
             return p

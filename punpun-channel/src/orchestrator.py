@@ -41,6 +41,10 @@ from src.video.image_fetcher import fetch_for_hint
 from src.video.thumbnail_generator import generate_thumbnail
 from src.voice.synth import concatenate_audio, synthesize_script
 from src.notify.discord import notify_success, notify_error
+try:
+    from src.audio.mixer import build_final_audio
+except ImportError:
+    build_final_audio = None  # type: ignore
 
 logger = logging.getLogger("punpun")
 logging.basicConfig(
@@ -107,6 +111,21 @@ def run_pipeline(
         logger.info("Synthesizing audio...")
         synthesize_script(script, work_dir / "audio", use_voicevox=use_voicevox)
         narration = concatenate_audio(script, work_dir / "narration.wav")
+
+        # BGM / SE ミックス (assets に BGM があれば自動で適用)
+        if build_final_audio is not None:
+            try:
+                final_audio = build_final_audio(
+                    script, narration, work_dir / "narration_mixed.m4a",
+                    topic=report.get("topic", ""),
+                )
+                narration = final_audio
+                report["bgm_mixed"] = True
+                logger.info("BGM/SE mixed into narration")
+            except Exception as e:
+                logger.warning(f"BGM mix skipped: {e}")
+                report["bgm_mixed"] = False
+
         report["stages"]["audio"] = "ok"
         report["narration"] = str(narration)
         report["total_duration"] = script.total_duration()
@@ -151,6 +170,25 @@ def run_pipeline(
             video_path = assemble_video(
                 script, scene_images, narration, work_dir / "video.mp4"
             )
+
+        # BGM がミックスされていれば、動画の音声トラックを差し替え
+        if report.get("bgm_mixed") and narration.suffix.lower() != ".wav":
+            logger.info("Replacing video audio with BGM-mixed track...")
+            mixed_out = work_dir / "video_with_bgm.mp4"
+            import subprocess as _sp
+            _sp.run(
+                ["ffmpeg", "-y",
+                 "-i", str(video_path),
+                 "-i", str(narration),
+                 "-c:v", "copy",
+                 "-c:a", "aac", "-b:a", "192k",
+                 "-map", "0:v:0", "-map", "1:a:0",
+                 "-shortest",
+                 str(mixed_out)],
+                check=True, capture_output=True,
+            )
+            video_path = mixed_out
+
         report["stages"]["video"] = "ok"
         report["video"] = str(video_path)
     except Exception as e:

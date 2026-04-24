@@ -11,6 +11,12 @@ from src.models import VideoScript
 from src.voice.voicevox_client import VoiceVoxClient
 from src.voice.openjtalk_fallback import is_available as has_openjtalk
 from src.voice.openjtalk_fallback import speak_to_file as openjtalk_speak
+try:
+    from src.voice.elevenlabs_client import ElevenLabsClient, is_available as has_elevenlabs
+except ImportError:
+    ElevenLabsClient = None  # type: ignore
+    def has_elevenlabs() -> bool:  # type: ignore
+        return False
 
 
 def _audio_duration(path: Path) -> float:
@@ -31,36 +37,61 @@ def synthesize_script(
     script: VideoScript,
     out_dir: Path,
     use_voicevox: bool = True,
+    use_elevenlabs: bool | None = None,
 ) -> VideoScript:
-    """各シーンの音声を作る。シーンの audio_path / duration を更新して返す。"""
+    """各シーンの音声を作る。シーンの audio_path / duration を更新して返す。
+
+    優先順位:
+        1. use_elevenlabs=True or None かつ API キーあり → ElevenLabs (最高品質)
+        2. use_voicevox=True かつ VOICEVOX 起動中 → VOICEVOX
+        3. open-jtalk フォールバック
+
+    use_elevenlabs=None = auto (ある時だけ使う)
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    client: VoiceVoxClient | None = None
-    if use_voicevox:
-        client = VoiceVoxClient()
-        if not client.health():
-            client = None
+    # ElevenLabs 優先 (API キーがあるなら)
+    eleven: "ElevenLabsClient | None" = None
+    if use_elevenlabs is not False and has_elevenlabs() and ElevenLabsClient:
+        try:
+            eleven = ElevenLabsClient()
+        except Exception:
+            eleven = None
 
-    if client is None:
+    # VOICEVOX セカンダリ
+    vox: VoiceVoxClient | None = None
+    if not eleven and use_voicevox:
+        vox = VoiceVoxClient()
+        if not vox.health():
+            vox = None
+
+    # open-jtalk 最終フォールバック
+    if not eleven and not vox:
         if not has_openjtalk():
             raise RuntimeError(
-                "音声合成エンジンが見つかりません。VOICEVOX を起動するか、"
-                "open-jtalk をインストールしてください。"
+                "音声合成エンジンが見つかりません。"
+                "ElevenLabs API キー設定 or VOICEVOX 起動 or open-jtalk インストール"
             )
 
     for scene in script.scenes:
-        out_path = out_dir / f"scene_{scene.index:04d}.wav"
-        if client:
-            client.speak_to_file(scene.text, out_path)
+        if eleven:
+            out_path = out_dir / f"scene_{scene.index:04d}.mp3"
+            eleven.speak_to_file(scene.text, out_path)
         else:
-            openjtalk_speak(scene.text, out_path)
+            out_path = out_dir / f"scene_{scene.index:04d}.wav"
+            if vox:
+                vox.speak_to_file(scene.text, out_path)
+            else:
+                openjtalk_speak(scene.text, out_path)
         scene.audio_path = str(out_path)
         scene.duration_seconds = _audio_duration(out_path)
     return script
 
 
 def concatenate_audio(script: VideoScript, out_path: Path) -> Path:
-    """全シーンの音声を 1 ファイルに結合 (ffmpeg concat)。"""
+    """全シーンの音声を 1 ファイルに結合 (ffmpeg concat + 再エンコード)。
+    MP3/WAV 混在でも動くように再エンコードする。
+    """
     if not script.scenes or not all(s.audio_path for s in script.scenes):
         raise RuntimeError("scenes に audio_path が無いものがあります")
 
@@ -70,11 +101,15 @@ def concatenate_audio(script: VideoScript, out_path: Path) -> Path:
         encoding="utf-8",
     )
     out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # 出力が .wav なら wav、.mp3 なら mp3 で再エンコード
+    ext = out_path.suffix.lower()
+    codec = "pcm_s16le" if ext == ".wav" else "libmp3lame"
     subprocess.run(
         [
             "ffmpeg", "-y", "-f", "concat", "-safe", "0",
             "-i", str(list_file),
-            "-c", "copy",
+            "-c:a", codec,
             str(out_path),
         ],
         check=True, capture_output=True,
