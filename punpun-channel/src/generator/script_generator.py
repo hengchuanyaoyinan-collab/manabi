@@ -103,17 +103,33 @@ def generate_script(
     model: str = "claude-opus-4-7",
     template_path: Path | None = None,
     save_to: Path | None = None,
+    retries: int = 2,
 ) -> VideoScript:
     prompt = render_prompt(topic, template_path)
-    raw = call_claude_cli(prompt, model=model)
-    script = parse_script_json(raw)
-    if save_to:
-        save_to.parent.mkdir(parents=True, exist_ok=True)
-        save_to.write_text(
-            json.dumps(script.model_dump(), ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-    return script
+    last_err: Exception | None = None
+    for attempt in range(retries + 1):
+        try:
+            raw = call_claude_cli(prompt, model=model)
+            script = parse_script_json(raw)
+            if save_to:
+                save_to.parent.mkdir(parents=True, exist_ok=True)
+                save_to.write_text(
+                    json.dumps(script.model_dump(), ensure_ascii=False, indent=2),
+                    encoding="utf-8",
+                )
+            return script
+        except Exception as e:
+            last_err = e
+            if attempt < retries:
+                # リトライ時はプロンプトに警告を追加
+                prompt = (
+                    "前回の出力でエラーが発生しました。必ず完全な JSON を返してください。"
+                    "schema: chapters[].index (integer 必須), scenes[].index (integer 必須), "
+                    "scenes[].chapter (integer 必須), scenes[].text, scenes[].image_hint.\n\n"
+                    + render_prompt(topic, template_path)
+                )
+    assert last_err is not None
+    raise last_err
 
 
 def load_script(path: Path) -> VideoScript:

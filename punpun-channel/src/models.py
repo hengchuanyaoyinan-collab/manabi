@@ -6,7 +6,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class BackgroundType(str, Enum):
@@ -39,7 +39,9 @@ class ImageHint(BaseModel):
 class Scene(BaseModel):
     """1 シーン = 1 セリフ。動画の最小単位。"""
 
-    index: int
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    index: int = Field(..., alias="number")
     chapter: int = Field(..., description="所属する章番号 (0=OP, 1-5=本編, 6=まとめ)")
     chapter_title: str = ""
     text: str = Field(..., description="ぷんぷんが喋るセリフ")
@@ -53,6 +55,35 @@ class Scene(BaseModel):
     )
     audio_path: str | None = Field(None, description="生成された音声ファイル")
 
+    @model_validator(mode="before")
+    @classmethod
+    def _normalize(cls, data):
+        """AI の字面差分を吸収。"""
+        if not isinstance(data, dict):
+            return data
+        d = dict(data)
+        if "index" not in d:
+            for key in ("number", "scene_index", "id"):
+                if key in d:
+                    d["index"] = d[key]
+                    break
+        if "chapter" not in d:
+            for key in ("chapter_number", "chapter_index", "section"):
+                if key in d:
+                    d["chapter"] = d[key]
+                    break
+        if "text" not in d:
+            for key in ("dialogue", "line", "narration", "content"):
+                if key in d:
+                    d["text"] = d[key]
+                    break
+        if "image_hint" not in d:
+            for key in ("image", "background", "visual"):
+                if key in d and isinstance(d[key], dict):
+                    d["image_hint"] = d[key]
+                    break
+        return d
+
     @field_validator("emotion", mode="before")
     @classmethod
     def _normalize_emotion(cls, v):
@@ -60,15 +91,43 @@ class Scene(BaseModel):
             return "normal"
         valid = {"normal", "shock", "angry", "laugh", "sad", "think"}
         v = str(v).lower().strip()
+        # 日本語感情→英語マッピング
+        jp_map = {
+            "普通": "normal", "驚き": "shock", "衝撃": "shock",
+            "怒り": "angry", "怒": "angry",
+            "笑い": "laugh", "笑": "laugh",
+            "悲しみ": "sad", "悲": "sad",
+            "考え": "think", "考": "think",
+        }
+        if v in jp_map:
+            return jp_map[v]
         return v if v in valid else "normal"
 
 
 class Chapter(BaseModel):
     """章。OP/本編/まとめ。"""
 
-    index: int
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    index: int = Field(..., alias="number")
     title: str
     summary: str = ""
+
+    @model_validator(mode="before")
+    @classmethod
+    def _normalize(cls, data):
+        """AI が 'number' や 'chapter' で返しても受け入れる。"""
+        if not isinstance(data, dict):
+            return data
+        d = dict(data)
+        if "index" not in d:
+            for key in ("number", "chapter", "chapter_index", "id"):
+                if key in d:
+                    d["index"] = d[key]
+                    break
+        if "title" not in d and "name" in d:
+            d["title"] = d["name"]
+        return d
 
 
 class VideoScript(BaseModel):
