@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
     ).auth.getUser(token);
     if (authErr || !user) throw new Error("Unauthorized");
 
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const { action } = body;
 
     if (action === "create_and_match") {
@@ -201,13 +201,15 @@ async function recordFeedback(supabase: any, userId: string, body: any, cors: Re
   if (error) throw new Error(`Feedback save failed: ${error.message}`);
 
   if (feedback_action === "accepted" || feedback_action === "book") {
-    await supabase.from("ai_matches")
+    const { error: upErr } = await supabase.from("ai_matches")
       .update({ status: "accepted", updated_at: new Date().toISOString() })
       .eq("id", match_id);
+    if (upErr) console.error("ai_matches update error:", upErr.message);
   } else if (feedback_action === "dismiss" || feedback_action === "skip") {
-    await supabase.from("ai_matches")
+    const { error: upErr } = await supabase.from("ai_matches")
       .update({ status: "declined", updated_at: new Date().toISOString() })
       .eq("id", match_id);
+    if (upErr) console.error("ai_matches update error:", upErr.message);
   }
 
   return new Response(
