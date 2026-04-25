@@ -1487,6 +1487,65 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
   <div id="dash-history" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
     <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">取引履歴はまだありません</p>
   </div>
+
+  <!-- Portfolio Section -->
+  <h3 style="font-weight:700;font-size:15px;margin:28px 0 14px;display:flex;align-items:center;justify-content:space-between;">
+    <span style="display:flex;align-items:center;gap:8px;"><i data-lucide="image" style="width:18px;height:18px;color:var(--accent);"></i>実績・ポートフォリオ</span>
+    <button class="btn btn-outline" style="font-size:11px;padding:6px 14px;" onclick="openPortfolioForm()">+ 追加</button>
+  </h3>
+  <div id="dash-portfolio" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+    <p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">実績を追加して信頼度をアップしましょう</p>
+  </div>
+  <div id="portfolio-form" style="display:none;background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--accent);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-top:12px;">
+    <h4 style="font-size:14px;font-weight:700;margin-bottom:14px;">実績を追加</h4>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">タイトル <span style="color:var(--red);">*</span></label><input class="form-input" id="pf-title" placeholder="例：TOEICスコア200点アップ達成" maxlength="100"></div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">説明</label><textarea class="form-input" id="pf-desc" rows="2" placeholder="どんな成果を出したか具体的に" maxlength="500" style="resize:vertical;"></textarea></div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">場所・対象</label><input class="form-input" id="pf-location" placeholder="例：渋谷区、オンライン" maxlength="100"></div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">写真（任意）</label>
+      <div id="pf-photo-area" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;" onclick="document.getElementById('pf-photo-input').click()">
+        <i data-lucide="image-plus" style="width:24px;height:24px;color:var(--muted);margin-bottom:4px;display:inline-block;"></i>
+        <p style="font-size:12px;color:var(--muted);">クリックして写真を選択</p>
+        <input type="file" id="pf-photo-input" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previewPortfolioPhoto(this)">
+      </div>
+      <img id="pf-photo-preview" style="display:none;max-width:100%;border-radius:10px;margin-top:8px;">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-dark" style="flex:1;font-size:13px;padding:12px;" id="pf-submit-btn" onclick="submitPortfolio()">保存する</button>
+      <button class="btn btn-outline" style="font-size:13px;padding:12px;" onclick="closePortfolioForm()">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- Imported Reviews Section -->
+  <h3 style="font-weight:700;font-size:15px;margin:28px 0 14px;display:flex;align-items:center;justify-content:space-between;">
+    <span style="display:flex;align-items:center;gap:8px;"><i data-lucide="message-square-plus" style="width:18px;height:18px;color:var(--green);"></i>口コミ転記</span>
+    <button class="btn btn-outline" style="font-size:11px;padding:6px 14px;" onclick="openImportReviewForm()">+ 転記する</button>
+  </h3>
+  <div id="dash-imported-reviews" style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);box-shadow:0 2px 12px rgba(0,0,0,.06);">
+    <p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">他のサイトの口コミを転記して信頼度を高めましょう</p>
+  </div>
+  <div id="import-review-form" style="display:none;background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--green);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-top:12px;">
+    <h4 style="font-size:14px;font-weight:700;margin-bottom:6px;">口コミを転記する</h4>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;">他のプラットフォームでいただいた口コミを転記できます。管理者の承認後に公開されます。</p>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">元のサイト名 <span style="color:var(--red);">*</span></label><input class="form-input" id="ir-platform" placeholder="例：ストアカ、ココナラ、Google" maxlength="100"></div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">元のURL（任意）</label><input class="form-input" id="ir-url" placeholder="https://..." maxlength="500" type="url"></div>
+    <div style="margin-bottom:12px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">レビュアー名 <span style="color:var(--red);">*</span></label><input class="form-input" id="ir-reviewer" placeholder="例：Aさん" maxlength="100"></div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">評価 <span style="color:var(--red);">*</span></label>
+      <div id="ir-stars" style="display:flex;gap:4px;">
+        <button type="button" onclick="setImportRating(1)" class="ir-star" style="font-size:24px;background:none;border:none;cursor:pointer;color:var(--border);">★</button>
+        <button type="button" onclick="setImportRating(2)" class="ir-star" style="font-size:24px;background:none;border:none;cursor:pointer;color:var(--border);">★</button>
+        <button type="button" onclick="setImportRating(3)" class="ir-star" style="font-size:24px;background:none;border:none;cursor:pointer;color:var(--border);">★</button>
+        <button type="button" onclick="setImportRating(4)" class="ir-star" style="font-size:24px;background:none;border:none;cursor:pointer;color:var(--border);">★</button>
+        <button type="button" onclick="setImportRating(5)" class="ir-star" style="font-size:24px;background:none;border:none;cursor:pointer;color:var(--border);">★</button>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;"><label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">口コミ内容 <span style="color:var(--red);">*</span></label><textarea class="form-input" id="ir-comment" rows="3" placeholder="いただいた口コミの内容をそのまま記載してください" maxlength="1000" style="resize:vertical;"></textarea></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-dark" style="flex:1;font-size:13px;padding:12px;background:var(--green);" id="ir-submit-btn" onclick="submitImportedReview()">申請する</button>
+      <button class="btn btn-outline" style="font-size:13px;padding:12px;" onclick="closeImportReviewForm()">キャンセル</button>
+    </div>
+  </div>
 </div>
 
 <!-- TERMS -->
@@ -1896,7 +1955,7 @@ async function loadProfile() {
     }
   } catch(e) { console.error('loadProfile error:', e); addNotif({ text: 'プロフィールの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
   updateProfileCompletion(profileData);
-  await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory(), loadAIProfileBadge(), loadNextBooking(), loadEarningsChart(), loadConnectStatus()]);
+  await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory(), loadAIProfileBadge(), loadNextBooking(), loadEarningsChart(), loadConnectStatus(), loadPortfolios(), loadImportedReviews()]);
 }
 
 async function loadDashboardStats() {
@@ -2705,6 +2764,134 @@ async function loadDashboardHistory() {
     </div>`;
   }).join('');
   } catch(e) { console.error('loadDashboardHistory error:', e); }
+}
+
+// --- Portfolio ---
+let _pfFile = null;
+function openPortfolioForm() { document.getElementById('portfolio-form').style.display = ''; refreshIcons(); }
+function closePortfolioForm() {
+  document.getElementById('portfolio-form').style.display = 'none';
+  ['pf-title','pf-desc','pf-location'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+  document.getElementById('pf-photo-preview').style.display = 'none';
+  _pfFile = null;
+}
+function previewPortfolioPhoto(input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('5MB以下の画像を選択してください', 'var(--red)'); return; }
+  if (!file.type.startsWith('image/')) { showToast('画像ファイルを選択してください', 'var(--red)'); return; }
+  _pfFile = file;
+  const reader = new FileReader();
+  reader.onload = e => { const img = document.getElementById('pf-photo-preview'); img.src = e.target.result; img.style.display = ''; };
+  reader.readAsDataURL(file);
+}
+async function submitPortfolio() {
+  if (!currentUser) return;
+  const title = document.getElementById('pf-title').value.trim();
+  if (!title) { showToast('タイトルを入力してください', 'var(--red)'); return; }
+  const btn = document.getElementById('pf-submit-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>保存中...';
+  try {
+    let imageUrl = null;
+    if (_pfFile) {
+      const ext = _pfFile.name.split('.').pop();
+      const path = `${currentUser.id}/${Date.now()}.${ext}`;
+      const { error: upErr } = await sb.storage.from('portfolios').upload(path, _pfFile, { upsert: true });
+      if (!upErr) { const { data } = sb.storage.from('portfolios').getPublicUrl(path); imageUrl = data?.publicUrl || null; }
+    }
+    const { error } = await sb.from('portfolios').insert({
+      user_id: currentUser.id,
+      title,
+      description: document.getElementById('pf-desc').value.trim() || null,
+      location: document.getElementById('pf-location').value.trim() || null,
+      image_url: imageUrl,
+    });
+    if (error) throw error;
+    showToast('実績を追加しました！', 'var(--green)');
+    closePortfolioForm();
+    loadPortfolios();
+  } catch(e) { console.error('submitPortfolio error:', e); showToast('保存に失敗しました', 'var(--red)'); }
+  btn.disabled = false; btn.innerHTML = '保存する';
+}
+async function loadPortfolios() {
+  if (!currentUser) return;
+  const { data } = await sb.from('portfolios').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+  const el = document.getElementById('dash-portfolio');
+  if (!el) return;
+  if (!data?.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">実績を追加して信頼度をアップしましょう</p>'; return; }
+  el.innerHTML = data.map(p => `<div style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--light);">
+    ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0;" loading="lazy">` : '<div style="width:64px;height:64px;border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="image" style="width:20px;height:20px;color:var(--muted);"></i></div>'}
+    <div style="flex:1;min-width:0;">
+      <p style="font-weight:700;font-size:13px;margin-bottom:2px;">${escapeHtml(p.title)}</p>
+      ${p.description ? `<p style="font-size:12px;color:var(--mid);line-height:1.5;margin-bottom:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.description)}</p>` : ''}
+      ${p.location ? `<p style="font-size:11px;color:var(--muted);"><i data-lucide="map-pin" style="width:10px;height:10px;vertical-align:-1px;"></i> ${escapeHtml(p.location)}</p>` : ''}
+    </div>
+    <button onclick="deletePortfolio('${p.id}')" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;flex-shrink:0;" title="削除"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+  </div>`).join('');
+  refreshIcons();
+}
+async function deletePortfolio(id) {
+  if (!confirm('この実績を削除しますか？')) return;
+  await sb.from('portfolios').delete().eq('id', id).eq('user_id', currentUser.id);
+  showToast('削除しました', 'var(--muted)');
+  loadPortfolios();
+}
+
+// --- Imported Reviews ---
+let _irRating = 0;
+function setImportRating(n) {
+  _irRating = n;
+  document.querySelectorAll('.ir-star').forEach((s, i) => { s.style.color = i < n ? 'var(--gold)' : 'var(--border)'; });
+}
+function openImportReviewForm() { document.getElementById('import-review-form').style.display = ''; _irRating = 0; setImportRating(0); refreshIcons(); }
+function closeImportReviewForm() {
+  document.getElementById('import-review-form').style.display = 'none';
+  ['ir-platform','ir-url','ir-reviewer','ir-comment'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+  _irRating = 0; setImportRating(0);
+}
+async function submitImportedReview() {
+  if (!currentUser) return;
+  const platform = document.getElementById('ir-platform').value.trim();
+  const reviewer = document.getElementById('ir-reviewer').value.trim();
+  const comment = document.getElementById('ir-comment').value.trim();
+  if (!platform || !reviewer || !comment || _irRating < 1) { showToast('必須項目をすべて入力してください', 'var(--red)'); return; }
+  const btn = document.getElementById('ir-submit-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>送信中...';
+  try {
+    const { error } = await sb.from('imported_reviews').insert({
+      user_id: currentUser.id,
+      source_platform: platform,
+      source_url: document.getElementById('ir-url').value.trim() || null,
+      reviewer_name: reviewer,
+      rating: _irRating,
+      comment,
+    });
+    if (error) throw error;
+    showToast('口コミ転記を申請しました。管理者の承認後に公開されます。', 'var(--green)');
+    closeImportReviewForm();
+    loadImportedReviews();
+  } catch(e) { console.error('submitImportedReview error:', e); showToast('申請に失敗しました', 'var(--red)'); }
+  btn.disabled = false; btn.innerHTML = '申請する';
+}
+async function loadImportedReviews() {
+  if (!currentUser) return;
+  const { data } = await sb.from('imported_reviews').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+  const el = document.getElementById('dash-imported-reviews');
+  if (!el) return;
+  if (!data?.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">他のサイトの口コミを転記して信頼度を高めましょう</p>'; return; }
+  const statusMap = { pending: '承認待ち', approved: '公開中', rejected: '非承認' };
+  const statusColor = { pending: 'var(--gold)', approved: 'var(--green)', rejected: 'var(--red)' };
+  el.innerHTML = data.map(r => `<div style="padding:12px 0;border-bottom:1px solid var(--light);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-weight:600;font-size:13px;">${escapeHtml(r.reviewer_name)}</span>
+        <span style="font-size:10px;color:var(--muted);">via ${escapeHtml(r.source_platform)}</span>
+      </div>
+      <span style="font-size:10px;font-weight:600;color:${statusColor[r.status]};background:${statusColor[r.status]}15;padding:2px 8px;border-radius:6px;">${statusMap[r.status]}</span>
+    </div>
+    <div style="margin-bottom:4px;">${'★'.repeat(r.rating)}<span style="color:var(--border);">${'★'.repeat(5-r.rating)}</span></div>
+    <p style="font-size:12px;color:var(--mid);line-height:1.5;">${escapeHtml(r.comment)}</p>
+  </div>`).join('');
 }
 
 async function loadMySkills() {
@@ -5326,6 +5513,41 @@ async function openModal(id) {
   document.title = `${selTeacher.name} - ${selTeacher.subject} | Manabi`;
   document.querySelector('link[rel="canonical"]').href = `https://manabi-bay.vercel.app/teacher/${id}`;
   trackEvent('view_item', { item_id: id, item_name: selTeacher.subject, item_category: selTeacher.subject, price: selTeacher.price });
+  if (selTeacher.db_user_id) loadModalPortfolio(selTeacher.db_user_id);
+}
+async function loadModalPortfolio(userId) {
+  const [pfRes, irRes] = await Promise.allSettled([
+    sb.from('portfolios').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(6),
+    sb.from('imported_reviews').select('*').eq('user_id', userId).eq('status', 'approved').order('created_at', { ascending: false }).limit(5),
+  ]);
+  const portfolios = pfRes.status === 'fulfilled' ? pfRes.value.data : [];
+  const imported = irRes.status === 'fulfilled' ? irRes.value.data : [];
+  const pfEl = document.getElementById('modal-portfolio');
+  if (pfEl && portfolios?.length) {
+    pfEl.style.display = '';
+    pfEl.innerHTML = `<p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="image" style="width:13px;height:13px;"></i>実績・ポートフォリオ</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;">
+      ${portfolios.map(p => `<div style="background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--light);">
+        ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" style="width:100%;height:100px;object-fit:cover;" loading="lazy">` : ''}
+        <div style="padding:8px 10px;"><p style="font-size:12px;font-weight:600;line-height:1.4;">${escapeHtml(p.title)}</p>
+        ${p.location ? `<p style="font-size:10px;color:var(--muted);margin-top:2px;">${escapeHtml(p.location)}</p>` : ''}</div>
+      </div>`).join('')}</div>`;
+    refreshIcons();
+  }
+  const irEl = document.getElementById('modal-imported-reviews');
+  if (irEl && imported?.length) {
+    irEl.style.display = '';
+    irEl.innerHTML = `<p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="message-square" style="width:13px;height:13px;"></i>他サイトの口コミ</p>
+      ${imported.map(r => `<div style="padding:8px 0;border-bottom:1px solid var(--light);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+          <span style="font-size:12px;font-weight:600;">${escapeHtml(r.reviewer_name)}</span>
+          <span style="font-size:10px;color:var(--muted);">via ${escapeHtml(r.source_platform)}</span>
+          <span style="font-size:11px;color:var(--gold);">${'★'.repeat(r.rating)}</span>
+        </div>
+        <p style="font-size:12px;color:var(--mid);line-height:1.5;">${escapeHtml(r.comment)}</p>
+      </div>`).join('')}`;
+    refreshIcons();
+  }
 }
 function closeModal() {
   const overlay = document.getElementById('modal');
@@ -5556,6 +5778,8 @@ function renderModal() {
       <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i data-lucide="sparkles" style="width:13px;height:13px;"></i>教え方のスタイル</p>
       <p style="font-size:14px;color:var(--mid);">${escapeHtml(styleMap[t.teaching_style]||'')}</p>
     </div>` : ''}
+    <div id="modal-portfolio" style="display:none;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--light);"></div>
+    <div id="modal-imported-reviews" style="display:none;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--light);"></div>
     ${t.tags.length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">${t.tags.map(g=>`<span class="tag" style="padding:5px 12px;font-size:12px;">${escapeHtml(g)}</span>`).join('')}</div>` : ''}
     ${t.dist ? `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--lighter);border-radius:10px;margin-bottom:12px;"><i data-lucide="map-pin" style="width:14px;height:14px;color:var(--accent);flex-shrink:0;"></i><span style="font-size:12px;color:var(--mid);flex:1;">${escapeHtml(t.dist)}エリア</span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t.dist + ' 駅')}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);font-weight:600;text-decoration:none;" onclick="event.stopPropagation()">地図を開く →</a></div>` : ''}
     ${(t.email_visible || t.phone_visible) && currentUser && t.db_user_id !== currentUser?.id ? `<div style="background:var(--accent-light);border-radius:12px;padding:14px;margin-bottom:20px;border:1px solid #C5CAE9;">
