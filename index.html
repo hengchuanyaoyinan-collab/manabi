@@ -40,8 +40,14 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="anonymous">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXXXXX',{send_page_view:false});</script>
+<script>
+(function(){
+  var id='G-XXXXXXXXXX';
+  if(id.indexOf('XXXXX')!==-1)return;
+  var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+id;document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}window.gtag=gtag;gtag('js',new Date());gtag('config',id,{send_page_view:false});
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin="anonymous"></script>
@@ -399,6 +405,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <label for="login-pass" class="sr-only">パスワード</label>
       <div style="position:relative;"><input class="auth-input" id="login-pass" type="password" placeholder="パスワード" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePass('login-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
       <button class="btn btn-dark" id="btn-login" style="width:100%;padding:13px;font-size:14px;" onclick="doLogin()">ログイン</button>
+      <div style="text-align:center;margin:8px 0;"><button type="button" onclick="switchTab('reset')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;font-family:inherit;">パスワードをお忘れですか？</button></div>
       <div style="display:flex;align-items:center;gap:8px;margin:14px 0;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="font-size:11px;color:var(--muted);">または</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
       <button onclick="doGoogle()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;font-size:13px;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Googleでログイン</button>
     </div>
@@ -419,6 +426,21 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mid);"><i data-lucide="check" style="width:12px;height:12px;color:var(--green);flex-shrink:0;"></i>安全なStripe決済</div>
         <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mid);"><i data-lucide="check" style="width:12px;height:12px;color:var(--green);flex-shrink:0;"></i>いつでもキャンセル可能</div>
       </div>
+    </div>
+    <!-- RESET PASSWORD -->
+    <div id="tab-reset" style="display:none;">
+      <p style="font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.6;">登録済みのメールアドレスを入力してください。パスワードリセット用のリンクをお送りします。</p>
+      <label for="reset-email" class="sr-only">メールアドレス</label>
+      <input class="auth-input" id="reset-email" type="email" placeholder="メールアドレス" autocomplete="email" required onkeydown="if(event.key==='Enter')doResetPassword()">
+      <button class="btn btn-dark" id="btn-reset" style="width:100%;padding:13px;font-size:14px;" onclick="doResetPassword()">リセットリンクを送信</button>
+      <div style="text-align:center;margin-top:12px;"><button type="button" onclick="switchTab('login')" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;font-family:inherit;">ログインに戻る</button></div>
+    </div>
+    <!-- UPDATE PASSWORD -->
+    <div id="tab-update-pass" style="display:none;">
+      <p style="font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.6;">新しいパスワードを入力してください。</p>
+      <label for="new-pass" class="sr-only">新しいパスワード</label>
+      <div style="position:relative;"><input class="auth-input" id="new-pass" type="password" placeholder="新しいパスワード（8文字以上）" autocomplete="new-password" required minlength="8" onkeydown="if(event.key==='Enter')doUpdatePassword()"><button type="button" onclick="togglePass('new-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
+      <button class="btn btn-dark" id="btn-update-pass" style="width:100%;padding:13px;font-size:14px;" onclick="doUpdatePassword()">パスワードを更新</button>
     </div>
   </div>
 </div>
@@ -1879,6 +1901,11 @@ function requireAuth(desiredPage) {
   return false;
 }
 sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    openAuthModal('login');
+    switchTab('update-pass');
+    return;
+  }
   if (session?.user) {
     currentUser = session.user;
     closeAuthModal();
@@ -2107,8 +2134,10 @@ async function loadAIProfileBadge() {
 // AUTH
 function switchTab(t) {
   document.querySelectorAll('#auth-screen .auth-tab').forEach((b, i) => b.classList.toggle('active', i === (t === 'login' ? 0 : 1)));
-  document.getElementById('tab-login').style.display = t === 'login' ? 'block' : 'none';
-  document.getElementById('tab-signup').style.display = t === 'signup' ? 'block' : 'none';
+  ['tab-login','tab-signup','tab-reset','tab-update-pass'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === 'tab-' + t ? 'block' : id === 'tab-update-pass' && t === 'update-pass' ? 'block' : 'none';
+  });
   const m = document.getElementById('auth-msg');
   m.style.display = 'none';
 }
@@ -2177,6 +2206,32 @@ async function doLogin() {
       btn.innerHTML = 'ログイン'; btn.disabled = false;
     }
   } catch(e) { console.error('doLogin error:', e); showMsg('ログインに失敗しました', true); btn.innerHTML = 'ログイン'; btn.disabled = false; }
+}
+
+async function doResetPassword() {
+  const email = document.getElementById('reset-email').value.trim();
+  if (!email) { showMsg('メールアドレスを入力してください', true); return; }
+  const btn = document.getElementById('btn-reset');
+  btn.innerHTML = '<span class="spinner"></span>送信中...'; btn.disabled = true;
+  try {
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin });
+    if (error) { showMsg('送信に失敗しました。メールアドレスを確認してください。', true); }
+    else { showMsg('リセットリンクを送信しました。メールを確認してください。', false); }
+  } catch(e) { showMsg('エラーが発生しました', true); }
+  btn.innerHTML = 'リセットリンクを送信'; btn.disabled = false;
+}
+
+async function doUpdatePassword() {
+  const pass = document.getElementById('new-pass').value;
+  if (!pass || pass.length < 8) { showMsg('パスワードは8文字以上にしてください', true); return; }
+  const btn = document.getElementById('btn-update-pass');
+  btn.innerHTML = '<span class="spinner"></span>更新中...'; btn.disabled = true;
+  try {
+    const { error } = await sb.auth.updateUser({ password: pass });
+    if (error) { showMsg('パスワードの更新に失敗しました', true); }
+    else { showMsg('パスワードを更新しました！', false); setTimeout(() => closeAuthModal(), 1500); }
+  } catch(e) { showMsg('エラーが発生しました', true); }
+  btn.innerHTML = 'パスワードを更新'; btn.disabled = false;
 }
 
 async function doSignup() {
