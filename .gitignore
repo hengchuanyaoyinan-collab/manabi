@@ -1,2 +1,19 @@
 node_modules/
 dist/
+
+# Environment variables
+.env
+.env.*
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+.idea/
+.vscode/
+*.sublime-*

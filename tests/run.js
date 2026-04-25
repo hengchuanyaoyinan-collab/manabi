@@ -205,6 +205,38 @@ test('Has process-refund edge function', () => {
   assert(src.includes('stripe.refunds'), 'Missing Stripe refund');
 });
 
+test('Has create-checkout-session edge function', () => {
+  const fp = path.join(edgeFunctionsDir, 'create-checkout-session', 'index.ts');
+  assert(fs.existsSync(fp), 'create-checkout-session/index.ts missing');
+  const src = fs.readFileSync(fp, 'utf8');
+  assert(src.includes('checkout.sessions.create'), 'Missing Stripe checkout session creation');
+});
+
+test('All edge functions have config.toml', () => {
+  const funcs = fs.readdirSync(edgeFunctionsDir).filter(f =>
+    fs.statSync(path.join(edgeFunctionsDir, f)).isDirectory()
+  );
+  for (const fn of funcs) {
+    const toml = path.join(edgeFunctionsDir, fn, 'config.toml');
+    assert(fs.existsSync(toml), `${fn}/config.toml missing`);
+    const content = fs.readFileSync(toml, 'utf8');
+    assert(content.includes('verify_jwt'), `${fn}/config.toml missing verify_jwt`);
+  }
+});
+
+test('Stripe webhook has verify_jwt = false', () => {
+  const toml = fs.readFileSync(path.join(edgeFunctionsDir, 'stripe-webhook', 'config.toml'), 'utf8');
+  assert(toml.includes('verify_jwt = false'), 'stripe-webhook must have verify_jwt = false');
+});
+
+test('User-facing functions have verify_jwt = true', () => {
+  const userFuncs = ['create-checkout-session', 'process-payout', 'process-refund', 'generate-bio', 'analyze-profile', 'auto-match'];
+  for (const fn of userFuncs) {
+    const toml = fs.readFileSync(path.join(edgeFunctionsDir, fn, 'config.toml'), 'utf8');
+    assert(toml.includes('verify_jwt = true'), `${fn} must have verify_jwt = true`);
+  }
+});
+
 // ── Vercel Config Tests ──
 console.log('\n\x1b[36mVercel Config\x1b[0m');
 
@@ -233,6 +265,29 @@ test('CSP allows Google Analytics', () => {
   const csp = vercelConfig.headers.find(h => h.source === '/(.*)').headers.find(h => h.key === 'Content-Security-Policy').value;
   assert(csp.includes('googletagmanager.com'));
   assert(csp.includes('google-analytics.com'));
+});
+
+test('CSP allows Stripe Checkout iframe', () => {
+  const csp = vercelConfig.headers.find(h => h.source === '/(.*)').headers.find(h => h.key === 'Content-Security-Policy').value;
+  assert(csp.includes('checkout.stripe.com'), 'frame-src must allow checkout.stripe.com');
+});
+
+test('CSP allows Supabase connections', () => {
+  const csp = vercelConfig.headers.find(h => h.source === '/(.*)').headers.find(h => h.key === 'Content-Security-Policy').value;
+  assert(csp.includes('supabase.co'), 'connect-src must allow supabase.co');
+  assert(csp.includes('wss://'), 'connect-src must allow WebSocket connections');
+});
+
+test('Has dashboard sub-path rewrite', () => {
+  const dashRewrite = vercelConfig.rewrites.find(r => r.source.includes('/dashboard/:path'));
+  assert(dashRewrite, 'Missing /dashboard/:path* rewrite');
+});
+
+test('Has service worker cache header', () => {
+  const swHeaders = vercelConfig.headers.find(h => h.source === '/sw.js');
+  assert(swHeaders, 'Missing sw.js header config');
+  const cacheControl = swHeaders.headers.find(h => h.key === 'Cache-Control');
+  assert(cacheControl && cacheControl.value.includes('no-cache'), 'sw.js must have no-cache');
 });
 
 // ── Summary ──
