@@ -3230,7 +3230,6 @@ function makeCard(t) {
   const isCompared = typeof compareList !== 'undefined' && compareList.includes(t.id);
   return `<div class="card" onclick="openModal(${tid})" role="button" tabindex="0" onkeydown="if(event.key==='Enter')openModal(${tid})" style="position:relative;">
     <button class="card-fav${isLiked?' liked':''}" onclick="event.stopPropagation();toggleLike(${tid},this)" aria-label="お気に入り"><i data-lucide="heart" style="width:16px;height:16px;"></i></button>
-    <button class="compare-check${isCompared?' active':''}" data-tid="${t.id}" onclick="event.stopPropagation();toggleCompare(${tid},event)" style="position:absolute;top:10px;right:44px;width:24px;height:24px;border-radius:6px;border:1.5px solid rgba(255,255,255,.8);background:${isCompared?'var(--accent)':'rgba(0,0,0,.3)'};cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all .2s;backdrop-filter:blur(4px);color:white;font-size:12px;">${isCompared?'✓':''}</button>
     ${sampleBadge}
     ${popularBadge}
     <div class="card-photo" onclick="event.stopPropagation();handleCardDoubleTap(event,${tid})" style="background:linear-gradient(135deg,${t.color},${t.color}cc);">
@@ -6379,9 +6378,9 @@ setTimeout(showNotifBannerIfNeeded, 5000);
   if (localStorage.getItem('manabi_onboarded')) return;
   setTimeout(() => {
     const tips = [
-      { text: '教えたいスキルがある方は「出品」からAIが紹介文を自動生成します', duration: 4500 },
-      { text: '学びたいことがあれば「AIマッチング」で最適な先生を自動検索', duration: 4000 },
-      { text: '気になる先生はダブルタップでお気に入りに追加できます', duration: 3500 },
+      { text: '得意なことを教えたい方は「出品」から投稿できます', duration: 4000 },
+      { text: '学びたいことがあれば「さがす」から先生を検索', duration: 3500 },
+      { text: '気になる先生にはプロフィールからメッセージを送れます', duration: 3500 },
     ];
     let i = 0;
     function showNext() {
