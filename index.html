@@ -5742,7 +5742,6 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
     const curPage = document.querySelector('.page.active')?.id;
     if (curPage === 'explore') { document.getElementById('explore-search')?.focus(); }
-    else if (curPage === 'home') { document.getElementById('hero-search')?.focus(); }
     else { showPage('explore'); setTimeout(() => document.getElementById('explore-search')?.focus(), 100); }
   }
   if (e.key === '?' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) {
