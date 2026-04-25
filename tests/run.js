@@ -405,6 +405,44 @@ test('Valid pages includes all routes', () => {
   assert(html.includes("'tokushoho','contact','admin'"));
 });
 
+test('Has noscript fallback', () => {
+  assert(html.includes('<noscript>'));
+});
+
+test('Has network offline/online handlers', () => {
+  assert(html.includes("addEventListener('offline'"));
+  assert(html.includes("addEventListener('online'"));
+});
+
+test('Has unhandled rejection handler', () => {
+  assert(html.includes("addEventListener('unhandledrejection'"));
+});
+
+test('Has script preload hints', () => {
+  assert(html.includes('rel="preload"') && html.includes('as="script"'));
+});
+
+test('Has meta keywords', () => {
+  assert(html.includes('name="keywords"'));
+});
+
+test('Has catch-all 404 rewrite', () => {
+  const hasWildcard = vercelConfig.rewrites.some(r => r.source.includes('(?!') || r.source === '/:path*');
+  assert(hasWildcard, 'Missing catch-all rewrite for unknown routes');
+});
+
+test('Robots.txt blocks private paths', () => {
+  const robots = fs.readFileSync(path.join(__dirname, '..', 'robots.txt'), 'utf8');
+  assert(robots.includes('Disallow: /dashboard'));
+  assert(robots.includes('Disallow: /admin'));
+  assert(robots.includes('Disallow: /chat'));
+});
+
+test('Permissions-Policy allows camera for Jitsi', () => {
+  const pp = vercelConfig.headers.find(h => h.source === '/(.*)').headers.find(h => h.key === 'Permissions-Policy').value;
+  assert(pp.includes('camera=(self)'), 'Camera must be allowed for Jitsi video calls');
+});
+
 // ── Summary ──
 console.log(`\n\x1b[1mResults: ${passed} passed, ${failed} failed\x1b[0m\n`);
 process.exit(failed > 0 ? 1 : 0);
