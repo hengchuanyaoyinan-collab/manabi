@@ -783,6 +783,34 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 
 <!-- REGISTER -->
 <div class="page" id="register">
+  <!-- Pro Benefits Banner (Zehitomo-inspired social proof) -->
+  <div id="reg-benefits" style="background:linear-gradient(135deg,#1a1a2e,#2D2D2D);border-radius:16px;padding:22px 20px;margin-bottom:18px;color:white;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;"><i data-lucide="rocket" style="width:18px;height:18px;"></i></div>
+      <div><p style="font-size:15px;font-weight:800;">Manabiで教えてみませんか？</p><p style="font-size:11px;color:rgba(255,255,255,.5);">登録無料・手数料5%のみ・好きな時間に</p></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;">
+      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,.06);border-radius:10px;">
+        <p id="reg-stat-teachers" style="font-size:20px;font-weight:900;color:var(--accent);">—</p>
+        <p style="font-size:10px;color:rgba(255,255,255,.5);">登録中の先生</p>
+      </div>
+      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,.06);border-radius:10px;">
+        <p id="reg-stat-skills" style="font-size:20px;font-weight:900;color:var(--green);">—</p>
+        <p style="font-size:10px;color:rgba(255,255,255,.5);">出品スキル数</p>
+      </div>
+      <div style="text-align:center;padding:10px 4px;background:rgba(255,255,255,.06);border-radius:10px;">
+        <p style="font-size:20px;font-weight:900;color:#FFB74D;">5%</p>
+        <p style="font-size:10px;color:rgba(255,255,255,.5);">手数料のみ</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(76,175,80,.15);color:#81C784;">初期費用¥0</span>
+      <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(76,175,80,.15);color:#81C784;">月額費用¥0</span>
+      <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(76,175,80,.15);color:#81C784;">売上の95%が手取り</span>
+      <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(92,107,192,.15);color:#B3C0FF;">AIマッチングで自動集客</span>
+    </div>
+  </div>
+
   <!-- Role switcher -->
   <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:18px;padding:3px;">
     <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える（出品）</button>
@@ -937,6 +965,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <div style="margin-bottom:16px;">
         <label for="reg-name" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">お名前・ニックネーム</label>
         <input class="form-input" id="reg-name" placeholder="山田 花子" maxlength="50" style="padding:14px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="reg-tagline" style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">キャッチコピー <span style="color:var(--accent);font-size:10px;background:var(--accent-light);padding:2px 8px;border-radius:6px;margin-left:4px;">おすすめ</span></label>
+        <input class="form-input" id="reg-tagline" placeholder="例：海外在住10年！実践重視の英会話レッスン" maxlength="60" oninput="updateRegProgress()" style="padding:14px;font-size:14px;">
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;">一行であなたの強みを伝えましょう（検索結果に表示されます）</p>
       </div>
       <div style="margin-bottom:16px;">
         <label style="font-size:13px;color:var(--dark);font-weight:600;display:block;margin-bottom:8px;">経験年数</label>
@@ -1250,6 +1283,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       </div>
       <div style="flex:1;padding-bottom:4px;">
         <h2 style="font-size:22px;font-weight:800;margin-bottom:2px;" id="prof-name">読み込み中...</h2>
+        <p id="prof-tagline" style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:2px;display:none;"></p>
         <p style="font-size:12px;color:var(--muted);" id="prof-email"></p>
       </div>
     </div>
@@ -1317,6 +1351,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
   <div style="background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--light);">
     <p style="font-weight:700;font-size:14px;margin-bottom:16px;">プロフィールを編集</p>
     <div style="margin-bottom:14px;"><label for="edit-name" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">お名前</label><input class="form-input" id="edit-name" placeholder="山田 花子" maxlength="50"></div>
+    <div style="margin-bottom:14px;"><label for="edit-tagline" style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px;">キャッチコピー（一行PR）</label><input class="form-input" id="edit-tagline" placeholder="例：海外在住10年！実践重視の英会話レッスン" maxlength="60"></div>
     <div style="margin-bottom:14px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
         <label for="edit-bio" style="font-size:11px;color:var(--muted);">自己紹介</label>
@@ -1808,6 +1843,9 @@ async function loadProfile() {
     profileData = data;
     if (data) {
       document.getElementById('prof-name').textContent = data.name || currentUser.email;
+      const profTagEl = document.getElementById('prof-tagline');
+      if (data.tagline) { profTagEl.textContent = data.tagline; profTagEl.style.display = ''; }
+      else { profTagEl.style.display = 'none'; }
       document.getElementById('prof-email').textContent = currentUser.email;
       document.getElementById('prof-score').textContent = data.score || 0;
       document.getElementById('dash-score').textContent = data.score || 0;
@@ -1820,6 +1858,7 @@ async function loadProfile() {
         document.getElementById('nav-av').textContent = (data.name || currentUser.email).substring(0, 2).toUpperCase();
       }
       if (data.name) document.getElementById('edit-name').value = data.name;
+      if (data.tagline) document.getElementById('edit-tagline').value = data.tagline;
       if (data.bio) {
         const bioEl = document.getElementById('edit-bio');
         bioEl.value = data.bio;
@@ -2170,6 +2209,7 @@ async function uploadRegAvatar() {
 async function saveProfile() {
   if (!currentUser) return;
   const name = document.getElementById('edit-name').value.trim();
+  const tagline = document.getElementById('edit-tagline').value.trim();
   const bio = document.getElementById('edit-bio').value.trim();
   const career = document.getElementById('edit-career').value.trim();
   const achievements = document.getElementById('edit-achievements').value.trim();
@@ -2181,7 +2221,7 @@ async function saveProfile() {
   const btn = document.getElementById('btn-save-prof');
   btn.innerHTML = '<span class="spinner"></span>保存中...'; btn.disabled = true;
   try {
-    const profileData = { id: currentUser.id, name, bio, role, career, achievements, teaching_style, phone, email_visible: emailVisible, phone_visible: phoneVisible };
+    const profileData = { id: currentUser.id, name, tagline, bio, role, career, achievements, teaching_style, phone, email_visible: emailVisible, phone_visible: phoneVisible };
     const { error } = await sb.from('profiles').upsert(profileData);
     btn.innerHTML = '保存する'; btn.disabled = false;
     if (!error) {
@@ -2318,12 +2358,13 @@ function updateProfileCompletion(data) {
   const el = document.getElementById('prof-completion');
   if (!el || !data) { if (el) el.style.display = 'none'; return; }
   const checks = [
-    { done: !!data.name, tip: '名前を設定しましょう', icon: 'user' },
-    { done: !!data.bio, tip: 'AIで自己紹介を生成しましょう', icon: 'file-text' },
-    { done: !!data.avatar_url, tip: '写真があると信頼度3倍UP', icon: 'camera' },
-    { done: !!data.career, tip: '経歴を追加すると選ばれやすくなります', icon: 'briefcase' },
-    { done: !!data.teaching_style, tip: '教え方のスタイルを選びましょう', icon: 'sparkles' },
-    { done: !!data.achievements, tip: '資格・実績を追加するとプロ感UP', icon: 'award' },
+    { done: !!data.name, tip: '名前を設定', icon: 'user', action: 'edit-name' },
+    { done: !!data.avatar_url, tip: 'プロフィール写真', icon: 'camera', action: 'edit-avatar' },
+    { done: !!data.tagline, tip: 'キャッチコピー', icon: 'megaphone', action: 'edit-tagline' },
+    { done: !!data.bio, tip: '自己紹介文', icon: 'file-text', action: 'edit-bio' },
+    { done: !!data.career, tip: '経歴・職業', icon: 'briefcase', action: 'edit-career' },
+    { done: !!data.teaching_style, tip: '教え方のスタイル', icon: 'sparkles', action: 'edit-style' },
+    { done: !!data.achievements, tip: '資格・実績', icon: 'award', action: 'edit-achievements' },
   ];
   const done = checks.filter(c => c.done).length;
   const pct = Math.round((done / checks.length) * 100);
@@ -2339,10 +2380,14 @@ function updateProfileCompletion(data) {
   el.style.display = '';
   document.getElementById('prof-pct').textContent = pct + '%';
   document.getElementById('prof-bar').style.width = pct + '%';
-  const next = checks.find(c => !c.done);
   const tipEl = document.getElementById('prof-tip');
-  if (next && tipEl) {
-    tipEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="${next.icon}" style="width:12px;height:12px;"></i>${next.tip}</span>`;
+  if (tipEl) {
+    tipEl.innerHTML = checks.map(c =>
+      `<span onclick="${c.action ? `document.getElementById('${c.action}')?.focus();document.getElementById('${c.action}')?.scrollIntoView({behavior:'smooth',block:'center'})` : ''}" style="display:flex;align-items:center;gap:6px;padding:6px 0;cursor:${c.action ? 'pointer' : 'default'};font-size:12px;color:${c.done ? 'var(--green)' : 'var(--muted)'};">
+        <i data-lucide="${c.done ? 'check-circle' : 'circle'}" style="width:14px;height:14px;flex-shrink:0;"></i>
+        <span style="${c.done ? 'text-decoration:line-through;' : 'font-weight:600;'}">${c.tip}</span>
+      </span>`
+    ).join('');
     refreshIcons();
   }
 }
@@ -2407,7 +2452,7 @@ function wizSkip() {
 async function wizReset() {
   const ok = await showConfirm('入力内容をすべてリセットしますか？');
   if (!ok) return;
-  ['reg-cat','reg-skill','reg-min','reg-max','reg-area','reg-desc','reg-tags','reg-name','reg-career','reg-experience'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['reg-cat','reg-skill','reg-min','reg-max','reg-area','reg-desc','reg-tags','reg-name','reg-career','reg-experience','reg-tagline'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   ['reg-fmt-online','reg-fmt-inperson','reg-fmt-cafe','reg-first-free'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = false; });
   document.querySelectorAll('#reg-style-chips .chip-select, #reg-appeal-chips .chip-select').forEach(c => c.classList.remove('active'));
   Object.keys(regDayStates).forEach(k => delete regDayStates[k]);
@@ -2555,18 +2600,27 @@ async function submitSkill() {
     if (!error) {
       const regName = document.getElementById('reg-name').value.trim();
       const regCareer = document.getElementById('reg-career')?.value.trim() || '';
+      const regTagline = document.getElementById('reg-tagline')?.value.trim() || '';
       const regStyles = getSelectedChips('reg-style-chips');
       const regExp = document.getElementById('reg-experience')?.value || '';
       const profileUpdate = {};
       if (regName) profileUpdate.name = regName;
       if (desc) profileUpdate.bio = desc;
       if (regCareer) profileUpdate.career = regCareer;
+      if (regTagline) profileUpdate.tagline = regTagline;
       if (regStyles.length) profileUpdate.teaching_style = regStyles[0] === 'フレンドリー' ? 'friendly' : regStyles[0] === '体系的・丁寧' ? 'structured' : regStyles[0] === '実践重視' ? 'practical' : regStyles[0] === 'じっくり型' ? 'patient' : regStyles[0] === '短期集中' ? 'intensive' : 'friendly';
       if (Object.keys(profileUpdate).length) await sb.from('profiles').update(profileUpdate).eq('id', currentUser.id);
       await uploadRegAvatar();
       document.getElementById('reg-ok').style.display = 'block';
+      document.getElementById('reg-ok').innerHTML = `
+        <p style="font-weight:700;margin-bottom:8px;">登録が完了しました！</p>
+        <p style="font-size:13px;margin-bottom:10px;">スキルが公開されました。次のステップで集客力がアップします：</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <button class="btn btn-outline" style="font-size:11px;padding:6px 12px;" onclick="showPage('profile')">プロフィールを充実させる</button>
+          <button class="btn btn-outline" style="font-size:11px;padding:6px 12px;" onclick="showPage('dashboard')">ダッシュボードを見る</button>
+        </div>`;
       addNotif({ text: `「${escapeHtml(skill)}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
-      setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 4000);
+      setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 8000);
       analyzeProfileInBackground();
       wizReset();
       loadMySkills();
@@ -2916,7 +2970,7 @@ function makeCard(t) {
         <div style="display:flex;align-items:center;gap:3px;">${t.rating > 0 ? `<i data-lucide="star" style="width:14px;height:14px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:13px;font-weight:700;">${t.rating}</span><span style="font-size:11px;color:var(--muted);">(${t.reviews})</span>` : '<span style="font-size:11px;color:var(--muted);">新着</span>'}</div>
         <div><span style="font-size:17px;font-weight:800;letter-spacing:-.3px;">¥${t.price.toLocaleString()}</span><span style="font-size:11px;color:var(--muted);"> /時</span>${priceInd ? '<br>'+priceInd : ''}</div>
       </div>
-      ${t.career ? `<p style="font-size:11px;color:var(--accent);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i data-lucide="briefcase" style="width:11px;height:11px;vertical-align:-1px;margin-right:3px;"></i>${escapeHtml(t.career)}</p>` : `<p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(t.bio)}</p>`}
+      ${t.tagline ? `<p style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.tagline)}</p>` : t.career ? `<p style="font-size:11px;color:var(--accent);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i data-lucide="briefcase" style="width:11px;height:11px;vertical-align:-1px;margin-right:3px;"></i>${escapeHtml(t.career)}</p>` : `<p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(t.bio)}</p>`}
       <div style="display:flex;gap:4px;flex-wrap:wrap;">${t.tags.slice(0,3).map(g=>`<span class="tag">${escapeHtml(g)}</span>`).join('')}</div>
       ${badges.length ? `<div style="display:flex;gap:4px;margin-top:6px;">${badges.map(b=>`<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 8px;border-radius:6px;background:${b.color}15;color:${b.color};font-weight:600;"><i data-lucide="${b.icon}" style="width:10px;height:10px;"></i>${b.label}</span>`).join('')}</div>` : ''}
       <div style="display:flex;gap:3px;margin-top:6px;">${t.available.map(d=>`<span style="font-size:10px;padding:2px 6px;background:var(--lighter);border-radius:4px;color:var(--muted);">${escapeHtml(d)}</span>`).join('')}</div>
@@ -3102,6 +3156,7 @@ function _mapListingToTeacher(s) {
     db_skill_id: s.skill_id,
     lesson_formats: s.lesson_formats || [],
     career: s.career || '',
+    tagline: s.tagline || '',
     achievements: s.achievements || '',
     teaching_style: s.teaching_style || '',
     score: s.profile_score || 0,
@@ -5451,7 +5506,8 @@ function renderModal() {
           <h2 style="font-size:22px;font-weight:800;letter-spacing:-.3px;">${escapeHtml(t.name)}</h2>
           ${verified}
         </div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:6px;">${escapeHtml(t.subject)}${t.dist ? ' · ' + escapeHtml(t.dist) : ''}</p>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:4px;">${escapeHtml(t.subject)}${t.dist ? ' · ' + escapeHtml(t.dist) : ''}</p>
+        ${t.tagline ? `<p style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:4px;">${escapeHtml(t.tagline)}</p>` : ''}
         <div style="display:flex;align-items:center;gap:3px;">${t.rating > 0 ? `<i data-lucide="star" style="width:15px;height:15px;fill:var(--gold);color:var(--gold);"></i><span style="font-size:14px;font-weight:700;">${t.rating}</span><span style="font-size:12px;color:var(--muted);">(${t.reviews}件のレビュー)</span>` : '<span style="font-size:12px;color:var(--muted);">まだレビューはありません</span>'}</div>
       </div>
     </div>
@@ -5596,18 +5652,24 @@ function animateCount(el, target, suffix, duration = 800) {
 }
 async function loadHeroStats() {
   try {
-    const [skillsRes, bookingsRes] = await Promise.all([
+    const [skillsRes, bookingsRes, teachersRes] = await Promise.all([
       sb.from('skills').select('id', { count: 'exact', head: true }),
       sb.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'confirmed'),
+      sb.from('profiles').select('id', { count: 'exact', head: true }).neq('role', 'student'),
     ]);
-    const teachers = skillsRes.count || 0;
+    const skillCount = skillsRes.count || 0;
     const sessions = bookingsRes.count || 0;
-    if (teachers >= 10000 || sessions >= 10000) {
+    const teacherCount = teachersRes.count || 0;
+    if (skillCount >= 10000 || sessions >= 10000) {
       const row = document.getElementById('hero-stats-row');
       if (row) row.style.display = 'flex';
-      animateCount(document.getElementById('hero-teacher-count'), teachers, '名');
+      animateCount(document.getElementById('hero-teacher-count'), skillCount, '名');
       animateCount(document.getElementById('hero-session-count'), sessions, '回');
     }
+    const regT = document.getElementById('reg-stat-teachers');
+    const regS = document.getElementById('reg-stat-skills');
+    if (regT) regT.textContent = teacherCount > 0 ? teacherCount.toLocaleString() : '—';
+    if (regS) regS.textContent = skillCount > 0 ? skillCount.toLocaleString() : '—';
   } catch(e) { console.error('loadHeroStats error:', e); }
 }
 
