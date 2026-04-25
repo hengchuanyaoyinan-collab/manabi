@@ -53,7 +53,7 @@ test('Has robots meta', () => {
 // ── Page Structure Tests ──
 console.log('\n\x1b[36mPage Structure\x1b[0m');
 
-const requiredPages = ['home', 'explore', 'map', 'register', 'matching', 'chat', 'payment', 'profile', 'dashboard', 'admin', 'terms', 'privacy'];
+const requiredPages = ['home', 'explore', 'map', 'register', 'matching', 'chat', 'payment', 'profile', 'dashboard', 'admin', 'terms', 'privacy', 'tokushoho', 'contact'];
 requiredPages.forEach(page => {
   test(`Has "${page}" page`, () => {
     assert(html.includes(`id="${page}"`), `Missing page: ${page}`);
@@ -180,6 +180,33 @@ test('Has video call integration', () => {
   assert(html.includes('meet.jit.si'));
   assert(html.includes('id="video-modal"'));
   assert(html.includes('id="video-iframe"'));
+});
+
+// ── Legal/Compliance Tests ──
+console.log('\n\x1b[36mLegal & Compliance\x1b[0m');
+
+test('Has 特定商取引法 disclosure', () => {
+  assert(html.includes('特定商取引法に基づく表記'));
+  assert(html.includes('id="tokushoho"'));
+});
+
+test('Privacy policy lists all third-party services', () => {
+  assert(html.includes('Supabase'), 'Missing Supabase in privacy');
+  assert(html.includes('Stripe'), 'Missing Stripe in privacy');
+  assert(html.includes('Google Analytics'), 'Missing GA in privacy');
+  assert(html.includes('OpenAI'), 'Missing OpenAI in privacy');
+  assert(html.includes('Jitsi'), 'Missing Jitsi in privacy');
+});
+
+test('Has cookie consent banner', () => {
+  assert(html.includes('id="cookie-consent"'));
+  assert(html.includes('function acceptCookies'));
+  assert(html.includes('function rejectCookies'));
+});
+
+test('Has contact page', () => {
+  assert(html.includes('id="contact"'));
+  assert(html.includes('support@manabi-bay.vercel.app'));
 });
 
 // ── Edge Functions Tests ──

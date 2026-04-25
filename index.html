@@ -443,6 +443,15 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     </div>
   </div>
 </nav>
+<div id="cookie-consent" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--dark);color:white;padding:14px 20px;font-size:13px;line-height:1.6;">
+  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+    <p style="flex:1;min-width:200px;">当サイトではサービス向上のためCookieを使用しています。<a href="/privacy" onclick="event.preventDefault();showPage('privacy')" style="color:var(--accent);text-decoration:underline;">詳細</a></p>
+    <div style="display:flex;gap:8px;flex-shrink:0;">
+      <button onclick="acceptCookies()" style="background:var(--accent);color:white;border:none;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">同意する</button>
+      <button onclick="rejectCookies()" style="background:transparent;color:var(--muted);border:1px solid var(--muted);padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">必須のみ</button>
+    </div>
+  </div>
+</div>
 <div id="offline-bar" style="display:none;position:fixed;top:56px;left:0;right:0;z-index:99;background:var(--red);color:white;padding:6px 16px;font-size:11px;font-weight:600;align-items:center;justify-content:center;gap:6px;"><i data-lucide="wifi-off" style="width:12px;height:12px;"></i>オフライン — 一部の機能が制限されています</div>
 
 <!-- BOTTOM TAB BAR (mobile) -->
@@ -666,7 +675,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         <div>
           <p style="font-size:11px;font-weight:700;color:var(--mid);margin-bottom:8px;">法的情報</p>
           <a href="/terms" onclick="event.preventDefault();showPage('terms')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">利用規約</a>
-          <a href="/privacy" onclick="event.preventDefault();showPage('privacy')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">プライバシーポリシー</a>
+          <a href="/privacy" onclick="event.preventDefault();showPage('privacy')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">プライバシーポリシー</a>
+          <a href="/tokushoho" onclick="event.preventDefault();showPage('tokushoho')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">特定商取引法に基づく表記</a>
+          <a href="/contact" onclick="event.preventDefault();showPage('contact')" style="display:block;font-size:12px;color:var(--muted);text-decoration:none;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'">お問い合わせ</a>
         </div>
       </div>
     </div>
@@ -1480,7 +1491,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
   <div style="max-width:720px;margin:0 auto;">
     <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:16px;padding:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i>ホームに戻る</button>
     <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">プライバシーポリシー</h1>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月20日</p>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月25日</p>
     <div style="background:var(--white);border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">1. 収集する情報</h2>
       <p style="margin-bottom:8px;">当社は以下の情報を収集します：</p>
@@ -1490,11 +1501,12 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <ul style="margin-bottom:20px;padding-left:20px;"><li>サービスの提供・運営・改善</li><li>ユーザーの本人確認</li><li>マッチング機能の最適化</li><li>決済処理</li><li>カスタマーサポート</li><li>利用規約違反への対応</li></ul>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">3. 情報の共有</h2>
       <p style="margin-bottom:8px;">以下の場合を除き、ユーザーの個人情報を第三者に提供しません：</p>
-      <ul style="margin-bottom:20px;padding-left:20px;"><li>ユーザーの同意がある場合</li><li>法令に基づく場合</li><li>サービス提供に必要な業務委託先（Supabase、Stripe等）</li></ul>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li>ユーザーの同意がある場合</li><li>法令に基づく場合</li><li>サービス提供に必要な業務委託先：<br>— <strong>Supabase</strong>（データベース・認証基盤）<br>— <strong>Stripe</strong>（決済処理）<br>— <strong>Google Analytics</strong>（アクセス解析）<br>— <strong>OpenAI</strong>（AIマッチング・プロフィール分析）<br>— <strong>Jitsi Meet</strong>（ビデオ通話）</li></ul>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">4. 情報の保護</h2>
       <p style="margin-bottom:20px;">当社は適切な技術的・組織的措置を講じ、個人情報の漏洩、滅失、毀損の防止に努めます。通信はSSL/TLSにより暗号化されています。</p>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">5. Cookieの使用</h2>
-      <p style="margin-bottom:20px;">本サービスはセッション管理および認証のためにCookieおよびローカルストレージを使用します。</p>
+      <p style="margin-bottom:8px;">本サービスは以下の目的でCookieおよびローカルストレージを使用します：</p>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li><strong>必須Cookie</strong>：セッション管理・認証（Supabase Auth）</li><li><strong>分析Cookie</strong>：サービス改善のためのアクセス解析（Google Analytics）</li><li><strong>機能Cookie</strong>：ユーザー設定の保存（テーマ、通知設定等）</li></ul>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">6. ユーザーの権利</h2>
       <p style="margin-bottom:8px;">ユーザーは以下の権利を有します：</p>
       <ul style="margin-bottom:20px;padding-left:20px;"><li>個人情報の開示・訂正・削除の請求</li><li>アカウントの削除</li><li>データのエクスポート</li></ul>
@@ -1503,7 +1515,58 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">8. ポリシーの変更</h2>
       <p style="margin-bottom:20px;">本ポリシーは必要に応じて変更されることがあります。重要な変更がある場合はサービス内で通知します。</p>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">9. お問い合わせ</h2>
-      <p>プライバシーに関するお問い合わせは、サービス内のメッセージ機能またはサポート窓口までご連絡ください。</p>
+      <p>プライバシーに関するお問い合わせは、<a href="/contact" onclick="event.preventDefault();showPage('contact')" style="color:var(--accent);text-decoration:underline;">お問い合わせページ</a>またはメール（support@manabi-bay.vercel.app）までご連絡ください。</p>
+    </div>
+  </div>
+</div>
+
+<!-- TOKUSHOHO (特定商取引法) -->
+<div class="page" id="tokushoho">
+  <div style="max-width:720px;margin:0 auto;">
+    <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:16px;padding:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i>ホームに戻る</button>
+    <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">特定商取引法に基づく表記</h1>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">最終更新日：2026年4月25日</p>
+    <div style="background:var(--white);border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);white-space:nowrap;vertical-align:top;width:140px;">事業者名</td><td style="padding:14px 12px;">Manabi運営事務局</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">代表者</td><td style="padding:14px 12px;">（個人事業主のため、請求があった場合に遅滞なく開示いたします）</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">所在地</td><td style="padding:14px 12px;">（請求があった場合に遅滞なく開示いたします）</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">電話番号</td><td style="padding:14px 12px;">（請求があった場合に遅滞なく開示いたします）</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">メールアドレス</td><td style="padding:14px 12px;">support@manabi-bay.vercel.app</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">サービス名</td><td style="padding:14px 12px;">Manabi — スキルのマーケットプレイス</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">サービスURL</td><td style="padding:14px 12px;">https://manabi-bay.vercel.app</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">販売価格</td><td style="padding:14px 12px;">各レッスンページに表示された金額（税込）<br>サービス手数料：レッスン料金の5%</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">支払方法</td><td style="padding:14px 12px;">クレジットカード（Stripe経由）<br>対応ブランド：Visa, Mastercard, JCB, American Express</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">支払時期</td><td style="padding:14px 12px;">レッスン予約確定時に即時決済</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">サービス提供時期</td><td style="padding:14px 12px;">予約確定後、レッスン日時にオンラインまたは対面にて提供</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">キャンセル・返金</td><td style="padding:14px 12px;">レッスン開始24時間前まで：全額返金<br>レッスン開始24時間以内：個別対応<br>返金はサービス内の返金リクエスト機能より申請してください</td></tr>
+        <tr><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">その他</td><td style="padding:14px 12px;">本サービスはスキル共有のプラットフォームです。レッスンの提供者は各先生（個人）であり、当社はマッチングおよび決済の仲介を行います。</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="contact">
+  <div style="max-width:720px;margin:0 auto;">
+    <button onclick="showPage('home')" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:inherit;margin-bottom:16px;padding:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i>ホームに戻る</button>
+    <h1 style="font-size:24px;font-weight:800;margin-bottom:8px;">お問い合わせ</h1>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:28px;">ご質問やお困りのことがあれば、お気軽にご連絡ください。</p>
+    <div style="background:var(--white);border-radius:16px;padding:28px 24px;border:1px solid var(--light);font-size:14px;line-height:2;color:var(--mid);">
+      <div style="display:grid;gap:20px;">
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <div style="width:40px;height:40px;border-radius:12px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="mail" style="width:18px;height:18px;"></i></div>
+          <div><p style="font-weight:700;color:var(--dark);margin-bottom:2px;">メールでのお問い合わせ</p><p style="font-size:13px;">support@manabi-bay.vercel.app<br>通常2営業日以内に返信いたします。</p></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <div style="width:40px;height:40px;border-radius:12px;background:var(--green-light, #E8F5E9);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="message-circle" style="width:18px;height:18px;"></i></div>
+          <div><p style="font-weight:700;color:var(--dark);margin-bottom:2px;">アプリ内メッセージ</p><p style="font-size:13px;">ログイン後、チャット機能からサポートチームにお問い合わせいただけます。</p></div>
+        </div>
+        <div style="border-top:1px solid var(--light);padding-top:20px;">
+          <p style="font-weight:700;color:var(--dark);margin-bottom:8px;">よくあるお問い合わせ</p>
+          <ul style="padding-left:20px;font-size:13px;"><li>レッスンの予約・キャンセルについて</li><li>決済・返金について</li><li>アカウントの設定・削除について</li><li>先生登録について</li><li>不適切なユーザーの通報</li></ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -4258,9 +4321,7 @@ async function analyzeProfileInBackground() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'apikey': SB_KEY },
       body: JSON.stringify({ user_id: currentUser.id }),
-    }).then(r => r.json()).then(d => {
-      if (d.success) console.log('Profile analyzed for AI matching');
-    }).catch(e => console.error('analyze-profile:', e));
+    }).then(r => r.json()).catch(e => console.error('analyze-profile:', e));
   } catch(e) { console.error('analyzeProfile:', e); }
 }
 
@@ -5772,7 +5833,7 @@ loadHeroStats();
 loadSkillsFromDB();
 {
   const path = location.pathname.replace(/^\//,'') || (location.hash ? location.hash.replace('#','') : '');
-  const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy','admin'];
+  const validPages = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy','tokushoho','contact','admin'];
   if (path.startsWith('teacher/') || path.startsWith('teacher-')) {
     const tid = path.replace(/^teacher[\/-]/, '');
     const numTid = parseInt(tid);
@@ -5783,6 +5844,25 @@ loadSkillsFromDB();
   } else if (validPages.includes(path)) showPage(path, false);
 }
 refreshIcons();
+function acceptCookies() {
+  localStorage.setItem('cookie_consent', 'all');
+  document.getElementById('cookie-consent').style.display = 'none';
+  if (window.gtag) gtag('consent', 'update', { analytics_storage: 'granted' });
+}
+function rejectCookies() {
+  localStorage.setItem('cookie_consent', 'essential');
+  document.getElementById('cookie-consent').style.display = 'none';
+  if (window.gtag) gtag('consent', 'update', { analytics_storage: 'denied' });
+}
+{
+  const consent = localStorage.getItem('cookie_consent');
+  if (!consent) {
+    document.getElementById('cookie-consent').style.display = 'block';
+    if (window.gtag) gtag('consent', 'default', { analytics_storage: 'denied' });
+  } else if (consent === 'essential') {
+    if (window.gtag) gtag('consent', 'update', { analytics_storage: 'denied' });
+  }
+}
 observeFadeUps();
 window.addEventListener('scroll', () => {
   const btn = document.getElementById('back-top');
