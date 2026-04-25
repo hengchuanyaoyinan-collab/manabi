@@ -1247,7 +1247,7 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
 <!-- PAYMENT -->
 <div class="page" id="payment" style="max-width:560px;">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-    <button onclick="showPage('matching')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
+    <button onclick="showPage('explore')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;"><i data-lucide="arrow-left" style="width:16px;height:16px;"></i></button>
     <h2 style="font-weight:700;font-size:18px;">支払い・決済</h2>
   </div>
   <div class="pay-steps">
@@ -1313,8 +1313,8 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
         <span style="font-size:22px;font-weight:900;color:var(--accent);" id="prof-skills-count">0</span>
         <div><p style="font-size:10px;font-weight:700;color:var(--accent);">出品中</p></div>
       </div>
-      <button onclick="showPage('matching')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="calendar-check" style="width:14px;height:14px;"></i>予約管理</button>
-      <button onclick="showPage('dashboard')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="bar-chart-3" style="width:14px;height:14px;"></i>ダッシュボード</button>
+      <button onclick="showPage('chat')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージ</button>
+      <button onclick="showPage('register')" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);transition:all .15s;" onmouseover="this.style.borderColor='var(--dark)'" onmouseout="this.style.borderColor='var(--border)'"><i data-lucide="plus-circle" style="width:14px;height:14px;"></i>スキル出品</button>
     </div>
   </div>
   <div id="prof-completion" style="display:none;background:var(--white);border-radius:14px;padding:14px 18px;border:1px solid var(--light);margin-bottom:16px;">
@@ -2760,11 +2760,11 @@ async function submitSkill() {
       await uploadRegAvatar();
       document.getElementById('reg-ok').style.display = 'block';
       document.getElementById('reg-ok').innerHTML = `
-        <p style="font-weight:700;margin-bottom:8px;">登録が完了しました！</p>
-        <p style="font-size:13px;margin-bottom:10px;">スキルが公開されました。次のステップで集客力がアップします：</p>
+        <p style="font-weight:700;margin-bottom:8px;">出品が完了しました！</p>
+        <p style="font-size:13px;margin-bottom:10px;">スキルが公開されました。生徒からのメッセージを待ちましょう。</p>
         <div style="display:flex;flex-wrap:wrap;gap:6px;">
-          <button class="btn btn-outline" style="font-size:11px;padding:6px 12px;" onclick="showPage('profile')">プロフィールを充実させる</button>
-          <button class="btn btn-outline" style="font-size:11px;padding:6px 12px;" onclick="showPage('dashboard')">ダッシュボードを見る</button>
+          <button class="btn btn-outline" style="font-size:11px;padding:6px 12px;" onclick="showPage('explore')">自分の投稿を確認する</button>
+          <button class="btn btn-outline" style="font-size:11px;padding:6px 12px;" onclick="showPage('profile')">プロフィールを編集</button>
         </div>`;
       addNotif({ text: `「${escapeHtml(skill)}」が公開されました！`, time: 'たった今', unread: true, color: 'var(--green)' });
       setTimeout(() => document.getElementById('reg-ok').style.display = 'none', 8000);
