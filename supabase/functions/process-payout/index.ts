@@ -324,6 +324,7 @@ async function handlePayout(
   }
 
   return json(req, {
+    success: true,
     payout_id: payout.id,
     amount: teacherAmount,
     platform_fee: platformFee,

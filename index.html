@@ -1739,8 +1739,10 @@ function updateNavUser() {
 async function loadProfile() {
   if (!currentUser) return;
   loadNotifPrefs();
+  let profileData = null;
   try {
     const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+    profileData = data;
     if (data) {
       document.getElementById('prof-name').textContent = data.name || currentUser.email;
       document.getElementById('prof-email').textContent = currentUser.email;
@@ -1791,7 +1793,7 @@ async function loadProfile() {
       await sb.from('profiles').upsert({ id: currentUser.id, name: '', score: 0 }, { onConflict: 'id', ignoreDuplicates: true });
     }
   } catch(e) { console.error('loadProfile error:', e); addNotif({ text: 'プロフィールの読み込みに失敗しました', time: 'たった今', unread: true, color: 'var(--red)' }); }
-  updateProfileCompletion(data);
+  updateProfileCompletion(profileData);
   await Promise.allSettled([loadMySkills(), loadDashboardStats(), loadDashboardReviews(), loadDashboardHistory(), loadAIProfileBadge(), loadNextBooking(), loadEarningsChart(), loadConnectStatus()]);
 }
 
@@ -2579,7 +2581,7 @@ async function loadDashboardHistory() {
     const dateStr = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
     const s = statusMap[p.status] || p.status;
     const sc = statusColors[p.status] || 'var(--muted)';
-    const reviewBtn = isStudent && p.status === 'paid' ? `<button onclick="event.stopPropagation();openReviewModal('${b?.teacher_id||''}','${escapeHtml(other)}')" style="font-size:10px;color:var(--accent);background:var(--accent-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;font-family:inherit;margin-top:4px;">レビューを書く</button>` : '';
+    const reviewBtn = isStudent && p.status === 'paid' ? `<button onclick="event.stopPropagation();openReviewModal('${escapeHtml(b?.id||'')}','${escapeHtml(other)}','${escapeHtml(b?.teacher_id||'')}')" style="font-size:10px;color:var(--accent);background:var(--accent-light);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:600;font-family:inherit;margin-top:4px;">レビューを書く</button>` : '';
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--light);">
       <div><p style="font-weight:600;font-size:13px;">${escapeHtml(subject)}</p><p style="font-size:11px;color:var(--muted);">${escapeHtml(other)} · ${dateStr}</p>${reviewBtn}</div>
       <div style="text-align:right;"><p style="font-weight:700;font-size:13px;">¥${(p.amount||0).toLocaleString()}</p><span style="font-size:11px;color:${sc};font-weight:500;">${s}</span></div>
@@ -4672,7 +4674,7 @@ async function loadConnectStatus() {
     const active = document.getElementById('connect-active');
     const pendingOnboard = document.getElementById('connect-pending-onboard');
     if (loading) loading.style.display = 'none';
-    if (error || !data) { if (notSetup) notSetup.style.display = ''; return; }
+    if (error || !data) { if (notSetup) notSetup.style.display = ''; refreshIcons(); return; }
     if (!data.has_account) { if (notSetup) notSetup.style.display = ''; }
     else if (!data.onboarding_complete) { if (pendingOnboard) pendingOnboard.style.display = ''; }
     else {
@@ -4680,8 +4682,8 @@ async function loadConnectStatus() {
       const pending = data.balance?.pending?.find(b => b.currency === 'jpy');
       const available = data.balance?.available?.find(b => b.currency === 'jpy');
       document.getElementById('connect-pending-bal').textContent = '¥' + ((pending?.amount || 0) + (available?.amount || 0)).toLocaleString();
-      const { data: payouts } = await sb.from('payouts').select('net_amount').eq('teacher_id', currentUser.id).eq('status', 'completed');
-      const total = (payouts || []).reduce((s, p) => s + (p.net_amount || 0), 0);
+      const { data: payouts } = await sb.from('payouts').select('amount').eq('teacher_id', currentUser.id).eq('status', 'completed');
+      const total = (payouts || []).reduce((s, p) => s + (p.amount || 0), 0);
       document.getElementById('connect-total-paid').textContent = '¥' + total.toLocaleString();
     }
     refreshIcons();
@@ -5082,7 +5084,7 @@ async function submitReport() {
 }
 async function blockUser(userId, userName) {
   if (!requireAuth('block')) return;
-  if (!confirm(`${userName}さんをブロックしますか？ブロックすると相手のリストに表示されなくなります。`)) return;
+  if (!await showConfirm(`${userName}さんをブロックしますか？ブロックすると相手のリストに表示されなくなります。`)) return;
   const { error } = await sb.from('blocks').insert({ blocker_id: currentUser.id, blocked_id: userId });
   if (error && error.code !== '23505') { showToast('ブロックに失敗しました', 'var(--red)'); return; }
   showToast(`${userName}さんをブロックしました`, 'var(--accent)');
@@ -5433,7 +5435,8 @@ function renderModal() {
     ${t.db_skill_id && t.db_user_id && currentUser && t.db_user_id !== currentUser.id ? `<button onclick="closeModal();startDirectChat('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="width:100%;margin-top:10px;padding:11px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージを送る</button>` : ''}
     <div style="display:flex;justify-content:center;gap:16px;margin-top:8px;">
       <button onclick="shareTeacher(${t.id})" style="padding:9px 16px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'"><i data-lucide="share-2" style="width:13px;height:13px;"></i>シェア</button>
-      ${currentUser && t.db_user_id && t.db_user_id !== currentUser.id ? `<button onclick="reportTeacher('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="padding:9px 16px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"><i data-lucide="flag" style="width:13px;height:13px;"></i>報告</button>` : ''}
+      ${currentUser && t.db_user_id && t.db_user_id !== currentUser.id ? `<button onclick="reportTeacher('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="padding:9px 16px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"><i data-lucide="flag" style="width:13px;height:13px;"></i>報告</button>
+      <button onclick="blockUser('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="padding:9px 16px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"><i data-lucide="ban" style="width:13px;height:13px;"></i>ブロック</button>` : ''}
     </div>`;
   } else if (bookStep === 1) {
     const slots = generateSlots(t.available);
