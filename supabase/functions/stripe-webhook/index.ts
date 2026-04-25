@@ -116,6 +116,21 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case 'charge.dispute.closed': {
+        const dispute = event.data.object as Stripe.Dispute;
+        const pi = typeof dispute.payment_intent === 'string'
+          ? dispute.payment_intent
+          : dispute.payment_intent?.id ?? null;
+        if (pi) {
+          const newStatus = dispute.status === 'won' ? 'paid' : 'refunded';
+          await admin
+            .from('payments')
+            .update({ status: newStatus, updated_at: new Date().toISOString() })
+            .eq('stripe_payment_intent_id', pi);
+        }
+        break;
+      }
+
       default:
         // 対応しないイベントは 200 で受け流す
         break;
