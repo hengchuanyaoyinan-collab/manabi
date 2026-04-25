@@ -11,6 +11,7 @@
     { "source": "/chat", "destination": "/index.html" },
     { "source": "/payment", "destination": "/index.html" },
     { "source": "/dashboard", "destination": "/index.html" },
+    { "source": "/dashboard/:path*", "destination": "/index.html" },
     { "source": "/profile", "destination": "/index.html" },
     { "source": "/terms", "destination": "/index.html" },
     { "source": "/privacy", "destination": "/index.html" },

@@ -4880,6 +4880,21 @@ function goPayStep(n) {
 
 // success_url でリダイレクトされて戻ってきたとき、
 // 自動で支払いページの「完了」ステップを表示する。
+function handleStripeConnectReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const onboard = params.get('onboard');
+  const refresh = params.get('refresh');
+  if (!onboard && !refresh) return;
+  showPage('dashboard', false);
+  if (onboard === 'complete') {
+    showToast('Stripeアカウントの設定が完了しました！', 'var(--green)');
+    loadConnectStatus();
+  } else if (refresh) {
+    showToast('Stripeの設定を続けてください', 'var(--accent)');
+    loadConnectStatus();
+  }
+  history.replaceState({ page: 'dashboard' }, '', '/dashboard');
+}
 function handlePaymentReturn() {
   const params = new URLSearchParams(window.location.search);
   const status = params.get('pay');
@@ -5750,6 +5765,7 @@ renderSavedSearches();
 renderAiChips();
 renderNotifs();
 handlePaymentReturn();
+handleStripeConnectReturn();
 loadHeroStats();
 loadSkillsFromDB();
 {
@@ -5760,6 +5776,8 @@ loadSkillsFromDB();
     const numTid = parseInt(tid);
     const resolvedTid = Number.isFinite(numTid) ? numTid : tid;
     if (resolvedTid) setTimeout(() => openModal(resolvedTid), 800);
+  } else if (path.startsWith('dashboard/')) {
+    showPage('dashboard', false);
   } else if (validPages.includes(path)) showPage(path, false);
 }
 refreshIcons();
