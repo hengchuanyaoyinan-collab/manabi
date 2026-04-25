@@ -17,3 +17,18 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Security
+*.pem
+*.key
+*.crt
+
+# Supabase local
+.supabase/
+
+# Coverage
+coverage/

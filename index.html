@@ -401,11 +401,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <!-- SIGNUP -->
     <div id="tab-signup" style="display:none;">
       <label for="signup-name" class="sr-only">お名前</label>
-      <input class="auth-input" id="signup-name" type="text" placeholder="お名前" autocomplete="name">
+      <input class="auth-input" id="signup-name" type="text" placeholder="お名前" autocomplete="name" required>
       <label for="signup-email" class="sr-only">メールアドレス</label>
-      <input class="auth-input" id="signup-email" type="email" placeholder="メールアドレス" autocomplete="email">
+      <input class="auth-input" id="signup-email" type="email" placeholder="メールアドレス" autocomplete="email" required>
       <label for="signup-pass" class="sr-only">パスワード</label>
-      <div style="position:relative;"><input class="auth-input" id="signup-pass" type="password" placeholder="パスワード（8文字以上）" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()" oninput="updatePassStrength(this.value)"><button type="button" onclick="togglePass('signup-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
+      <div style="position:relative;"><input class="auth-input" id="signup-pass" type="password" placeholder="パスワード（8文字以上）" autocomplete="new-password" required minlength="8" onkeydown="if(event.key==='Enter')doSignup()" oninput="updatePassStrength(this.value)"><button type="button" onclick="togglePass('signup-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;" aria-label="パスワードを表示"><i data-lucide="eye" style="width:16px;height:16px;"></i></button></div>
       <div id="pass-strength" style="display:none;margin:-6px 0 12px;"><div style="display:flex;gap:4px;margin-bottom:4px;"><div id="ps-bar-1" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div><div id="ps-bar-2" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div><div id="ps-bar-3" style="flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .2s;"></div></div><p id="ps-label" style="font-size:10px;color:var(--muted);"></p></div>
       <button class="btn btn-dark" id="btn-signup" style="width:100%;padding:13px;font-size:14px;" onclick="doSignup()">アカウントを作成</button>
       <div style="display:flex;align-items:center;gap:8px;margin:14px 0;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="font-size:11px;color:var(--muted);">または</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
@@ -1510,7 +1510,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
         <p style="font-size:12px;color:var(--muted);">クリックして写真を選択</p>
         <input type="file" id="pf-photo-input" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previewPortfolioPhoto(this)">
       </div>
-      <img id="pf-photo-preview" style="display:none;max-width:100%;border-radius:10px;margin-top:8px;">
+      <img id="pf-photo-preview" alt="ポートフォリオ写真プレビュー" style="display:none;max-width:100%;border-radius:10px;margin-top:8px;">
     </div>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-dark" style="flex:1;font-size:13px;padding:12px;" id="pf-submit-btn" onclick="submitPortfolio()">保存する</button>
@@ -1680,6 +1680,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
     <button class="btn btn-outline" onclick="loadAdminReports('all')" style="font-size:12px;padding:8px 14px;" id="admin-tab-all">すべて</button>
   </div>
   <div id="admin-reports-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+  <div style="margin-top:32px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="width:32px;height:32px;border-radius:10px;background:#E3F2FD;color:#1565C0;display:flex;align-items:center;justify-content:center;"><i data-lucide="message-square-quote" style="width:16px;height:16px;"></i></div>
+      <h2 style="font-size:16px;font-weight:700;">口コミ転記申請</h2>
+    </div>
+    <div id="admin-imported-reviews" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
 </div>
 
 <!-- REPORT MODAL -->
@@ -1781,6 +1788,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 max(
 const SB_URL = 'https://dajngnlvrwesosvgoilh.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRham5nbmx2cndlc29zdmdvaWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3ODc4NDksImV4cCI6MjA5MTM2Mzg0OX0.AuNr5eoUAPaRwgIHvICq3aKqlvlsjPjks5vGrmeVZN0';
 const sb = supabase.createClient(SB_URL, SB_KEY);
+const _aiLastCall = {};
+function aiRateLimit(key, cooldownMs = 10000) {
+  const now = Date.now();
+  if (_aiLastCall[key] && now - _aiLastCall[key] < cooldownMs) { showToast('しばらく待ってから再試行してください', 'var(--gold)'); return false; }
+  _aiLastCall[key] = now;
+  return true;
+}
 let currentUser = null;
 const FEE_RATE = 0.05;
 function trackEvent(name, params) {
@@ -2362,7 +2376,7 @@ function requestVerification() {
       <p style="font-size:10px;color:var(--mid);">JPG, PNG（10MB以下）</p>
       <input type="file" id="verify-file-input" accept="image/*" style="display:none;" onchange="handleVerifyFile(this.files[0])">
     </div>
-    <div id="verify-preview" style="display:none;margin-bottom:12px;text-align:center;"><img id="verify-preview-img" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--light);"></div>
+    <div id="verify-preview" style="display:none;margin-bottom:12px;text-align:center;"><img id="verify-preview-img" alt="本人確認書類プレビュー" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--light);"></div>
     <p style="font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:14px;">※ アップロードされた画像は本人確認の目的のみに使用され、確認後は削除されます。マイナンバーカードの裏面（個人番号）は送信しないでください。</p>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-outline" onclick="closeModal()" style="flex:1;">キャンセル</button>
@@ -2573,6 +2587,7 @@ function getSelectedChips(containerId) {
 }
 
 async function generateAIBio() {
+  if (!aiRateLimit('generateBio', 15000)) return;
   const btn = document.getElementById('btn-ai-bio');
   const name = document.getElementById('reg-name').value.trim() || '';
   const skill = document.getElementById('reg-skill')?.value.trim() || '';
@@ -2842,7 +2857,7 @@ async function loadPortfolios() {
   if (!el) return;
   if (!data?.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">実績を追加して信頼度をアップしましょう</p>'; return; }
   el.innerHTML = data.map(p => `<div style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--light);">
-    ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0;" loading="lazy">` : '<div style="width:64px;height:64px;border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="image" style="width:20px;height:20px;color:var(--muted);"></i></div>'}
+    ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title || 'ポートフォリオ')}" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0;" loading="lazy">` : '<div style="width:64px;height:64px;border-radius:10px;background:var(--lighter);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="image" style="width:20px;height:20px;color:var(--muted);"></i></div>'}
     <div style="flex:1;min-width:0;">
       <p style="font-weight:700;font-size:13px;margin-bottom:2px;">${escapeHtml(p.title)}</p>
       ${p.description ? `<p style="font-size:12px;color:var(--mid);line-height:1.5;margin-bottom:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.description)}</p>` : ''}
@@ -3055,7 +3070,7 @@ function showPage(id, pushHistory = true) {
   const protectedPages = ['register','matching','chat','payment','dashboard','profile','admin'];
   if (protectedPages.includes(id) && !requireAuth(id)) return;
   if (id === 'admin' && !isAdmin()) { showToast('管理者権限が必要です', 'var(--red)'); return; }
-  if (id === 'admin') loadAdminReports('pending');
+  if (id === 'admin') { loadAdminReports('pending'); loadAdminImportedReviews(); }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const el = document.getElementById(id);
@@ -3094,7 +3109,7 @@ function showPage(id, pushHistory = true) {
 }
 window.addEventListener('popstate', (e) => {
   const page = e.state?.page || location.pathname.replace(/^\//,'') || 'home';
-  const valid = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy','admin'];
+  const valid = ['home','explore','map','register','matching','chat','payment','dashboard','profile','terms','privacy','tokushoho','contact','admin'];
   if (valid.includes(page)) showPage(page, false);
   else if (page.startsWith('teacher/')) {
     const tid = page.replace('teacher/', '');
@@ -3258,7 +3273,7 @@ function renderLeaderboard() {
   list.innerHTML = ranked.map((t, i) => {
     const medal = i < 3 ? `<span style="font-size:20px;">${medals[i]}</span>` : `<span style="width:28px;height:28px;border-radius:50%;background:var(--lighter);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);">${medals[i]}</span>`;
     const safeAv = safeImgUrl(t.avatar_url);
-    const av = safeAv ? `<img src="${safeAv}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="">` : `<div style="width:40px;height:40px;border-radius:50%;background:${t.color || 'var(--accent)'};display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;">${escapeHtml((t.avatar || t.name || '?').substring(0, 2))}</div>`;
+    const av = safeAv ? `<img src="${safeAv}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="${escapeHtml(t.name)}">` : `<div style="width:40px;height:40px;border-radius:50%;background:${t.color || 'var(--accent)'};display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;">${escapeHtml((t.avatar || t.name || '?').substring(0, 2))}</div>`;
     const stars = '★'.repeat(Math.round(t.rating)) + '☆'.repeat(5 - Math.round(t.rating));
     const badges = [];
     if (t.verified) badges.push('<span class="verified-badge">✓ 本人確認済</span>');
@@ -4354,6 +4369,7 @@ let aiMatchAnimInterval = null;
 
 async function runAIMatch() {
   if (!currentUser) { openAuthModal('signup'); showToast('AIマッチングにはログインが必要です', 'var(--accent)'); return; }
+  if (!aiRateLimit('aiMatch', 20000)) return;
   const subject = document.getElementById('ai-req-subject').value.trim();
   const detail = document.getElementById('ai-req-detail').value.trim();
   const budget = parseInt(document.getElementById('ai-req-budget').value) || 0;
@@ -4580,6 +4596,7 @@ function openTeacherByUUID(uuid) {
 
 async function analyzeProfileInBackground() {
   if (!currentUser) return;
+  if (!aiRateLimit('analyzeProfile', 60000)) return;
   try {
     const session = await sb.auth.getSession();
     const token = session.data.session?.access_token;
@@ -5283,7 +5300,7 @@ function openCompare() {
   const ts = compareList.map(id => getTeacher(id)).filter(Boolean);
   const cols = ts.map(t => {
     const safeAv = safeImgUrl(t.avatar_url);
-    const avHtml = safeAv ? `<img src="${escapeHtml(safeAv)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : `<span style="font-weight:700;color:white;font-size:16px;">${escapeHtml(t.avatar)}</span>`;
+    const avHtml = safeAv ? `<img src="${escapeHtml(safeAv)}" alt="${escapeHtml(t.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : `<span style="font-weight:700;color:white;font-size:16px;">${escapeHtml(t.avatar)}</span>`;
     return `<div style="flex:1;min-width:0;text-align:center;">
       <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,${t.color},${t.color}cc);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">${avHtml}</div>
       <p style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(t.name)}</p>
@@ -5489,6 +5506,42 @@ async function resolveReport(reportId, status) {
   showToast('更新しました', 'var(--green)');
   loadAdminReports('pending');
 }
+async function loadAdminImportedReviews() {
+  if (!isAdmin()) return;
+  const { data } = await sb.from('imported_reviews').select('*, profiles:user_id(name, avatar_url)').order('created_at', { ascending: false }).limit(50);
+  const el = document.getElementById('admin-imported-reviews');
+  if (!el) return;
+  if (!data || !data.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0;">申請はありません</p>'; return; }
+  el.innerHTML = data.map(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    const statusColors = { pending: 'background:#FFF3E0;color:#E65100', approved: 'background:#E8F5E9;color:#2E7D32', rejected: 'background:#FFEBEE;color:#C62828' };
+    const statusLabels = { pending: '審査中', approved: '承認済', rejected: '却下' };
+    return `<div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;padding:3px 8px;border-radius:6px;${statusColors[r.status]||''};font-weight:600;">${statusLabels[r.status]||r.status}</span>
+          <span style="font-size:12px;font-weight:600;">${escapeHtml(r.profiles?.name || '不明')}</span>
+        </div>
+        <span style="font-size:10px;color:var(--muted);">${new Date(r.created_at).toLocaleDateString('ja-JP')}</span>
+      </div>
+      <div style="margin-bottom:6px;"><span style="font-size:11px;color:var(--muted);">元サイト:</span> <span style="font-size:12px;font-weight:600;">${escapeHtml(r.source_platform)}</span></div>
+      <div style="color:var(--gold);font-size:13px;margin-bottom:4px;">${stars}</div>
+      <p style="font-size:12px;line-height:1.6;color:var(--mid);margin-bottom:4px;">${escapeHtml(r.comment || '')}</p>
+      <p style="font-size:11px;color:var(--muted);">— ${escapeHtml(r.reviewer_name || '匿名')}</p>
+      ${r.source_url ? `<a href="${escapeHtml(r.source_url)}" target="_blank" rel="noopener" style="font-size:11px;color:var(--accent);display:inline-block;margin-top:4px;">元の口コミを確認 →</a>` : ''}
+      ${r.status === 'pending' ? `<div style="display:flex;gap:6px;margin-top:10px;">
+        <button class="btn btn-dark" onclick="reviewImportedReview('${r.id}','approved')" style="font-size:11px;padding:6px 14px;">承認</button>
+        <button class="btn btn-outline" onclick="reviewImportedReview('${r.id}','rejected')" style="font-size:11px;padding:6px 14px;color:var(--red);border-color:var(--red);">却下</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+async function reviewImportedReview(reviewId, status) {
+  const { error } = await sb.from('imported_reviews').update({ status, reviewed_by: currentUser.id }).eq('id', reviewId);
+  if (error) { showToast('更新に失敗しました', 'var(--red)'); return; }
+  showToast(status === 'approved' ? '口コミを承認しました' : '口コミを却下しました', 'var(--green)');
+  loadAdminImportedReviews();
+}
 function trackRecentView(id) {
   try {
     let recent = JSON.parse(localStorage.getItem('manabi_recent') || '[]');
@@ -5553,7 +5606,7 @@ async function loadModalPortfolio(userId) {
     pfEl.innerHTML = `<p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-bottom:10px;display:flex;align-items:center;gap:6px;"><i data-lucide="image" style="width:13px;height:13px;"></i>実績・ポートフォリオ</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;">
       ${portfolios.map(p => `<div style="background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--light);">
-        ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" style="width:100%;height:100px;object-fit:cover;" loading="lazy">` : ''}
+        ${p.image_url ? `<img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title || 'ポートフォリオ')}" style="width:100%;height:100px;object-fit:cover;" loading="lazy">` : ''}
         <div style="padding:8px 10px;"><p style="font-size:12px;font-weight:600;line-height:1.4;">${escapeHtml(p.title)}</p>
         ${p.location ? `<p style="font-size:10px;color:var(--muted);margin-top:2px;">${escapeHtml(p.location)}</p>` : ''}</div>
       </div>`).join('')}</div>`;

@@ -317,6 +317,94 @@ test('Has service worker cache header', () => {
   assert(cacheControl && cacheControl.value.includes('no-cache'), 'sw.js must have no-cache');
 });
 
+// ── Zehitomo Features Tests ──
+console.log('\n\x1b[36mZehitomo-Inspired Features\x1b[0m');
+
+test('Has social proof on register page', () => {
+  assert(html.includes('id="reg-benefits"'));
+  assert(html.includes('reg-stat-teachers'));
+});
+
+test('Has tagline/キャッチコピー field', () => {
+  assert(html.includes('id="reg-tagline"'));
+  assert(html.includes('id="edit-tagline"'));
+  assert(html.includes('キャッチコピー'));
+});
+
+test('Has profile completeness checklist', () => {
+  assert(html.includes('tip:') && html.includes('action:'));
+  assert(html.includes('プロフィール完成度'));
+});
+
+test('Has per-skill service area selection', () => {
+  assert(html.includes('AREA_PRESETS'));
+  assert(html.includes('id="reg-area-chips"'));
+  assert(html.includes('service_areas'));
+  assert(html.includes('toggleAreaChip'));
+});
+
+test('Has portfolio gallery system', () => {
+  assert(html.includes('submitPortfolio'));
+  assert(html.includes('loadPortfolios'));
+  assert(html.includes('deletePortfolio'));
+  assert(html.includes('id="modal-portfolio"'));
+});
+
+test('Has imported reviews system', () => {
+  assert(html.includes('submitImportedReview'));
+  assert(html.includes('loadImportedReviews'));
+  assert(html.includes('id="modal-imported-reviews"'));
+  assert(html.includes('source_platform'));
+});
+
+test('Has admin imported reviews approval', () => {
+  assert(html.includes('loadAdminImportedReviews'));
+  assert(html.includes('reviewImportedReview'));
+  assert(html.includes('id="admin-imported-reviews"'));
+});
+
+// ── Production Readiness Tests ──
+console.log('\n\x1b[36mProduction Readiness\x1b[0m');
+
+test('Has AI rate limiting', () => {
+  assert(html.includes('aiRateLimit'));
+  assert(html.includes('_aiLastCall'));
+});
+
+test('Has form validation (required fields)', () => {
+  assert(html.includes('id="signup-name"') && html.includes('required'));
+  assert(html.includes('id="signup-email"') && html.includes('required'));
+  assert(html.includes('minlength="8"'));
+});
+
+test('Has image alt attributes for accessibility', () => {
+  assert(html.includes('alt="ポートフォリオ写真プレビュー"'));
+  assert(html.includes('alt="本人確認書類プレビュー"'));
+});
+
+test('Edge functions have API timeouts', () => {
+  const autoMatch = fs.readFileSync(path.join(edgeFunctionsDir, 'auto-match', 'index.ts'), 'utf8');
+  const genBio = fs.readFileSync(path.join(edgeFunctionsDir, 'generate-bio', 'index.ts'), 'utf8');
+  const analyze = fs.readFileSync(path.join(edgeFunctionsDir, 'analyze-profile', 'index.ts'), 'utf8');
+  assert(autoMatch.includes('AbortController'), 'auto-match missing timeout');
+  assert(genBio.includes('AbortController'), 'generate-bio missing timeout');
+  assert(analyze.includes('AbortController'), 'analyze-profile missing timeout');
+});
+
+test('Sourcemaps disabled in production', () => {
+  const vite = fs.readFileSync(path.join(__dirname, '..', 'vite.config.js'), 'utf8');
+  assert(vite.includes('sourcemap: false'), 'Sourcemaps should be disabled');
+});
+
+test('SW has date-based cache version', () => {
+  const sw = fs.readFileSync(path.join(__dirname, '..', 'sw.js'), 'utf8');
+  assert(sw.match(/manabi-\d{8}/), 'SW cache should use date-based version');
+});
+
+test('Valid pages includes all routes', () => {
+  assert(html.includes("'tokushoho','contact','admin'"));
+});
+
 // ── Summary ──
 console.log(`\n\x1b[1mResults: ${passed} passed, ${failed} failed\x1b[0m\n`);
 process.exit(failed > 0 ? 1 : 0);

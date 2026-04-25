@@ -50,12 +50,15 @@ Deno.serve(async (req: Request) => {
     const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_KEY) throw new Error("OPENAI_API_KEY not configured");
 
+    const ac = new AbortController();
+    const timeout = setTimeout(() => ac.abort(), 30000);
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${OPENAI_KEY}`,
       },
+      signal: ac.signal,
       body: JSON.stringify({
         model: "gpt-4o-mini",
         temperature: 0.7,
@@ -80,6 +83,7 @@ Output ONLY the bio text, nothing else.`,
       }),
     });
 
+    clearTimeout(timeout);
     if (!res.ok) {
       const err = await res.text();
       throw new Error(`OpenAI failed: ${err}`);

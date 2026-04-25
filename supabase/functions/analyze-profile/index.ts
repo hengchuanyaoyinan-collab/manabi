@@ -71,9 +71,12 @@ Deno.serve(async (req: Request) => {
     const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_KEY) throw new Error("OPENAI_API_KEY not configured");
 
+    const ac1 = new AbortController();
+    const t1 = setTimeout(() => ac1.abort(), 30000);
     const analysisRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_KEY}` },
+      signal: ac1.signal,
       body: JSON.stringify({
         model: "gpt-4o-mini",
         temperature: 0.3,
@@ -98,6 +101,7 @@ Deno.serve(async (req: Request) => {
       })
     });
 
+    clearTimeout(t1);
     if (!analysisRes.ok) {
       const err = await analysisRes.text();
       throw new Error(`OpenAI analysis failed: ${err}`);
@@ -115,11 +119,15 @@ Deno.serve(async (req: Request) => {
       profileText,
     ].join("\n");
 
+    const ac2 = new AbortController();
+    const t2 = setTimeout(() => ac2.abort(), 30000);
     const embRes = await fetch("https://api.openai.com/v1/embeddings", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_KEY}` },
+      signal: ac2.signal,
       body: JSON.stringify({ model: "text-embedding-3-small", input: embeddingText })
     });
+    clearTimeout(t2);
 
     if (!embRes.ok) {
       const err = await embRes.text();

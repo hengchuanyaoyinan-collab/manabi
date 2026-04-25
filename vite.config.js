@@ -8,7 +8,7 @@ export default defineConfig({
       input: 'index.html',
     },
     minify: 'esbuild',
-    sourcemap: true,
+    sourcemap: false,
   },
   server: {
     port: 3000,

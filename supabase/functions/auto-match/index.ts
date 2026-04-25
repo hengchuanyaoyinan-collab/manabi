@@ -74,9 +74,12 @@ async function createAndMatch(supabase: any, userId: string, body: any, cors: Re
   const OPENAI_KEY = Deno.env.get("OPENAI_API_KEY");
   if (!OPENAI_KEY) throw new Error("OPENAI_API_KEY not configured");
 
+  const ac1 = new AbortController();
+  const t1 = setTimeout(() => ac1.abort(), 30000);
   const structureRes = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_KEY}` },
+    signal: ac1.signal,
     body: JSON.stringify({
       model: "gpt-4o-mini",
       temperature: 0.2,
@@ -106,6 +109,7 @@ async function createAndMatch(supabase: any, userId: string, body: any, cors: Re
       ]
     })
   });
+  clearTimeout(t1);
 
   if (!structureRes.ok) throw new Error("AI structuring failed");
   const structureData = await structureRes.json();
@@ -120,11 +124,15 @@ async function createAndMatch(supabase: any, userId: string, body: any, cors: Re
     `キーワード: ${structured.keywords?.join(", ")}`,
   ].join("\n");
 
+  const ac2 = new AbortController();
+  const t2 = setTimeout(() => ac2.abort(), 30000);
   const embRes = await fetch("https://api.openai.com/v1/embeddings", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_KEY}` },
+    signal: ac2.signal,
     body: JSON.stringify({ model: "text-embedding-3-small", input: requestText })
   });
+  clearTimeout(t2);
 
   if (!embRes.ok) throw new Error("Embedding generation failed");
   const embData = await embRes.json();
@@ -364,9 +372,12 @@ async function findAndScoreMatches(
     return `${i + 1}. ${p.name} (スコア:${m.score}) - ${s?.subject || "未設定"}, ¥${s?.price_min || 0}~, 強み: ${m.aiProfile?.teaching_strengths?.join(",") || p.teaching_style || "不明"}`;
   }).join("\n");
 
+  const ac3 = new AbortController();
+  const t3 = setTimeout(() => ac3.abort(), 30000);
   const reasonsRes = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
+    signal: ac3.signal,
     body: JSON.stringify({
       model: "gpt-4o-mini",
       temperature: 0.5,
@@ -392,6 +403,7 @@ ${reasonsPrompt}`
     })
   });
 
+  clearTimeout(t3);
   let reasons: string[] = [];
   if (reasonsRes.ok) {
     const reasonsData = await reasonsRes.json();
