@@ -725,11 +725,7 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
     </div>
     <div style="display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;" id="subj-filters"></div>
   </div>
-  <div onclick="showPage('matching')" style="background:linear-gradient(135deg,#1a1a2e,#2D2D2D);border-radius:14px;padding:14px 16px;margin-bottom:12px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:opacity .15s;" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
-    <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="sparkles" style="width:18px;height:18px;color:white;"></i></div>
-    <div style="flex:1;"><p style="font-size:13px;font-weight:700;color:white;margin-bottom:2px;">AIに先生を探してもらう</p><p style="font-size:11px;color:rgba(255,255,255,.5);">学びたいことを入力するだけで最適な先生を自動推薦</p></div>
-    <i data-lucide="chevron-right" style="width:16px;height:16px;color:rgba(255,255,255,.4);flex-shrink:0;"></i>
-  </div>
+  <!-- AI matching banner hidden for MVP -->
   <div id="ai-panel" style="display:none;background:var(--white);border-radius:16px;padding:16px;border:1px solid var(--light);margin-bottom:12px;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
       <div style="width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#9575CD);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;"><i data-lucide="sparkles" style="width:13px;height:13px;"></i></div>
@@ -748,7 +744,6 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
       <p id="result-count" style="font-size:12px;color:var(--muted);white-space:nowrap;"></p>
       <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button onclick="showPage('map')" style="font-size:11px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px;color:var(--muted);white-space:nowrap;"><i data-lucide="map-pin" style="width:12px;height:12px;"></i>地図</button>
         <select id="explore-sort" class="form-input" onchange="renderExplore()" style="width:auto;padding:5px 10px;font-size:11px;border-radius:8px;">
           <option value="rating">評価順</option>
           <option value="newest">新着順</option>
@@ -828,14 +823,14 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
       <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(5,150,105,.12);color:#059669;font-weight:600;">初期費用¥0</span>
       <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(5,150,105,.12);color:#059669;font-weight:600;">月額費用¥0</span>
       <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(5,150,105,.12);color:#059669;font-weight:600;">売上の95%が手取り</span>
-      <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(79,70,229,.1);color:#4F46E5;font-weight:600;">AIマッチングで自動集客</span>
+      <span style="font-size:10px;padding:4px 10px;border-radius:6px;background:rgba(79,70,229,.1);color:#4F46E5;font-weight:600;">すぐに公開可能</span>
     </div>
   </div>
 
-  <!-- Role switcher -->
-  <div style="display:flex;background:var(--lighter);border-radius:12px;overflow:hidden;margin-bottom:18px;padding:3px;">
-    <button id="role-teach" onclick="setRole('teach')" style="flex:1;padding:10px;border:none;background:var(--dark);color:white;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="graduation-cap" style="width:16px;height:16px;"></i>教える（出品）</button>
-    <button id="role-learn" onclick="setRole('learn')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;transition:all .2s;"><i data-lucide="book-open" style="width:16px;height:16px;"></i>学ぶ（リクエスト）</button>
+  <!-- Role switcher hidden for MVP (teach only) -->
+  <div style="display:none;">
+    <button id="role-teach" onclick="setRole('teach')">教える（出品）</button>
+    <button id="role-learn" onclick="setRole('learn')">学ぶ（リクエスト）</button>
   </div>
 
   <!-- Wizard header -->
@@ -3136,14 +3131,14 @@ function showPage(id, pushHistory = true) {
   el.classList.remove('page-transition');
   void el.offsetWidth;
   el.classList.add('page-transition');
-  const navPages = ['home','explore','map','register','chat'];
-  const navMap = {home:0,explore:1,map:2,matching:3,register:4,chat:5,payment:3,dashboard:5};
+  const navPages = ['home','explore','register','chat'];
+  const navMap = {home:0,explore:1,register:2,chat:3,matching:2,map:1,payment:2,dashboard:3};
   const navIdx = navMap[id];
   if (navIdx != null) {
     const btns = document.querySelectorAll('.nav-btn');
     if (btns[navIdx]) btns[navIdx].classList.add('active');
   }
-  const btmMap = { home:'home', explore:'explore', map:'explore', register:'profile', matching:'matching', chat:'chat', payment:'matching', dashboard:'profile', profile:'profile' };
+  const btmMap = { home:'home', explore:'explore', map:'explore', register:'register', matching:'register', chat:'chat', payment:'register', dashboard:'profile', profile:'profile' };
   const btmActive = btmMap[id] || id;
   document.querySelectorAll('.btm-tab').forEach(b => {
     b.classList.toggle('active', b.dataset.page === btmActive);
@@ -3271,7 +3266,7 @@ function renderHome() {
   const list = allVisible.slice(0, 6);
   document.getElementById('home-cards').innerHTML = list.length
     ? list.map(makeCard).join('')
-    : '<div style="text-align:center;padding:40px 0;color:var(--muted);grid-column:1/-1;"><div style="display:flex;justify-content:center;margin-bottom:10px;"><i data-lucide="graduation-cap" style="width:32px;height:32px;"></i></div><p style="font-size:13px;">まだ先生がいません。<br>一番乗りでスキルを出品しませんか？</p></div>';
+    : '<div style="text-align:center;padding:40px 0;color:var(--muted);grid-column:1/-1;"><div style="display:flex;justify-content:center;margin-bottom:10px;"><i data-lucide="graduation-cap" style="width:32px;height:32px;"></i></div><p style="font-size:13px;margin-bottom:14px;">まだ先生がいません。<br>一番乗りでスキルを出品しませんか？</p><button class="btn btn-accent" onclick="showPage(\'register\')" style="padding:10px 24px;font-size:13px;">出品する</button></div>';
   const catEl = document.getElementById('home-categories');
   if (catEl) {
     catEl.innerHTML = mainCategories.map(c => {
@@ -4109,7 +4104,7 @@ async function loadOlderMessages() {
 function renderChatList() {
   const el = document.getElementById('chat-list-items');
   if (!chatThreads.length) {
-    el.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted);font-size:12px;"><div style="display:flex;justify-content:center;margin-bottom:8px;"><i data-lucide="message-circle" style="width:24px;height:24px;"></i></div>先生を予約するとチャットが始まります<br><a href="#" onclick="event.preventDefault();showPage(\'explore\')" style="color:var(--accent);font-weight:500;">先生を探す →</a></div>';
+    el.innerHTML = '<div style="padding:30px 16px;text-align:center;color:var(--muted);font-size:12px;"><div style="display:flex;justify-content:center;margin-bottom:8px;"><i data-lucide="message-circle" style="width:24px;height:24px;"></i></div>気になる先生のプロフィールから<br>メッセージを送ってみましょう<br><a href="#" onclick="event.preventDefault();showPage(\'explore\')" style="color:var(--accent);font-weight:600;margin-top:8px;display:inline-block;">先生を探す →</a></div>';
     document.getElementById('chat-msgs').innerHTML = '<div style="margin:auto;text-align:center;color:var(--muted);font-size:12px;"><i data-lucide="message-circle" style="width:24px;height:24px;display:block;margin:0 auto 8px;"></i>チャット相手を選択してください</div>';
     refreshIcons();
     return;
@@ -5924,8 +5919,7 @@ function renderModal() {
         ${t.phone_visible && t.phone ? `<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mid);"><i data-lucide="phone" style="width:13px;height:13px;color:var(--accent);"></i><span>${escapeHtml(t.phone)}</span></div>` : ''}
       </div>
     </div>` : ''}
-    <div style="display:flex;gap:10px;"><button class="btn btn-outline" onclick="closeModal()" style="flex:1;padding:13px;">閉じる</button>${currentUser && t.db_user_id === currentUser.id ? '<button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">自分のスキルです</button>' : !t.db_skill_id ? '<button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">サンプル（予約不可）</button>' : !currentUser ? `<button class="btn btn-dark" onclick="closeModal();openAuthModal('signup');" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="log-in" style="width:16px;height:16px;"></i>ログインして予約</button>` : '<button class="btn btn-dark" onclick="bookStep=1;renderModal();" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="calendar" style="width:16px;height:16px;"></i>予約する</button>'}</div>
-    ${t.db_skill_id && t.db_user_id && currentUser && t.db_user_id !== currentUser.id ? `<button onclick="closeModal();startDirectChat('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="width:100%;margin-top:10px;padding:11px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>メッセージを送る</button>` : ''}
+    <div style="display:flex;gap:10px;">${currentUser && t.db_user_id === currentUser.id ? '<button class="btn btn-outline" onclick="closeModal()" style="flex:1;padding:13px;">閉じる</button><button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">自分のスキルです</button>' : !t.db_skill_id ? '<button class="btn btn-outline" onclick="closeModal()" style="flex:1;padding:13px;">閉じる</button><button class="btn btn-dark" disabled style="flex:2;opacity:.5;cursor:not-allowed;padding:13px;">サンプル</button>' : !currentUser ? `<button class="btn btn-outline" onclick="closeModal()" style="flex:1;padding:13px;">閉じる</button><button class="btn btn-accent" onclick="closeModal();openAuthModal('signup');" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="message-circle" style="width:16px;height:16px;"></i>ログインしてメッセージ</button>` : `<button class="btn btn-outline" onclick="closeModal()" style="flex:1;padding:13px;">閉じる</button><button class="btn btn-accent" onclick="closeModal();startDirectChat('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="flex:2;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="message-circle" style="width:16px;height:16px;"></i>メッセージを送る</button>`}</div>
     <div style="display:flex;justify-content:center;gap:16px;margin-top:8px;">
       <button onclick="shareTeacher(${t.id})" style="padding:9px 16px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='var(--dark)'" onmouseout="this.style.color='var(--muted)'"><i data-lucide="share-2" style="width:13px;height:13px;"></i>シェア</button>
       ${currentUser && t.db_user_id && t.db_user_id !== currentUser.id ? `<button onclick="reportTeacher('${escapeHtml(t.db_user_id)}','${escapeHtml(t.name)}')" style="padding:9px 16px;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--muted)'"><i data-lucide="flag" style="width:13px;height:13px;"></i>報告</button>
