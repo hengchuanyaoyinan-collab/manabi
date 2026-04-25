@@ -38,6 +38,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
+<script src="/_vercel/insights/script.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="anonymous">
 <script>
@@ -1733,6 +1734,13 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
   <div id="admin-reports-list" style="display:flex;flex-direction:column;gap:10px;"></div>
   <div style="margin-top:32px;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="width:32px;height:32px;border-radius:10px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;"><i data-lucide="bar-chart-3" style="width:16px;height:16px;"></i></div>
+      <h2 style="font-size:16px;font-weight:700;">アクセス解析</h2>
+    </div>
+    <div id="admin-analytics" style="display:flex;flex-direction:column;gap:12px;"><p style="color:var(--muted);font-size:13px;">読み込み中...</p></div>
+  </div>
+  <div style="margin-top:32px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <div style="width:32px;height:32px;border-radius:10px;background:#EEF2FF;color:#4338CA;display:flex;align-items:center;justify-content:center;"><i data-lucide="message-square-quote" style="width:16px;height:16px;"></i></div>
       <h2 style="font-size:16px;font-weight:700;">口コミ転記申請</h2>
     </div>
@@ -1853,6 +1861,19 @@ let currentUser = null;
 const FEE_RATE = 0.05;
 function trackEvent(name, params) {
   try { if (typeof gtag === 'function') gtag('event', name, params); } catch(e) {}
+}
+const _pvSessionId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
+function trackPageView(page) {
+  try {
+    sb.from('page_views').insert({
+      page,
+      referrer: document.referrer || null,
+      user_agent: navigator.userAgent,
+      screen_width: window.innerWidth,
+      session_id: _pvSessionId,
+      user_id: currentUser?.id || null,
+    }).then(() => {});
+  } catch(e) {}
 }
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 
@@ -3200,7 +3221,7 @@ function showPage(id, pushHistory = true) {
   const protectedPages = ['register','matching','chat','payment','dashboard','profile','admin'];
   if (protectedPages.includes(id) && !requireAuth(id)) return;
   if (id === 'admin' && !isAdmin()) { showToast('管理者権限が必要です', 'var(--red)'); return; }
-  if (id === 'admin') { loadAdminReports('pending'); loadAdminImportedReviews(); }
+  if (id === 'admin') { loadAdminReports('pending'); loadAdminImportedReviews(); loadAdminAnalytics(); }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const el = document.getElementById(id);
@@ -3235,6 +3256,7 @@ function showPage(id, pushHistory = true) {
     if (location.pathname !== target) history.pushState({ page: id }, '', target);
   }
   trackEvent('page_view', { page_title: id, page_location: location.pathname });
+  trackPageView(id);
   refreshIcons();
 }
 window.addEventListener('popstate', (e) => {
@@ -5670,6 +5692,49 @@ async function reviewImportedReview(reviewId, status) {
   if (error) { showToast('更新に失敗しました', 'var(--red)'); return; }
   showToast(status === 'approved' ? '口コミを承認しました' : '口コミを却下しました', 'var(--green)');
   loadAdminImportedReviews();
+}
+async function loadAdminAnalytics() {
+  if (!isAdmin()) return;
+  const el = document.getElementById('admin-analytics');
+  try {
+    const { data, error } = await sb.rpc('get_page_view_stats');
+    if (error || !data) { el.innerHTML = '<p style="color:var(--muted);font-size:13px;">データなし</p>'; return; }
+    const s = data;
+    el.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
+        <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:var(--accent);">${s.unique_sessions_today || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">今日の訪問者</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:var(--green);">${s.today || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">今日のPV</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;">${s.yesterday || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">昨日のPV</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;">${s.unique_sessions_week || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">週間訪問者</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;">${s.week || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">週間PV</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;">${s.total || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">累計PV</div>
+        </div>
+      </div>
+      ${s.top_pages ? `<div style="margin-top:12px;background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;">
+        <p style="font-size:12px;font-weight:700;margin-bottom:10px;">人気ページ（過去7日）</p>
+        ${s.top_pages.map((p,i) => `<div style="display:flex;justify-content:space-between;padding:6px 0;${i?'border-top:1px solid var(--lighter)':''}">
+          <span style="font-size:12px;">${escapeHtml(p.page)}</span>
+          <span style="font-size:12px;font-weight:600;color:var(--accent);">${p.views}</span>
+        </div>`).join('')}
+      </div>` : ''}`;
+  } catch(e) { el.innerHTML = '<p style="color:var(--muted);font-size:13px;">読み込みエラー</p>'; }
 }
 function trackRecentView(id) {
   try {
