@@ -35,20 +35,10 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
 <link rel="manifest" href="/manifest.json">
 <title>Manabi — 誰でも先生になれる</title>
-<script src="/_vercel/insights/script.js" defer>
+<script src="/_vercel/insights/script.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="anonymous">
-<script>
-(function(){
-  var id='G-XXXXXXXXXX';
-  if(id.indexOf('XXXXX')!==-1)return;
-  var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+id;document.head.appendChild(s);
-  window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}window.gtag=gtag;gtag('js',new Date());gtag('config',id,{send_page_view:false});
-})();
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin="anonymous"></script>
 <style>
 :root{--bg:#FAFAF8;--white:#fff;--dark:#1A1A1A;--mid:#3D3D3D;--muted:#6E6E6E;--subtle:#9C9C9C;--light:#EFEDE9;--lighter:#F5F4F1;--primary:#1A1A1A;--primary-light:#F5F4F1;--accent:#4F46E5;--accent-2:#7C3AED;--accent-light:#EEF2FF;--accent-mid:#C7D2FE;--green:#059669;--green-light:#ECFDF5;--gold:#D97706;--gold-light:#FFFBEB;--red:#DC2626;--red-light:#FEF2F2;--border:#E5E3DF;--border-light:#EFEDE9;--shadow-xs:0 1px 2px rgba(0,0,0,.05);--shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.04),0 2px 4px rgba(0,0,0,.04);--shadow-lg:0 10px 25px rgba(0,0,0,.07),0 4px 10px rgba(0,0,0,.04);--shadow-xl:0 20px 40px rgba(0,0,0,.10),0 8px 16px rgba(0,0,0,.05);--shadow-accent:0 4px 20px rgba(79,70,229,.25);--grad-brand:linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);--grad-hero:linear-gradient(135deg,#EEF2FF 0%,#F5F3FF 50%,#FDF2F8 100%);--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--radius-2xl:24px;--radius-full:9999px;}
 [data-theme="dark"]{--bg:#0F0F0F;--white:#1C1C1E;--dark:#F2F2F7;--mid:#EBEBF0;--muted:#98989F;--subtle:#636366;--light:#2C2C2F;--lighter:#252528;--primary:#F2F2F7;--primary-light:#252528;--accent:#818CF8;--accent-2:#A78BFA;--accent-light:#1E1B4B;--accent-mid:#312E81;--green:#34D399;--green-light:#022C22;--gold:#FCD34D;--gold-light:#1C1300;--red:#F87171;--red-light:#1C0505;--border:#2C2C2E;--border-light:#232325;--shadow-xs:0 1px 2px rgba(0,0,0,.3);--shadow:0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);--shadow-md:0 4px 6px rgba(0,0,0,.3),0 2px 4px rgba(0,0,0,.2);--shadow-lg:0 10px 25px rgba(0,0,0,.4),0 4px 10px rgba(0,0,0,.3);--shadow-xl:0 20px 40px rgba(0,0,0,.5),0 8px 16px rgba(0,0,0,.3);--shadow-accent:0 4px 20px rgba(129,140,248,.3);--grad-brand:linear-gradient(135deg,#6366F1 0%,#8B5CF6 100%);--grad-hero:linear-gradient(135deg,#1E1B4B 0%,#1A1B2E 50%,#1F1325 100%);}
@@ -3936,6 +3926,7 @@ function updateGmapLink() {
 function renderMap() {
   const container = document.getElementById('leaflet-map');
   if (!container) return;
+  if (typeof L === 'undefined') { container.innerHTML = '<p style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">地図機能は現在準備中です</p>'; return; }
   if (!leafletMap) {
     leafletMap = L.map('leaflet-map', { zoomControl: true }).setView([35.6620, 139.7038], 14);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {

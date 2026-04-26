@@ -19,8 +19,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== location.origin) {
     const host = url.hostname;
     if (!host.endsWith('googleapis.com') && !host.endsWith('gstatic.com') &&
-        !host.endsWith('jsdelivr.net') && !host.endsWith('unpkg.com') &&
-        !host.endsWith('basemaps.cartocdn.com')) return;
+        !host.endsWith('jsdelivr.net') && !host.endsWith('unpkg.com')) return;
   }
 
   const isNavigation = e.request.mode === 'navigate';
