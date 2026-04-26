@@ -1,10 +1,9 @@
 User-agent: *
 Allow: /
-Disallow: /dashboard
 Disallow: /chat
 Disallow: /payment
 Disallow: /profile
 Disallow: /admin
-Disallow: /matching
+Disallow: /dashboard
 
 Sitemap: https://manabi-bay.vercel.app/sitemap.xml

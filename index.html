@@ -35,10 +35,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
 <link rel="manifest" href="/manifest.json">
 <title>Manabi — 誰でも先生になれる</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
-<script src="/_vercel/insights/script.js" defer></script>
+<script src="/_vercel/insights/script.js" defer>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="anonymous">
 <script>
@@ -1319,7 +1316,7 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
       </div>
       <div style="display:flex;gap:10px;justify-content:center;">
         <button class="btn btn-dark" onclick="showPage('chat')" style="display:flex;align-items:center;gap:6px;"><i data-lucide="message-circle" style="width:14px;height:14px;"></i>チャットへ</button>
-        <button class="btn btn-outline" onclick="showPage('dashboard')">ダッシュボードへ</button>
+        <button class="btn btn-outline" onclick="showPage('profile')">マイページへ</button>
       </div>
     </div>
   </div>
@@ -1649,7 +1646,7 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
       <ul style="margin-bottom:20px;padding-left:20px;"><li>サービスの提供・運営・改善</li><li>ユーザーの本人確認</li><li>マッチング機能の最適化</li><li>決済処理</li><li>カスタマーサポート</li><li>利用規約違反への対応</li></ul>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">3. 情報の共有</h2>
       <p style="margin-bottom:8px;">以下の場合を除き、ユーザーの個人情報を第三者に提供しません：</p>
-      <ul style="margin-bottom:20px;padding-left:20px;"><li>ユーザーの同意がある場合</li><li>法令に基づく場合</li><li>サービス提供に必要な業務委託先：<br>— <strong>Supabase</strong>（データベース・認証基盤）<br>— <strong>Stripe</strong>（決済処理）<br>— <strong>Google Analytics</strong>（アクセス解析）<br>— <strong>OpenAI</strong>（AIマッチング・プロフィール分析）<br>— <strong>Jitsi Meet</strong>（ビデオ通話）</li></ul>
+      <ul style="margin-bottom:20px;padding-left:20px;"><li>ユーザーの同意がある場合</li><li>法令に基づく場合</li><li>サービス提供に必要な業務委託先：<br>— <strong>Supabase</strong>（データベース・認証基盤）<br>— <strong>Stripe</strong>（決済処理）<br>— <strong>Google Analytics</strong>（アクセス解析）<br>— <strong>OpenAI</strong>（プロフィール分析補助）</li></ul>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">4. 情報の保護</h2>
       <p style="margin-bottom:20px;">当社は適切な技術的・組織的措置を講じ、個人情報の漏洩、滅失、毀損の防止に努めます。通信はSSL/TLSにより暗号化されています。</p>
       <h2 style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;">5. Cookieの使用</h2>
@@ -1681,7 +1678,7 @@ nav.nav-scrolled{box-shadow:0 1px 20px rgba(0,0,0,.06);}
         <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">所在地</td><td style="padding:14px 12px;">（請求があった場合に遅滞なく開示いたします）</td></tr>
         <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">電話番号</td><td style="padding:14px 12px;">（請求があった場合に遅滞なく開示いたします）</td></tr>
         <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">メールアドレス</td><td style="padding:14px 12px;">support@manabi-bay.vercel.app</td></tr>
-        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">サービス名</td><td style="padding:14px 12px;">Manabi — スキルのマーケットプレイス</td></tr>
+        <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">サービス名</td><td style="padding:14px 12px;">Manabi — 誰でも先生になれる</td></tr>
         <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">サービスURL</td><td style="padding:14px 12px;">https://manabi-bay.vercel.app</td></tr>
         <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">販売価格</td><td style="padding:14px 12px;">各レッスンページに表示された金額（税込）<br>サービス手数料：レッスン料金の5%</td></tr>
         <tr style="border-bottom:1px solid var(--light);"><td style="padding:14px 12px;font-weight:700;color:var(--dark);vertical-align:top;">支払方法</td><td style="padding:14px 12px;">クレジットカード（Stripe経由）<br>対応ブランド：Visa, Mastercard, JCB, American Express</td></tr>
@@ -2679,7 +2676,6 @@ function showWizStep(n) {
   if (wizStep === 3) renderWizDayGrid();
   refreshIcons();
 }
-function updateSubcategory() {}
 
 function wizNext() {
   if (!canProceedWiz()) return;
@@ -3119,7 +3115,7 @@ function cacheTeacher(t) {
 function getTeacher(id) {
   return _teacherCache.get(id) || teachers.find(t => t.id === id || t.db_skill_id === id);
 }
-function qid(id) { return typeof id === 'string' ? `'${id}'` : id; }
+function qid(id) { return typeof id === 'string' ? `'${String(id).replace(/[\\'"]/g, '')}'` : id; }
 
 // ── STATIC DATA ──
 let teachers = [
@@ -5833,7 +5829,7 @@ function closeModal() {
   if (modal) { modal.style.transform = 'translateY(100%)'; modal.style.transition = 'transform .2s ease-in'; }
   setTimeout(() => { overlay.classList.remove('open'); if (modal) { modal.style.transform = ''; modal.style.transition = ''; } }, 200);
   _removeTeacherJsonLd();
-  document.title = 'Manabi — スキルのマーケットプレイス';
+  document.title = 'Manabi — 誰でも先生になれる';
   document.querySelector('link[rel="canonical"]').href = 'https://manabi-bay.vercel.app';
   const prev = location.pathname.replace(/^\//,'');
   if (prev.startsWith('teacher/')) history.pushState({ page: 'explore' }, '', '/explore');

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'manabi-20260425';
+const CACHE_NAME = 'manabi-20260426';
 const PRECACHE = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', (e) => {

@@ -1,7 +1,7 @@
 {
-  "name": "Manabi — スキルのマーケットプレイス",
+  "name": "Manabi — 誰でも先生になれる",
   "short_name": "Manabi",
-  "description": "誰でも教え、誰でも学べる。AIマッチングで最適な先生を見つける。",
+  "description": "誰でも先生になれる。得意なことを投稿して教える、学びたいことで先生を探す。登録・出品無料。",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAFAF7",
