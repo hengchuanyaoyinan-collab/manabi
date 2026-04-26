@@ -2336,7 +2336,10 @@ async function doSignup() {
       const msg = error.message?.includes('already registered') ? 'このメールアドレスは既に登録されています' : '登録に失敗しました。入力内容を確認してください';
       showMsg(msg, true);
     } else {
-      if (data.user) await sb.from('profiles').upsert({ id: data.user.id, name, score: 0 }, { onConflict: 'id' });
+      if (data.user) {
+        const { error: profErr } = await sb.from('profiles').upsert({ id: data.user.id, name, score: 0 }, { onConflict: 'id' });
+        if (profErr) console.error('profile upsert error:', profErr);
+      }
       showMsg('登録完了！メールを確認してログインしてください。', false);
     }
   } catch(e) { console.error('doSignup error:', e); showMsg('登録に失敗しました', true); }
@@ -2853,7 +2856,10 @@ async function submitSkill() {
       if (regCareer) profileUpdate.career = regCareer;
       if (regTagline) profileUpdate.tagline = regTagline;
       if (regStyles.length) profileUpdate.teaching_style = regStyles[0] === 'フレンドリー' ? 'friendly' : regStyles[0] === '体系的・丁寧' ? 'structured' : regStyles[0] === '実践重視' ? 'practical' : regStyles[0] === 'じっくり型' ? 'patient' : regStyles[0] === '短期集中' ? 'intensive' : 'friendly';
-      if (Object.keys(profileUpdate).length) await sb.from('profiles').update(profileUpdate).eq('id', currentUser.id);
+      if (Object.keys(profileUpdate).length) {
+        const { error: profErr } = await sb.from('profiles').update(profileUpdate).eq('id', currentUser.id);
+        if (profErr) console.error('profile update error:', profErr);
+      }
       await uploadRegAvatar();
       document.getElementById('reg-ok').style.display = 'block';
       document.getElementById('reg-ok').innerHTML = `
@@ -4143,7 +4149,7 @@ async function loadChatThreads() {
 
 async function startDirectChat(userId, userName) {
   if (!currentUser) { openAuthModal('login'); return; }
-  if (userId === currentUser.id) return;
+  if (userId === currentUser.id) { showToast('自分にはメッセージを送れません', 'var(--muted)'); return; }
   showPage('chat');
   try {
     let existing = chatThreads.findIndex(t => t.other?.id === userId);
@@ -4170,7 +4176,7 @@ async function loadMsgsFor(otherId) {
       .range(0, CHAT_PAGE_SIZE - 1);
     chatMsgs[otherId] = (data || []).reverse();
     _chatHasMore[otherId] = (count || 0) > CHAT_PAGE_SIZE;
-  } catch(e) { console.error('loadMsgsFor error:', e); }
+  } catch(e) { console.error('loadMsgsFor error:', e); showToast('メッセージの読み込みに失敗しました', 'var(--red)'); }
 }
 
 async function loadOlderMessages() {
@@ -4422,6 +4428,8 @@ function subscribeRealtimeMessages() {
         if (realtimeRetries <= 6) {
           const delay = Math.min(2000 * Math.pow(2, realtimeRetries - 1), 60000);
           setTimeout(() => subscribeRealtimeMessages(), delay);
+        } else {
+          showToast('リアルタイム接続が切れました。ページを再読み込みしてください', 'var(--red)');
         }
       } else if (status === 'SUBSCRIBED') {
         realtimeRetries = 0;
@@ -5777,7 +5785,7 @@ async function openModal(id) {
       if (data) selTeacher = _mapListingToTeacher(data);
     } catch(e) { console.error('openModal fetch error:', e); }
   }
-  if (!selTeacher) return;
+  if (!selTeacher) { showToast('この先生の情報が見つかりませんでした', 'var(--red)'); return; }
   selTeacher._bookingCreated = false;
   trackRecentView(id);
   bookStep = 0; selSlot = null; renderModal();
