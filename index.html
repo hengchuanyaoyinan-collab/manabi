@@ -1863,6 +1863,7 @@ function trackEvent(name, params) {
   try { if (typeof gtag === 'function') gtag('event', name, params); } catch(e) {}
 }
 const _pvSessionId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
+const _pvVisitorId = (() => { let v = localStorage.getItem('manabi_vid'); if (!v) { v = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('manabi_vid', v); } return v; })();
 function trackPageView(page) {
   try {
     sb.from('page_views').insert({
@@ -1871,6 +1872,7 @@ function trackPageView(page) {
       user_agent: navigator.userAgent,
       screen_width: window.innerWidth,
       session_id: _pvSessionId,
+      visitor_id: _pvVisitorId,
       user_id: currentUser?.id || null,
     }).then(() => {});
   } catch(e) {}
@@ -5703,24 +5705,28 @@ async function loadAdminAnalytics() {
     el.innerHTML = `
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;">
         <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
-          <div style="font-size:24px;font-weight:800;color:var(--accent);">${s.unique_sessions_today || 0}</div>
-          <div style="font-size:11px;color:var(--muted);">今日の訪問者</div>
+          <div style="font-size:24px;font-weight:800;color:var(--accent);">${s.unique_visitors_today || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">今日のユニーク人数</div>
         </div>
         <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
           <div style="font-size:24px;font-weight:800;color:var(--green);">${s.today || 0}</div>
           <div style="font-size:11px;color:var(--muted);">今日のPV</div>
         </div>
         <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
-          <div style="font-size:24px;font-weight:800;">${s.yesterday || 0}</div>
-          <div style="font-size:11px;color:var(--muted);">昨日のPV</div>
+          <div style="font-size:24px;font-weight:800;">${s.new_visitors_today || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">今日の新規</div>
         </div>
         <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
-          <div style="font-size:24px;font-weight:800;">${s.unique_sessions_week || 0}</div>
-          <div style="font-size:11px;color:var(--muted);">週間訪問者</div>
+          <div style="font-size:24px;font-weight:800;color:var(--accent);">${s.unique_visitors_week || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">週間ユニーク人数</div>
         </div>
         <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
           <div style="font-size:24px;font-weight:800;">${s.week || 0}</div>
           <div style="font-size:11px;color:var(--muted);">週間PV</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;">${s.unique_visitors_total || 0}</div>
+          <div style="font-size:11px;color:var(--muted);">累計ユニーク人数</div>
         </div>
         <div style="background:var(--white);border:1px solid var(--light);border-radius:12px;padding:16px;text-align:center;">
           <div style="font-size:24px;font-weight:800;">${s.total || 0}</div>
