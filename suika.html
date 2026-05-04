@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#FFB347">
+<meta name="description" content="まなびスイカ — フルーツを合体させて大きなスイカを作ろう！シンプルだけどクセになる無料パズルゲーム。">
+<meta property="og:title" content="まなびスイカ 🍉 — クセになるフルーツ合体パズル">
+<meta property="og:description" content="フルーツをドロップ、同じ種類が合体してどんどん大きく！最高得点を目指せ。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://manabi-bay.vercel.app/suika">
+<meta property="og:image" content="https://manabi-bay.vercel.app/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<title>まなびスイカ 🍉 — フルーツ合体パズル</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none}
+body{
+  font-family:'Fredoka','Noto Sans JP',system-ui,sans-serif;
+  background:linear-gradient(180deg,#FFE5B4 0%,#FFD9DC 50%,#E0F4FF 100%);
+  color:#3A2418;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100dvh;
+  user-select:none;-webkit-user-select:none;
+}
+.app{
+  position:relative;
+  width:100%;max-width:440px;height:100dvh;
+  display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 6px;flex:0 0 auto;
+}
+.title{
+  font-family:'Fredoka','Noto Sans JP',sans-serif;
+  font-weight:800;font-size:22px;letter-spacing:.5px;
+  display:flex;align-items:center;gap:6px;
+  text-shadow:2px 2px 0 rgba(255,255,255,.6);
+}
+.title .em{font-size:24px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.08))}
+.scorebar{
+  display:flex;gap:8px;align-items:center;justify-content:space-between;
+  padding:0 14px 8px;flex:0 0 auto;
+}
+.score-box{
+  flex:1;background:rgba(255,255,255,.7);backdrop-filter:blur(8px);
+  border-radius:14px;padding:8px 12px;
+  border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 2px 8px rgba(255,150,80,.15);
+}
+.score-label{font-size:10px;font-weight:700;color:#A86B3A;letter-spacing:1px;text-transform:uppercase}
+.score-value{font-size:22px;font-weight:800;color:#3A2418;line-height:1.1;font-variant-numeric:tabular-nums}
+.score-value.high{color:#E07B00}
+.next-box{
+  background:rgba(255,255,255,.7);backdrop-filter:blur(8px);
+  border-radius:14px;padding:6px 10px;
+  border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 2px 8px rgba(255,150,80,.15);
+  display:flex;flex-direction:column;align-items:center;gap:2px;min-width:64px;
+}
+.next-label{font-size:9px;font-weight:700;color:#A86B3A;letter-spacing:1px}
+.next-emoji{font-size:28px;line-height:1}
+.stage-wrap{
+  flex:1 1 auto;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 12px 12px;
+  min-height:0;
+}
+.stage{
+  position:relative;
+  width:100%;max-width:380px;height:100%;
+  background:linear-gradient(180deg,#FFF4E0 0%,#FFE8C7 100%);
+  border-radius:24px;
+  border:4px solid #FFFFFF;
+  box-shadow:
+    0 10px 30px rgba(255,150,80,.25),
+    inset 0 -6px 0 rgba(218,143,82,.15),
+    inset 0 2px 0 rgba(255,255,255,.7);
+  overflow:hidden;
+}
+canvas{display:block;width:100%;height:100%;cursor:pointer}
+.danger-line{
+  position:absolute;left:0;right:0;height:2px;
+  background:repeating-linear-gradient(90deg,#FF6B6B 0 8px,transparent 8px 14px);
+  pointer-events:none;opacity:.55;
+  filter:drop-shadow(0 0 4px rgba(255,107,107,.5));
+}
+.evolution{
+  position:absolute;left:8px;top:8px;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(8px);
+  border-radius:12px;padding:6px 8px;
+  border:2px solid rgba(255,255,255,.9);
+  display:flex;flex-direction:column;gap:2px;
+  font-size:11px;font-weight:700;color:#7A4A1F;
+  z-index:5;
+}
+.evo-row{display:flex;align-items:center;gap:2px;font-size:14px;line-height:1}
+.evo-row span.arrow{font-size:9px;color:#C58A4A}
+.controls{
+  flex:0 0 auto;display:flex;gap:8px;padding:6px 14px 14px;
+}
+button{
+  font-family:inherit;font-weight:700;font-size:14px;
+  border:none;cursor:pointer;border-radius:14px;
+  padding:12px 16px;letter-spacing:.5px;
+  transition:transform .1s ease,box-shadow .1s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+button:active{transform:translateY(2px)}
+.btn-primary{
+  flex:1;background:linear-gradient(180deg,#FF8A4D 0%,#E86530 100%);color:#fff;
+  box-shadow:0 4px 0 #B84A1F,0 6px 12px rgba(232,101,48,.3);
+}
+.btn-primary:active{box-shadow:0 2px 0 #B84A1F,0 3px 6px rgba(232,101,48,.3)}
+.btn-secondary{
+  background:linear-gradient(180deg,#fff 0%,#FFE8C7 100%);color:#7A4A1F;
+  box-shadow:0 4px 0 #E0B788,0 6px 12px rgba(0,0,0,.08);
+  border:2px solid #fff;
+}
+.btn-secondary:active{box-shadow:0 2px 0 #E0B788,0 3px 6px rgba(0,0,0,.08)}
+.btn-share{
+  background:linear-gradient(180deg,#1DA1F2 0%,#0F7BC2 100%);color:#fff;
+  box-shadow:0 4px 0 #0A5F95,0 6px 12px rgba(29,161,242,.3);
+}
+.btn-share:active{box-shadow:0 2px 0 #0A5F95,0 3px 6px rgba(29,161,242,.3)}
+.modal-bg{
+  position:fixed;inset:0;background:rgba(58,36,24,.55);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;z-index:100;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
+  padding:16px;
+}
+.modal-bg.show{opacity:1;pointer-events:auto}
+.modal{
+  background:linear-gradient(180deg,#FFF6E5 0%,#FFE5C2 100%);
+  border-radius:24px;padding:24px 22px;
+  width:100%;max-width:340px;text-align:center;
+  border:4px solid #fff;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+  transform:scale(.85);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.modal-bg.show .modal{transform:scale(1)}
+.modal h2{font-size:24px;font-weight:800;margin-bottom:6px;color:#3A2418}
+.modal .big-emoji{font-size:64px;margin:8px 0;display:block;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.modal .final-score{
+  font-size:48px;font-weight:800;color:#E07B00;line-height:1;
+  font-variant-numeric:tabular-nums;margin:6px 0;
+  text-shadow:3px 3px 0 rgba(255,255,255,.7);
+}
+.modal .sub{font-size:13px;color:#7A4A1F;margin-bottom:16px;font-weight:600}
+.modal .sub b{color:#E07B00}
+.modal-actions{display:flex;flex-direction:column;gap:8px}
+.modal-actions button{width:100%}
+.combo-popup{
+  position:absolute;pointer-events:none;
+  font-weight:800;font-size:24px;color:#fff;
+  text-shadow:2px 2px 0 #E86530,-1px -1px 0 #E86530,1px -1px 0 #E86530,-1px 1px 0 #E86530;
+  animation:floatUp .9s ease-out forwards;
+  z-index:10;
+}
+@keyframes floatUp{
+  0%{opacity:0;transform:translate(-50%,0) scale(.5)}
+  20%{opacity:1;transform:translate(-50%,-8px) scale(1.2)}
+  100%{opacity:0;transform:translate(-50%,-60px) scale(.9)}
+}
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120%);
+  background:rgba(58,36,24,.95);color:#fff;padding:10px 16px;border-radius:12px;
+  font-size:13px;font-weight:600;z-index:200;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.back-link{
+  position:absolute;top:14px;left:14px;z-index:50;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(8px);
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:800;color:#7A4A1F;
+  text-decoration:none;border:2px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+@media (max-height:680px){
+  .title{font-size:18px}.title .em{font-size:20px}
+  .score-value{font-size:18px}
+  header{padding:6px 14px 4px}
+  .scorebar{padding:0 14px 6px}
+}
+</style>
+</head>
+<body>
+<a href="/" class="back-link" aria-label="戻る">←</a>
+<div class="app">
+  <header>
+    <div class="title"><span class="em">🍉</span>まなびスイカ</div>
+  </header>
+  <div class="scorebar">
+    <div class="score-box">
+      <div class="score-label">SCORE</div>
+      <div class="score-value" id="score">0</div>
+    </div>
+    <div class="score-box">
+      <div class="score-label">BEST</div>
+      <div class="score-value high" id="best">0</div>
+    </div>
+    <div class="next-box">
+      <div class="next-label">NEXT</div>
+      <div class="next-emoji" id="next">🍒</div>
+    </div>
+  </div>
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+      <div class="evolution" id="evolution"></div>
+      <canvas id="cv"></canvas>
+      <div class="danger-line" id="dangerLine"></div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="btn-secondary" id="resetBtn">🔄 リセット</button>
+    <button class="btn-primary" id="shareBtn">📣 シェアする</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <span class="big-emoji" id="modalEmoji">🍉</span>
+    <h2 id="modalTitle">ゲームオーバー</h2>
+    <div class="final-score" id="finalScore">0</div>
+    <div class="sub" id="modalSub">ベストスコア: <b id="modalBest">0</b></div>
+    <div class="modal-actions">
+      <button class="btn-primary" id="againBtn">もう一度プレイ</button>
+      <button class="btn-share" id="modalShareBtn">𝕏 でシェア</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">コピーしました！</div>
+
+<script>
+(function(){
+  'use strict';
+  const { Engine, Render, World, Bodies, Body, Events, Composite, Runner } = Matter;
+
+  // フルーツの定義（11段階）
+  const FRUITS = [
+    { name:'さくらんぼ', emoji:'🍒', radius:14, color:'#E63946', score:1 },
+    { name:'いちご',     emoji:'🍓', radius:19, color:'#FF4D6D', score:3 },
+    { name:'ぶどう',     emoji:'🍇', radius:25, color:'#9D4EDD', score:6 },
+    { name:'みかん',     emoji:'🍊', radius:31, color:'#FF9F1C', score:10 },
+    { name:'レモン',     emoji:'🍋', radius:39, color:'#FFD60A', score:15 },
+    { name:'りんご',     emoji:'🍎', radius:48, color:'#D62828', score:21 },
+    { name:'なし',       emoji:'🍐', radius:56, color:'#A7C957', score:28 },
+    { name:'もも',       emoji:'🍑', radius:65, color:'#FFAFCC', score:36 },
+    { name:'パイン',     emoji:'🍍', radius:75, color:'#FCBF49', score:45 },
+    { name:'メロン',     emoji:'🍈', radius:88, color:'#90E0A8', score:55 },
+    { name:'スイカ',     emoji:'🍉', radius:104,color:'#06A77D', score:100 },
+  ];
+  const STAGE_W = 380, STAGE_H_BASE = 540;
+  const DROP_Y = 60;       // 投下Y（描画座標）
+  const DANGER_Y = 100;    // 危険ライン
+  const DROP_TIER_MAX = 4; // 投下されるのは0〜4まで（さくらんぼ〜レモン）
+  const STORAGE_KEY = 'manabi-suika-best';
+
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const stage = document.getElementById('stage');
+  const dangerLine = document.getElementById('dangerLine');
+  const scoreEl = document.getElementById('score');
+  const bestEl = document.getElementById('best');
+  const nextEl = document.getElementById('next');
+  const evolutionEl = document.getElementById('evolution');
+  const resetBtn = document.getElementById('resetBtn');
+  const shareBtn = document.getElementById('shareBtn');
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalEmoji = document.getElementById('modalEmoji');
+  const modalSub = document.getElementById('modalSub');
+  const finalScoreEl = document.getElementById('finalScore');
+  const modalBestEl = document.getElementById('modalBest');
+  const againBtn = document.getElementById('againBtn');
+  const modalShareBtn = document.getElementById('modalShareBtn');
+  const toast = document.getElementById('toast');
+
+  // 進化図表示
+  evolutionEl.innerHTML = FRUITS.slice(0,6).map((f,i)=>{
+    return `<div class="evo-row">${f.emoji}${i<5?'<span class="arrow">▶</span>':''}</div>`;
+  }).join('');
+
+  // Engine setup
+  const engine = Engine.create();
+  engine.world.gravity.y = 1.1;
+  engine.positionIterations = 10;
+  engine.velocityIterations = 8;
+
+  let scaleFactor = 1;
+  let stageW = STAGE_W, stageH = STAGE_H_BASE;
+  const wallThickness = 60;
+  let walls = [];
+
+  function setupWalls(){
+    walls.forEach(w=>World.remove(engine.world, w));
+    const left = Bodies.rectangle(-wallThickness/2, stageH/2, wallThickness, stageH*2, { isStatic:true });
+    const right = Bodies.rectangle(stageW+wallThickness/2, stageH/2, wallThickness, stageH*2, { isStatic:true });
+    const floor = Bodies.rectangle(stageW/2, stageH+wallThickness/2, stageW*2, wallThickness, { isStatic:true });
+    walls = [left,right,floor];
+    World.add(engine.world, walls);
+  }
+
+  function resize(){
+    const rect = stage.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio||1, 2);
+    stageW = STAGE_W;
+    // 高さは縦横比からstage実寸に合わせる
+    stageH = Math.max(420, (rect.height / rect.width) * STAGE_W);
+    cv.width = stageW * dpr;
+    cv.height = stageH * dpr;
+    cv.style.width = '100%';
+    cv.style.height = '100%';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    scaleFactor = rect.width / stageW;
+    // 危険ラインの位置
+    dangerLine.style.top = (DANGER_Y / stageH * 100) + '%';
+    setupWalls();
+  }
+  window.addEventListener('resize', resize);
+
+  // Game state
+  let score = 0;
+  let best = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+  let currentTier = 0;
+  let nextTier = 1;
+  let dropX = stageW/2;
+  let canDrop = true;
+  let gameOver = false;
+  let dangerStartTime = 0;
+  let bodyIdCounter = 0;
+
+  bestEl.textContent = best;
+
+  function pickTier(){ return Math.floor(Math.random() * (DROP_TIER_MAX+1)); }
+  function newTurn(){
+    currentTier = nextTier;
+    nextTier = pickTier();
+    nextEl.textContent = FRUITS[nextTier].emoji;
+  }
+  newTurn();
+
+  function makeFruit(tier, x, y, isDropping){
+    const f = FRUITS[tier];
+    const b = Bodies.circle(x, y, f.radius, {
+      restitution: 0.18,
+      friction: 0.4,
+      frictionAir: 0.001,
+      density: 0.001 + tier * 0.0005,
+      slop: 0.02,
+    });
+    b.tier = tier;
+    b.fruit = f;
+    b.spawnId = ++bodyIdCounter;
+    b.isJustDropped = !!isDropping;
+    World.add(engine.world, b);
+    return b;
+  }
+
+  function dropFruit(){
+    if(!canDrop || gameOver) return;
+    const f = FRUITS[currentTier];
+    const x = Math.max(f.radius+4, Math.min(stageW - f.radius - 4, dropX));
+    makeFruit(currentTier, x, DROP_Y, true);
+    canDrop = false;
+    setTimeout(()=>{ canDrop = true; }, 480);
+    newTurn();
+  }
+
+  // Merge logic
+  const mergedSet = new Set();
+  Events.on(engine, 'collisionStart', (ev)=>{
+    for(const pair of ev.pairs){
+      const a = pair.bodyA, b = pair.bodyB;
+      if(!a.fruit || !b.fruit) continue;
+      if(a.tier !== b.tier) continue;
+      if(a.tier >= FRUITS.length-1) continue;
+      if(mergedSet.has(a.id) || mergedSet.has(b.id)) continue;
+      mergedSet.add(a.id); mergedSet.add(b.id);
+      const nx = (a.position.x + b.position.x)/2;
+      const ny = (a.position.y + b.position.y)/2;
+      const newTier = a.tier + 1;
+      // Remove old
+      World.remove(engine.world, a);
+      World.remove(engine.world, b);
+      // Create new (slight upward velocity for satisfying feel)
+      const nb = makeFruit(newTier, nx, ny, false);
+      Body.setVelocity(nb, { x:0, y:-1.5 });
+      // Score
+      const gain = FRUITS[newTier].score;
+      addScore(gain);
+      spawnPopup(nx, ny, '+' + gain, FRUITS[newTier].emoji);
+      // Cleanup soon
+      setTimeout(()=>{ mergedSet.delete(a.id); mergedSet.delete(b.id); }, 100);
+      // Special: スイカ作成
+      if(newTier === FRUITS.length-1){
+        celebrateWatermelon(nx, ny);
+      }
+    }
+  });
+
+  function addScore(n){
+    score += n;
+    scoreEl.textContent = score.toLocaleString();
+    if(score > best){
+      best = score;
+      bestEl.textContent = best.toLocaleString();
+      localStorage.setItem(STORAGE_KEY, String(best));
+    }
+  }
+
+  function spawnPopup(x, y, text, emoji){
+    const el = document.createElement('div');
+    el.className = 'combo-popup';
+    el.textContent = (emoji||'') + ' ' + text;
+    el.style.left = (x / stageW * 100) + '%';
+    el.style.top = (y / stageH * 100) + '%';
+    stage.appendChild(el);
+    setTimeout(()=>el.remove(), 950);
+  }
+
+  function celebrateWatermelon(x,y){
+    // Big celebration: confetti-ish using popups
+    for(let i=0;i<12;i++){
+      const ang = Math.random()*Math.PI*2;
+      const r = 30 + Math.random()*60;
+      const px = x + Math.cos(ang)*r;
+      const py = y + Math.sin(ang)*r;
+      const emoji = ['🎉','✨','🍉','🌟'][i%4];
+      setTimeout(()=>spawnPopup(px,py,'',emoji), i*30);
+    }
+    showToast('🎉 スイカ完成！+100点！');
+  }
+
+  // ドロップ予測線描画 + フルーツ描画
+  function drawFruit(b){
+    const f = b.fruit;
+    const x = b.position.x, y = b.position.y, r = f.radius, ang = b.angle;
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(ang);
+    // Shadow ring under fruit
+    ctx.shadowColor = 'rgba(0,0,0,.18)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 3;
+    // Filled circle as backing color
+    ctx.fillStyle = f.color;
+    ctx.beginPath();
+    ctx.arc(0,0,r,0,Math.PI*2);
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+    // Glossy highlight
+    const grad = ctx.createRadialGradient(-r*0.35,-r*0.35,r*0.1,0,0,r);
+    grad.addColorStop(0,'rgba(255,255,255,.55)');
+    grad.addColorStop(0.5,'rgba(255,255,255,.05)');
+    grad.addColorStop(1,'rgba(0,0,0,.08)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(0,0,r,0,Math.PI*2);
+    ctx.fill();
+    // Emoji on top
+    ctx.font = `${Math.floor(r*1.55)}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(f.emoji, 0, r*0.04);
+    ctx.restore();
+  }
+
+  function drawDropPreview(){
+    if(!canDrop || gameOver) return;
+    const f = FRUITS[currentTier];
+    const x = Math.max(f.radius+4, Math.min(stageW - f.radius - 4, dropX));
+    // Vertical guide line
+    ctx.save();
+    ctx.strokeStyle = 'rgba(232,101,48,.4)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6,6]);
+    ctx.beginPath();
+    ctx.moveTo(x, DROP_Y + f.radius);
+    ctx.lineTo(x, stageH - 4);
+    ctx.stroke();
+    ctx.restore();
+    // Floating preview fruit
+    const ghost = { fruit:f, position:{x, y:DROP_Y}, angle:0 };
+    ctx.globalAlpha = 0.85;
+    drawFruit(ghost);
+    ctx.globalAlpha = 1;
+  }
+
+  // Render loop
+  function render(){
+    ctx.clearRect(0,0,stageW,stageH);
+    // background grid dots
+    ctx.fillStyle = 'rgba(255,180,120,.12)';
+    for(let gy=20; gy<stageH; gy+=24){
+      for(let gx=12; gx<stageW; gx+=24){
+        ctx.beginPath();
+        ctx.arc(gx, gy, 1.2, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+    // Drop preview
+    drawDropPreview();
+    // All bodies
+    const bodies = Composite.allBodies(engine.world);
+    for(const b of bodies){
+      if(b.fruit) drawFruit(b);
+    }
+    // Game over check
+    if(!gameOver) checkGameOver(bodies);
+    requestAnimationFrame(render);
+  }
+
+  function checkGameOver(bodies){
+    let danger = false;
+    for(const b of bodies){
+      if(!b.fruit) continue;
+      // 着地して安定したフルーツが危険ラインを超えていたらカウント開始
+      const settled = !b.isJustDropped && Math.abs(b.velocity.y) < 0.4 && Math.abs(b.velocity.x) < 0.4;
+      // 着地から少し時間経ったら isJustDropped を解除
+      if(b.isJustDropped && b.position.y > DROP_Y + b.fruit.radius*2){
+        b.isJustDropped = false;
+      }
+      if(!b.isJustDropped && (b.position.y - b.fruit.radius) < DANGER_Y && settled){
+        danger = true; break;
+      }
+    }
+    if(danger){
+      if(dangerStartTime === 0) dangerStartTime = performance.now();
+      else if(performance.now() - dangerStartTime > 1800){
+        triggerGameOver();
+      }
+    } else {
+      dangerStartTime = 0;
+    }
+  }
+
+  function triggerGameOver(){
+    gameOver = true;
+    finalScoreEl.textContent = score.toLocaleString();
+    modalBestEl.textContent = best.toLocaleString();
+    let title = 'ゲームオーバー', emoji = '🍉', sub = `ベストスコア: <b>${best.toLocaleString()}</b>`;
+    if(score >= best && score > 0){
+      title = 'ハイスコア更新！';
+      emoji = '🏆';
+      sub = `自己ベスト更新！🎉`;
+    } else if(score >= 1500){ title = 'スイカマスター！'; emoji = '🍉'; }
+    else if(score >= 800){ title = 'おみごと！'; emoji = '✨'; }
+    else if(score >= 300){ title = 'いい感じ！'; emoji = '👍'; }
+    modalTitle.textContent = title;
+    modalEmoji.textContent = emoji;
+    modalSub.innerHTML = sub;
+    modal.classList.add('show');
+  }
+
+  function resetGame(){
+    gameOver = false;
+    dangerStartTime = 0;
+    score = 0;
+    scoreEl.textContent = '0';
+    Composite.allBodies(engine.world).forEach(b=>{
+      if(b.fruit) World.remove(engine.world, b);
+    });
+    mergedSet.clear();
+    nextTier = pickTier();
+    newTurn();
+    canDrop = true;
+    modal.classList.remove('show');
+  }
+
+  // Pointer handling for aim + drop
+  function getPointerX(e){
+    const t = e.touches ? e.touches[0] : e;
+    if(!t) return dropX;
+    const rect = cv.getBoundingClientRect();
+    const px = t.clientX - rect.left;
+    return (px / rect.width) * stageW;
+  }
+  let pointerDown = false;
+  cv.addEventListener('pointerdown', (e)=>{
+    if(gameOver) return;
+    pointerDown = true;
+    dropX = getPointerX(e);
+    cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove', (e)=>{
+    if(gameOver) return;
+    if(pointerDown || e.pointerType === 'mouse') dropX = getPointerX(e);
+  });
+  cv.addEventListener('pointerup', (e)=>{
+    if(gameOver) return;
+    if(pointerDown){
+      dropX = getPointerX(e);
+      dropFruit();
+    }
+    pointerDown = false;
+  });
+  cv.addEventListener('pointercancel', ()=>{ pointerDown = false; });
+
+  // Keyboard for desktop
+  window.addEventListener('keydown', (e)=>{
+    if(gameOver) return;
+    if(e.key === 'ArrowLeft') dropX = Math.max(20, dropX - 18);
+    else if(e.key === 'ArrowRight') dropX = Math.min(stageW-20, dropX + 18);
+    else if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); dropFruit(); }
+  });
+
+  // Buttons
+  resetBtn.addEventListener('click', ()=>{
+    if(score > 0 && !gameOver && !confirm('本当にリセットしますか？')) return;
+    resetGame();
+  });
+  againBtn.addEventListener('click', resetGame);
+
+  function shareScore(){
+    const url = location.origin + '/suika';
+    const text = score > 0
+      ? `まなびスイカで ${score.toLocaleString()}点 取ったよ！🍉\nベスト: ${best.toLocaleString()}点\n`
+      : `まなびスイカで遊んでみよう🍉\n`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent('まなびスイカ')}`;
+    if(navigator.share){
+      navigator.share({ title:'まなびスイカ 🍉', text, url }).catch(()=>{
+        window.open(tweetUrl, '_blank', 'noopener');
+      });
+    } else {
+      window.open(tweetUrl, '_blank', 'noopener');
+    }
+  }
+  shareBtn.addEventListener('click', shareScore);
+  modalShareBtn.addEventListener('click', shareScore);
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>toast.classList.remove('show'), 1800);
+  }
+
+  // Run
+  resize();
+  const runner = Runner.create();
+  Runner.run(runner, engine);
+  requestAnimationFrame(render);
+
+  // Visibility pause
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden) Runner.stop(runner);
+    else Runner.run(runner, engine);
+  });
+
+})();
+</script>
+</body>
+</html>

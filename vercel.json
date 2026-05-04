@@ -18,7 +18,8 @@
     { "source": "/tokushoho", "destination": "/index.html" },
     { "source": "/contact", "destination": "/index.html" },
     { "source": "/admin", "destination": "/index.html" },
-    { "source": "/((?!api|_next|favicon|og-image|manifest|sitemap|robots|sw).*)", "destination": "/index.html" }
+    { "source": "/suika", "destination": "/suika.html" },
+    { "source": "/((?!api|_next|favicon|og-image|manifest|sitemap|robots|sw|suika).*)", "destination": "/index.html" }
   ],
   "headers": [
     {
